@@ -9,6 +9,8 @@ local corpus passages. If the machine is offline every function returns [] and t
 falls back to the local corpus. Results are cached per claim for the life of the server.
 """
 import re
+import threading
+import time
 import xml.etree.ElementTree as ET
 from functools import lru_cache
 
@@ -16,9 +18,26 @@ import requests
 
 from .common import logger
 
-HEADERS = {"User-Agent": "TruthLensAI-student-project/1.0 (educational use)"}
+HEADERS = {"User-Agent": "TruthLensAI-student-project/1.0 (https://github.com/srivalli-kagitha/Fake-News-Detection)"}
+WIKI_SLOTS = threading.Semaphore(2)  # Wikipedia answers 429 when too many requests arrive at once
+
+
+class SearchFailed(Exception):
+    """Raised inside cached functions so that a failed search is not cached as 'no results'."""
 TIMEOUT = 8
 SENTENCE_END = re.compile(r"(?<=[.!?।])\s+")
+# A "sentence" ending like this is an abbreviation (U.S., Dr., Mr., St.), not a sentence end.
+ABBREVIATION_END = re.compile(r"(\b(?:[A-Z]\.)+|\b(?:Dr|Mr|Mrs|Ms|St|Jr|Sr|Prof|Gen|Lt|Col|Rev|No|vs|Inc|Ltd|Co|approx))\.?$")
+
+
+def split_sentences(text: str) -> list[str]:
+    out = []
+    for part in SENTENCE_END.split(text):
+        if out and ABBREVIATION_END.search(out[-1]):
+            out[-1] += " " + part
+        else:
+            out.append(part)
+    return out
 WORD = re.compile(r"[\w\u0C00-\u0C7F]+", re.UNICODE)  # Telugu vowel signs are not \w
 
 STOPWORDS = set(
@@ -44,35 +63,35 @@ def keywords(claim: str, limit: int = 8) -> str:
     return " ".join(words[:limit])
 
 
-def _get(url: str, params: dict) -> requests.Response | None:
-    try:
-        resp = requests.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
-        resp.raise_for_status()
-        return resp
-    except requests.RequestException as exc:
-        logger.warning("Live search failed (%s): %s", url.split("/")[2], exc)
-        return None
+def _get(url: str, params: dict, retries: int = 2) -> requests.Response:
+    for attempt in range(retries + 1):
+        try:
+            resp = requests.get(url, params=params, headers=HEADERS, timeout=TIMEOUT)
+            if resp.status_code == 429 and attempt < retries:
+                time.sleep(1.5 * (attempt + 1))
+                continue
+            resp.raise_for_status()
+            return resp
+        except requests.RequestException as exc:
+            if attempt == retries:
+                logger.warning("Live search failed (%s): %s", url.split("/")[2], exc)
+    raise SearchFailed(url)
 
 
 @lru_cache(maxsize=512)
 def _wikipedia(query: str, lang: str, pages: int) -> tuple:
-    api = f"https://{lang}.wikipedia.org/w/api.php"
-    resp = _get(api, {"action": "query", "list": "search", "srsearch": query, "srlimit": pages,
-                      "format": "json", "formatversion": 2})
-    if resp is None:
-        return ()
-    titles = [h["title"] for h in resp.json().get("query", {}).get("search", [])]
-    if not titles:
-        return ()
-    resp = _get(api, {"action": "query", "prop": "extracts", "exintro": 1, "explaintext": 1,
-                      "redirects": 1, "titles": "|".join(titles), "format": "json", "formatversion": 2})
-    if resp is None:
-        return ()
+    """One request: search for the query and return the intro of the best-matching pages."""
+    with WIKI_SLOTS:
+        resp = _get(f"https://{lang}.wikipedia.org/w/api.php", {
+            "action": "query", "generator": "search", "gsrsearch": query, "gsrlimit": pages,
+            "prop": "extracts", "exintro": 1, "explaintext": 1, "exlimit": "max", "redirects": 1,
+            "format": "json", "formatversion": 2})
     out = []
-    for page in resp.json().get("query", {}).get("pages", []):
+    pages_found = sorted(resp.json().get("query", {}).get("pages", []), key=lambda p: p.get("index", 0))
+    for page in pages_found:
         title = page.get("title", "")
         url = f"https://{lang}.wikipedia.org/wiki/{title.replace(' ', '_')}"
-        for sent in SENTENCE_END.split(page.get("extract", ""))[:8]:
+        for sent in split_sentences(page.get("extract", ""))[:8]:
             sent = " ".join(sent.split())
             if 30 <= len(sent) <= 600:
                 out.append({"text": sent, "source": f"Wikipedia - {title}", "url": url, "type": "wikipedia"})
@@ -83,7 +102,10 @@ def search_wikipedia(claim: str, language: str, pages: int = 2) -> list[dict]:
     query = keywords(claim)
     if not query:
         return []
-    return [dict(d) for d in _wikipedia(query, "te" if language == "te" else "en", pages)]
+    try:
+        return [dict(d) for d in _wikipedia(query, "te" if language == "te" else "en", pages)]
+    except SearchFailed:
+        return []
 
 
 @lru_cache(maxsize=512)
@@ -91,8 +113,6 @@ def _news(query: str, lang: str, limit: int) -> tuple:
     params = {"q": query, "hl": "te" if lang == "te" else "en-IN", "gl": "IN",
               "ceid": "IN:te" if lang == "te" else "IN:en"}
     resp = _get("https://news.google.com/rss/search", params)
-    if resp is None:
-        return ()
     try:
         root = ET.fromstring(resp.content)
     except ET.ParseError:
@@ -115,7 +135,10 @@ def search_news(claim: str, language: str, limit: int = 10) -> list[dict]:
     query = keywords(claim)
     if not query:
         return []
-    return [dict(d) for d in _news(query, language, limit)]
+    try:
+        return [dict(d) for d in _news(query, language, limit)]
+    except SearchFailed:
+        return []
 
 
 DEBUNK_HEADLINE = re.compile(

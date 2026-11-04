@@ -140,7 +140,10 @@ def search_fact_checks(claim: str, language: str, limit: int = 3) -> list[dict]:
     key = get_settings().google_factcheck_api_key.strip()
     if not key:
         return []
-    return [dict(d) for d in _fact_checks(claim[:300], language, limit, key)]
+    try:
+        return [dict(d) for d in _fact_checks(claim[:300], language, limit, key)]
+    except RuntimeError:
+        return []
 
 
 @lru_cache(maxsize=512)
@@ -154,7 +157,7 @@ def _fact_checks(claim: str, language: str, limit: int, key: str) -> tuple:
         resp.raise_for_status()
     except requests.RequestException as exc:
         logger.warning("Fact Check API request failed: %s", exc)
-        return ()
+        raise RuntimeError("fact check failed") from exc  # not cached, so the next check retries
 
     evidence = []
     for item in resp.json().get("claims", [])[:limit]:
