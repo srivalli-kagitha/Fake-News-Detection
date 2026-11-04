@@ -1,7 +1,10 @@
 """Real vs AI-generated / manipulated image detection + Grad-CAM explanation.
 
-Model: frozen CLIP ViT-L/14 image encoder + a small trained linear head
-(training/train_image_detector.py -> backend/models/image_detector/{config.json, head.pt}).
+Ensemble of two detectors, fake probabilities averaged:
+1. Ours: frozen CLIP ViT-L/14 image encoder + a small trained linear head (CIFAKE)
+   (training/train_image_detector.py -> backend/models/image_detector/{config.json, head.pt}).
+2. A public detector trained on modern generators (MODERN_IMAGE_MODEL, a Swin-V2 classifier).
+Grad-CAM explains our CLIP model.
 """
 import base64
 import io
@@ -39,6 +42,26 @@ class ClipDetector(nn.Module):
         return self.head(emb)
 
 
+class ModernDetector:
+    """A public detector trained on modern generators (SDXL, Midjourney, Flux...), used alongside
+    our CLIP head, which only saw small CIFAKE images. Downloaded from Hugging Face on first use."""
+
+    def __init__(self, name: str):
+        from transformers import AutoImageProcessor, AutoModelForImageClassification
+
+        self.device = get_device()
+        self.processor = AutoImageProcessor.from_pretrained(name)
+        self.model = AutoModelForImageClassification.from_pretrained(name).to(self.device).eval()
+        names = {i: str(n).lower() for i, n in self.model.config.id2label.items()}
+        self.real_index = next((i for i, n in names.items() if n in ("real", "human", "natural")), 1)
+
+    @torch.inference_mode()
+    def fake_probability(self, image: Image.Image) -> float:
+        inputs = self.processor(images=image.convert("RGB"), return_tensors="pt").to(self.device)
+        probs = torch.softmax(self.model(**inputs).logits.float(), dim=-1)[0]
+        return float(1.0 - probs[self.real_index])
+
+
 class ImageDetector:
     def __init__(self, model_dir: str):
         path = resolve_local(model_dir)
@@ -66,6 +89,7 @@ class ImageDetector:
         self.fake_index = next(
             (i for i, n in enumerate(self.labels) if n.lower() in FAKE_NAMES), len(self.labels) - 1
         )
+        self.modern = ModernDetector(get_settings().modern_image_model) if get_settings().modern_image_model else None
 
     # ---------- preprocessing ----------
     def _prepare(self, image: Image.Image) -> tuple[torch.Tensor, np.ndarray]:
@@ -84,13 +108,22 @@ class ImageDetector:
     def _display_label(self, idx: int) -> str:
         return "AI-Generated / Manipulated" if idx == self.fake_index else "Real"
 
-    def _result(self, probs: np.ndarray) -> dict:
-        idx = int(probs.argmax())
+    def _result(self, probs: np.ndarray, image: Image.Image) -> dict:
+        """Ensemble: average the fake probability of our CLIP head and of the modern detector."""
+        ours = float(probs[self.fake_index])
+        detectors = {"clip_cifake": round(ours, 4)}
+        fake = ours
+        if self.modern is not None:
+            modern = self.modern.fake_probability(image)
+            detectors["modern"] = round(modern, 4)
+            fake = (ours + modern) / 2
+        is_fake = fake >= 0.5
         return {
-            "label": self._display_label(idx),
-            "confidence": float(probs[idx]),
-            "probabilities": {self._display_label(i): float(p) for i, p in enumerate(probs)},
-            "fake_probability": float(probs[self.fake_index]),
+            "label": self._display_label(self.fake_index if is_fake else 1 - self.fake_index),
+            "confidence": fake if is_fake else 1.0 - fake,
+            "probabilities": {"AI-Generated / Manipulated": fake, "Real": 1.0 - fake},
+            "fake_probability": fake,
+            "detectors": detectors,
         }
 
     # ---------- prediction ----------
@@ -98,7 +131,7 @@ class ImageDetector:
     def predict(self, image: Image.Image) -> dict:
         tensor, _ = self._prepare(image)
         probs = torch.softmax(self.model(tensor).float(), dim=-1)[0].cpu().numpy()
-        return self._result(probs)
+        return self._result(probs, image)
 
     def predict_with_gradcam(self, image: Image.Image) -> dict:
         from pytorch_grad_cam import GradCAM
@@ -108,8 +141,8 @@ class ImageDetector:
         tensor, rgb = self._prepare(image)
         with torch.no_grad():
             probs = torch.softmax(self.model(tensor).float(), dim=-1)[0].cpu().numpy()
-        result = self._result(probs)
-        target_idx = int(probs.argmax())
+        result = self._result(probs, image)
+        target_idx = self.fake_index if result["fake_probability"] >= 0.5 else 1 - self.fake_index
 
         grid = self.grid
 

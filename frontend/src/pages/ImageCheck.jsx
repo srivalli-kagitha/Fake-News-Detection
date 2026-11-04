@@ -114,6 +114,13 @@ export default function ImageCheck() {
                   leftLabel="Real photo"
                   rightLabel="AI-generated"
                 />
+                {result.detectors?.modern !== undefined && (
+                  <p className="t-small mt-4 text-graphite">
+                    Average of two detectors. Chance it is AI-generated: our CLIP model{" "}
+                    {Math.round(result.detectors.clip_cifake * 100)}%, modern-image detector{" "}
+                    {Math.round(result.detectors.modern * 100)}%.
+                  </p>
+                )}
                 <div className="mt-5 flex justify-end">
                   <ReportActions
                     onReset={() => {

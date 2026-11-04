@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     text_en_model: str = "models/text_en"
     text_te_model: str = "models/text_te"
     image_model: str = "models/image_detector"
+    modern_image_model: str = "haywoodsloan/ai-image-detector-deploy"
 
     nli_en_model: str = "MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli"
     nli_multi_model: str = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
