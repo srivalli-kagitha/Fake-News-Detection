@@ -43,11 +43,14 @@ move the three folders up one level.
 
 ## 3. Run the project (one command)
 
-**Windows:** double-click **`start.bat`**, or in a terminal:
+**Windows:** double-click **`start.bat`**, or in a terminal opened in the project folder:
 
 ```
-start.bat
+.\start.bat
 ```
+
+(PowerShell needs the `.\` in front. If it still says "not recognized", run `dir`: you must be in
+the folder that contains `start.bat`, usually `cd Fake-News-Detection` after `git clone`.)
 
 **Linux / macOS / any OS:**
 
@@ -111,6 +114,7 @@ truthlens-ai/
 │   │       ├── image_detector.py     CLIP ViT-L/14 detector + Grad-CAM
 │   │       ├── claim_extractor.py    spaCy claim extraction
 │   │       ├── evidence.py           BGE-M3 + FAISS retrieval, Google Fact Check API
+│   │       ├── live_sources.py       live Wikipedia and Google News search
 │   │       ├── claim_verifier.py     DeBERTa-v3 / mDeBERTa NLI + aggregation
 │   │       └── language.py           English / Telugu detection
 │   ├── data/evidence/                evidence corpus (*.jsonl)
@@ -135,7 +139,7 @@ truthlens-ai/
 | Text models | DeBERTa-v3-large (English), IndicBERT v2 / mmBERT (Telugu), BERT-base (baseline) |
 | Image model | CLIP ViT-L/14 + linear head |
 | Explainability | LIME (text), Grad-CAM (images) |
-| Claim verification | spaCy, BGE-M3 + FAISS, DeBERTa-v3-large-NLI, mDeBERTa-v3-XNLI, Google Fact Check API (optional) |
+| Claim verification | spaCy, BGE-M3 + FAISS, DeBERTa-v3-large-NLI, mDeBERTa-v3-XNLI, live Wikipedia + Google News search, Google Fact Check API (optional) |
 | Training | PyTorch, HuggingFace Transformers, Google Colab / Kaggle |
 
 ## 7. API endpoints
@@ -153,9 +157,22 @@ truthlens-ai/
 
 Interactive docs: http://127.0.0.1:8000/docs
 
-## 8. Evidence base for claim verification
+## 8. Where the evidence comes from
 
-`backend/data/evidence/sample_corpus.jsonl` holds 40 verified facts for demonstration. Grow it with:
+Each claim is checked against three kinds of evidence, and the most relevant passages
+(at most 5 per claim) go to the NLI model:
+
+1. **Local evidence corpus** - `backend/data/evidence/*.jsonl`, always searched, works offline.
+   `sample_corpus.jsonl` holds 40 verified facts; this is the set used in the report's evaluation.
+2. **Live web search** (needs internet, no key) - Wikipedia (English or Telugu) and Google News
+   headlines, searched for every claim. Switch off with `LIVE_SEARCH=false` in `backend/.env`.
+3. **Published fact-checks** (free key) - Google Fact Check Tools API: PIB, BOOM, Factly,
+   Alt News, AFP and others. When a fact-check reviewed the same claim, its rating
+   (False, Misleading, True...) decides the claim. Get a key at https://console.cloud.google.com
+   (enable "Fact Check Tools API", then Credentials > Create credentials > API key) and set
+   `GOOGLE_FACTCHECK_API_KEY=...` in `backend/.env`. Never commit `.env`.
+
+Restart the app after editing `.env`. To add your own offline evidence:
 
 ```
 cd backend
@@ -165,8 +182,7 @@ python -m scripts.add_wikipedia_evidence --lang te "తెలంగాణ"
 ```
 
 Any `*.jsonl` file in `backend/data/evidence/` is indexed automatically, one
-`{"text": ..., "source": ..., "url": ...}` per line. For live fact-checks, put a free
-Google Fact Check Tools API key in `backend/.env` as `GOOGLE_FACTCHECK_API_KEY`.
+`{"text": ..., "source": ..., "url": ...}` per line.
 
 ## 9. Troubleshooting
 
@@ -176,6 +192,7 @@ Google Fact Check Tools API key in `backend/.env` as `GOOGLE_FACTCHECK_API_KEY`.
 | `Port 8000/5173 is already in use` | Close the other TruthLens window, or restart the computer |
 | Package installation fails | Use Python 3.12 (not 3.13+), check your internet connection, run `start.bat` again |
 | "model not trained yet" | Train the model (section 3) and copy it to `backend/models/` |
-| First claim check is very slow | It is downloading models (one time only). Later checks take seconds |
+| First claim check is very slow | It is downloading models (one time only). On a CPU each claim then takes about 10-15 s |
+| `'CLIPConfig' object has no attribute 'hidden_size'` | Fixed in the latest code: run `git pull`, then restart |
 | Need a clean reinstall | Delete `backend/.venv` and `frontend/node_modules`, then run `start.bat` again |
 | Have an NVIDIA GPU and want to use it | After setup: `backend\.venv\Scripts\pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --force-reinstall` |

@@ -78,7 +78,14 @@ function Evidence({ e }) {
           e.source
         )}
         {e.similarity !== null && e.similarity !== undefined && <>, {pct(e.similarity)} relevant</>}
+        {e.type === "wikipedia" || e.type === "news" ? <>, found online</> : null}
       </p>
+      {e.decided_by === "fact_check_rating" && (
+        <p className="t-small mt-1 text-graphite">Decided by the fact-checker's rating: {e.rating}</p>
+      )}
+      {e.decided_by === "debunking_headline" && (
+        <p className="t-small mt-1 text-graphite">Decided by this headline, which calls the claim false</p>
+      )}
       {e.nli && <NliBar nli={e.nli} />}
     </li>
   );

@@ -11,7 +11,7 @@ import numpy as np
 import torch
 from PIL import Image
 from torch import nn
-from transformers import CLIPImageProcessor, CLIPVisionModelWithProjection
+from transformers import AutoConfig, CLIPImageProcessor, CLIPVisionModelWithProjection
 
 from ..config import get_settings, resolve_local
 from .common import Lazy, ModelNotReadyError, get_device
@@ -24,7 +24,13 @@ class ClipDetector(nn.Module):
 
     def __init__(self, clip_name: str, num_labels: int):
         super().__init__()
-        self.clip = CLIPVisionModelWithProjection.from_pretrained(clip_name)
+        # Build the vision config ourselves: some transformers installs pass the full CLIPConfig
+        # to the vision model, which then fails with "'CLIPConfig' object has no attribute 'hidden_size'".
+        full = AutoConfig.from_pretrained(clip_name)
+        vision = getattr(full, "vision_config", full)
+        if hasattr(full, "projection_dim"):
+            vision.projection_dim = full.projection_dim
+        self.clip = CLIPVisionModelWithProjection.from_pretrained(clip_name, config=vision)
         self.head = nn.Linear(self.clip.config.projection_dim, num_labels)
 
     def forward(self, pixel_values: torch.Tensor) -> torch.Tensor:

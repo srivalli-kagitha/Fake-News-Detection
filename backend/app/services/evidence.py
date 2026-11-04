@@ -3,9 +3,12 @@
 1. Local evidence corpus (backend/data/evidence/*.jsonl) indexed with BGE-M3 embeddings + FAISS.
    Each line: {"text": "...", "source": "...", "url": "..."}
 2. Optional: Google Fact Check Tools API (free key, set GOOGLE_FACTCHECK_API_KEY in .env).
+3. Live Wikipedia and news search, in live_sources.py (no key).
 """
 import hashlib
 import json
+import re
+from functools import lru_cache
 from pathlib import Path
 
 import faiss
@@ -116,20 +119,42 @@ class EvidenceRetriever:
         return results
 
 
-def search_fact_checks(claim: str, language: str, limit: int = 2) -> list[dict]:
+FALSE_RATING = re.compile(
+    r"\b(false|fake|hoax|misleading|incorrect|wrong|not true|untrue|baseless|fabricated|manipulated|"
+    r"doctored|altered|edited|scam|satire|distorted|no evidence|unproven|unsupported|debunked|"
+    r"pants on fire|misinformation|disinformation|rumou?r|myth|exaggerated|out of context|"
+    r"అబద్ధం|తప్పు|నకిలీ|ఫేక్|తప్పుదోవ)", re.I)
+TRUE_RATING = re.compile(r"^\s*(true|correct|accurate|mostly true|real|నిజం)\b", re.I)
+
+
+def rating_polarity(rating: str) -> str | None:
+    """'false' or 'true' for a clear fact-checker rating, None when it is unclear."""
+    if FALSE_RATING.search(rating or ""):
+        return "false"
+    if TRUE_RATING.search(rating or ""):
+        return "true"
+    return None
+
+
+def search_fact_checks(claim: str, language: str, limit: int = 3) -> list[dict]:
     key = get_settings().google_factcheck_api_key.strip()
     if not key:
         return []
+    return [dict(d) for d in _fact_checks(claim[:300], language, limit, key)]
+
+
+@lru_cache(maxsize=512)
+def _fact_checks(claim: str, language: str, limit: int, key: str) -> tuple:
     try:
         resp = requests.get(
             "https://factchecktools.googleapis.com/v1alpha1/claims:search",
-            params={"query": claim[:300], "key": key, "languageCode": language, "pageSize": limit},
+            params={"query": claim, "key": key, "languageCode": language, "pageSize": limit},
             timeout=8,
         )
         resp.raise_for_status()
     except requests.RequestException as exc:
         logger.warning("Fact Check API request failed: %s", exc)
-        return []
+        return ()
 
     evidence = []
     for item in resp.json().get("claims", [])[:limit]:
@@ -144,9 +169,10 @@ def search_fact_checks(claim: str, language: str, limit: int = 2) -> list[dict]:
                     "similarity": None,
                     "type": "fact_check",
                     "rating": rating,
+                    "claim_reviewed": item.get("text", ""),
                 }
             )
-    return evidence
+    return tuple(evidence)
 
 
 _retriever = Lazy("Evidence retriever", EvidenceRetriever)
@@ -164,4 +190,5 @@ def evidence_status() -> dict:
         "loaded": _retriever.loaded,
         "passages": len(_retriever.get().docs) if _retriever.loaded else None,
         "fact_check_api": bool(settings.google_factcheck_api_key.strip()),
+        "live_search": settings.live_search,
     }

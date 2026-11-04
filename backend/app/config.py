@@ -29,6 +29,8 @@ class Settings(BaseSettings):
 
     evidence_dir: str = "data/evidence"
     google_factcheck_api_key: str = ""
+    live_search: bool = True
+    live_top_k: int = 2
 
     max_text_length: int = 256
     lime_num_samples: int = 200

@@ -1,17 +1,23 @@
 """Contradiction-aware, claim-level evidence verification.
 
-article -> claims -> evidence (FAISS + fact-check API) -> NLI(evidence, claim)
-        -> Support / Contradiction / Unknown per claim -> overall assessment
+article -> claims -> evidence (local FAISS corpus + live Wikipedia/news + fact-check API)
+        -> NLI(evidence, claim) -> Support / Contradiction / Unknown per claim -> overall assessment
 """
+from concurrent.futures import ThreadPoolExecutor
+
+import numpy as np
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from ..config import get_settings
 from .claim_extractor import extract_claims
 from .common import Lazy, get_device
-from .evidence import get_retriever, search_fact_checks
+from .evidence import get_retriever, rating_polarity, search_fact_checks
+from .live_sources import DEBUNK_HEADLINE, search_news, search_wikipedia
 
 DECISION_THRESHOLD = 0.5
+MAX_EVIDENCE = 5          # passages per claim sent to NLI (NLI is the slow step on a CPU)
+SAME_CLAIM_SIMILARITY = 0.65  # a fact-check or headline must be this close to be about the same claim
 
 
 class NLIModel:
@@ -95,21 +101,88 @@ def aggregate(claims: list[dict]) -> dict:
     }
 
 
+def _gather_live(claims: list[str], language: str, settings) -> list[dict]:
+    """Runs all network searches for all claims in parallel. Returns {source: [items]} per claim."""
+    jobs = {"fact_check": search_fact_checks}
+    if settings.live_search:
+        jobs.update(wikipedia=search_wikipedia, news=search_news)
+    with ThreadPoolExecutor(max_workers=12) as pool:
+        futures = [{name: pool.submit(fn, c, language) for name, fn in jobs.items()} for c in claims]
+        return [{name: f.result() for name, f in per_claim.items()} for per_claim in futures]
+
+
+def _rank_live(retriever, claim_vec: np.ndarray, live: dict, settings, seen: set[str]) -> list[dict]:
+    """Keeps the live items most similar to the claim (top LIVE_TOP_K per source, above the threshold)."""
+    picked = []
+    for name, items in live.items():
+        items = [i for i in items if i["text"] not in seen]
+        if not items:
+            continue
+        keys = [i.get("claim_reviewed") or i["text"] for i in items]
+        sims = retriever.encode(keys) @ claim_vec
+        top = settings.live_top_k if name != "fact_check" else 2
+        for i, sim in sorted(zip(items, sims), key=lambda x: -x[1])[:top]:
+            if sim >= settings.evidence_min_similarity:
+                i["similarity"] = float(sim)
+                seen.add(i["text"])
+                picked.append(i)
+    return picked
+
+
+def _apply_ratings(nli, claim: str, evidence: list[dict]) -> None:
+    """Published fact-checks and debunking headlines decide a claim they are clearly about.
+
+    The NLI model cannot read 'X fact-checked "..." and rated it: False', or a headline like
+    '... ? Don't fall for this scam', as a contradiction. So for a fact-check we ask NLI whether
+    the user's claim and the reviewed claim say the same thing: same claim + rated false ->
+    Contradiction, opposite claim + rated false -> Support. A news headline that is very close
+    to the claim and calls it fake, false, a hoax or a scam counts as a contradiction.
+    """
+    checks = [e for e in evidence if e.get("type") == "fact_check" and rating_polarity(e.get("rating", ""))
+              and e["similarity"] >= SAME_CLAIM_SIMILARITY]
+    if checks:
+        pairs = nli.predict([e["claim_reviewed"] for e in checks], [claim] * len(checks))
+        for e, p in zip(checks, pairs):
+            rated_false = rating_polarity(e["rating"]) == "false"
+            if p["entailment"] >= DECISION_THRESHOLD or (e["similarity"] >= 0.8 and p["contradiction"] < DECISION_THRESHOLD):
+                conf, agrees = max(p["entailment"], e["similarity"]), not rated_false
+            elif p["contradiction"] >= DECISION_THRESHOLD:
+                conf, agrees = p["contradiction"], rated_false
+            else:
+                continue
+            e["nli"] = {"entailment": conf if agrees else 0.0, "neutral": 1.0 - conf,
+                        "contradiction": 0.0 if agrees else conf}
+            e["decided_by"] = "fact_check_rating"
+
+    if DEBUNK_HEADLINE.search(claim):
+        return
+    for e in evidence:
+        if (e.get("type") == "news" and e["similarity"] >= SAME_CLAIM_SIMILARITY + 0.05
+                and DEBUNK_HEADLINE.search(e["text"]) and e["nli"]["entailment"] < DECISION_THRESHOLD):
+            conf = max(e["nli"]["contradiction"], min(e["similarity"], 0.9))
+            e["nli"] = {"entailment": 0.0, "neutral": 1.0 - conf, "contradiction": conf}
+            e["decided_by"] = "debunking_headline"
+
+
 def verify_text(text: str, language: str) -> dict:
     settings = get_settings()
     claims = extract_claims(text, language)
     retriever = get_retriever()
     corpus_hits = retriever.search(claims, settings.evidence_top_k)
+    live_results = _gather_live(claims, language, settings) if claims else []
+    claim_vecs = retriever.encode(claims) if claims else []
     nli = get_nli(language)
 
     results = []
-    for claim, hits in zip(claims, corpus_hits):
+    for claim, hits, live, vec in zip(claims, corpus_hits, live_results, claim_vecs):
         evidence = [h for h in hits if h["similarity"] >= settings.evidence_min_similarity]
-        evidence += search_fact_checks(claim, language)
+        evidence += _rank_live(retriever, vec, live, settings, {e["text"] for e in evidence})
+        evidence = sorted(evidence, key=lambda e: -e["similarity"])[:MAX_EVIDENCE]
         if evidence:
             scores = nli.predict([e["text"] for e in evidence], [claim] * len(evidence))
             for e, s in zip(evidence, scores):
                 e["nli"] = s
+            _apply_ratings(nli, claim, evidence)
             evidence.sort(key=lambda e: max(e["nli"]["entailment"], e["nli"]["contradiction"]), reverse=True)
         label, confidence = _decide(evidence)
         results.append({"claim": claim, "label": label, "confidence": round(confidence, 4), "evidence": evidence})
