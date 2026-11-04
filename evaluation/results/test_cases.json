@@ -1,0 +1,232 @@
+[
+ {
+  "id": "TC01",
+  "module": "System",
+  "description": "Health check reports model status",
+  "input": "GET /api/health",
+  "expected": "HTTP 200 with status of every model",
+  "actual": "HTTP 200; models reported: text_en, text_te, image, nli_en, nli_multi, embeddings",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC02",
+  "module": "Validation",
+  "description": "Reject text shorter than 10 characters",
+  "input": "\"hello\"",
+  "expected": "HTTP 422, request rejected",
+  "actual": "HTTP 422",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC03",
+  "module": "Validation",
+  "description": "Reject text longer than 20,000 characters",
+  "input": "20,500 characters",
+  "expected": "HTTP 422, request rejected",
+  "actual": "HTTP 422",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC04",
+  "module": "Text check",
+  "description": "English rumour is flagged fake",
+  "input": "5G towers spread coronavirus (sample)",
+  "expected": "language en; overall verdict Fake",
+  "actual": "language=en, classifier=Fake (100.0%), overall=Fake (risk 0.87)",
+  "status": "Pass",
+  "seconds": 13.7
+ },
+ {
+  "id": "TC05",
+  "module": "Text check",
+  "description": "English news report is judged real",
+  "input": "Chandrayaan-3 landing report (sample)",
+  "expected": "language en; overall verdict Real",
+  "actual": "language=en, classifier=Real (100.0%), overall=Real (risk 0.00)",
+  "status": "Pass",
+  "seconds": 17.9
+ },
+ {
+  "id": "TC06",
+  "module": "Text check",
+  "description": "Telugu text is detected and classified",
+  "input": "Telugu sample (Telangana, 5G rumour)",
+  "expected": "language te; Telugu model gives a verdict",
+  "actual": "language=te, classifier=Fake (95.0%), claims={'Support': 2, 'Contradiction': 1, 'Unknown': 0}",
+  "status": "Pass",
+  "seconds": 10.4
+ },
+ {
+  "id": "TC07",
+  "module": "Text check",
+  "description": "Claim checking can be switched off",
+  "input": "verify_claims=false",
+  "expected": "verdict only, no claim results",
+  "actual": "language=en, verification=skipped",
+  "status": "Pass",
+  "seconds": 4.7
+ },
+ {
+  "id": "TC08",
+  "module": "Explanation",
+  "description": "LIME returns word weights",
+  "input": "5G rumour sample",
+  "expected": "a weight for each word, top words listed",
+  "actual": "63 tokens weighted; top words: deleted!, Share, across, The, the",
+  "status": "Pass",
+  "seconds": 74.8
+ },
+ {
+  "id": "TC09",
+  "module": "Claim check",
+  "description": "Four claims labelled against evidence",
+  "input": "Chandrayaan, GPS chip, UNESCO anthem, Hyderabad",
+  "expected": "Support, Contradiction, Contradiction, Support",
+  "actual": "labels=['Support', 'Contradiction', 'Contradiction', 'Support']; summary=Mixed Evidence",
+  "status": "Pass",
+  "seconds": 22.5
+ },
+ {
+  "id": "TC10",
+  "module": "Claim check",
+  "description": "Claim with no evidence is Unknown",
+  "input": "Polavaram claim (not in corpus)",
+  "expected": "Unknown; article Unverified",
+  "actual": "labels=['Unknown']; summary=Unverified",
+  "status": "Pass",
+  "seconds": 1.3
+ },
+ {
+  "id": "TC11",
+  "module": "Claim check",
+  "description": "Telugu claim matched with English evidence",
+  "input": "హైదరాబాద్ తెలంగాణ రాష్ట్ర రాజధాని.",
+  "expected": "Support, using the English Hyderabad passage",
+  "actual": "label=Support (98%); evidence: Hyderabad is the capital of the Indian state of Telangana.",
+  "status": "Pass",
+  "seconds": 3.6
+ },
+ {
+  "id": "TC12",
+  "module": "Image check",
+  "description": "Real photograph is judged real",
+  "input": "CIFAKE real image",
+  "expected": "Real, with Grad-CAM heatmap",
+  "actual": "label=AI-Generated / Manipulated (97.7%); heatmap=yes",
+  "status": "Fail",
+  "seconds": 11.3
+ },
+ {
+  "id": "TC13",
+  "module": "Image check",
+  "description": "Generated image is judged AI-generated",
+  "input": "CIFAKE generated image",
+  "expected": "AI-Generated / Manipulated, with Grad-CAM heatmap",
+  "actual": "label=AI-Generated / Manipulated (94.5%); heatmap=yes",
+  "status": "Pass",
+  "seconds": 10.4
+ },
+ {
+  "id": "TC14",
+  "module": "Image check",
+  "description": "Non-image file is rejected",
+  "input": "text file renamed .png",
+  "expected": "HTTP 400 with a message",
+  "actual": "HTTP 400: notes.png is not a valid image file.",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC15",
+  "module": "Image check",
+  "description": "Image over 15 MB is rejected",
+  "input": "16 MB file",
+  "expected": "HTTP 413 with a message",
+  "actual": "HTTP 413: big.jpg is larger than 15 MB.",
+  "status": "Pass",
+  "seconds": 0.9
+ },
+ {
+  "id": "TC16",
+  "module": "Batch",
+  "description": "CSV of three texts is checked",
+  "input": "CSV with text column, 3 rows",
+  "expected": "3 results with labels and a job id",
+  "actual": "3 rows; labels=['Fake', 'Real', 'Fake']; counts={'Fake': 2, 'Real': 1}",
+  "status": "Pass",
+  "seconds": 6.4
+ },
+ {
+  "id": "TC17",
+  "module": "Batch",
+  "description": "CSV without a text column is rejected",
+  "input": "CSV with column 'body'",
+  "expected": "HTTP 400 naming accepted columns",
+  "actual": "HTTP 400: CSV needs a column named one of: text, news, content, article, title, headline.",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC18",
+  "module": "Batch",
+  "description": "ZIP of four images is checked",
+  "input": "ZIP: 2 real, 2 generated",
+  "expected": "4 results with labels",
+  "actual": "4 images; labels=['Real', 'Real', 'AI-Generated / Manipulated', 'AI-Generated / Manipulated']",
+  "status": "Pass",
+  "seconds": 10.5
+ },
+ {
+  "id": "TC19",
+  "module": "Batch",
+  "description": "Batch results download as CSV",
+  "input": "job id from TC16",
+  "expected": "CSV file with header and 3 rows",
+  "actual": "HTTP 200; 4 lines; header: ﻿row,text,language,prediction,confidence,fake_probability",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC20",
+  "module": "Batch",
+  "description": "Invalid job id is refused",
+  "input": "job id '../etc'",
+  "expected": "HTTP 400 or 404, no file served",
+  "actual": "HTTP 404",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC21",
+  "module": "History",
+  "description": "Checks are saved in history",
+  "input": "GET /api/history",
+  "expected": "records of the checks above",
+  "actual": "40 records; kinds=['batch_image', 'batch_text', 'claims', 'image', 'text']",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC22",
+  "module": "History",
+  "description": "History filter by type",
+  "input": "kind=image",
+  "expected": "only image checks returned",
+  "actual": "16 records, all kind=image: True",
+  "status": "Pass",
+  "seconds": 0.0
+ },
+ {
+  "id": "TC23",
+  "module": "History",
+  "description": "Deleting a missing record",
+  "input": "DELETE /api/history/99999999",
+  "expected": "HTTP 404 Record not found",
+  "actual": "HTTP 404: Record not found.",
+  "status": "Pass",
+  "seconds": 0.0
+ }
+]

@@ -1,0 +1,41 @@
+claim,language,label,pred,baseline,top_evidence
+India became independent from Britain in August 1947.,en,Support,Support,Support,India gained independence from British rule on 15 August 1947.
+India gained independence from British rule in 1950.,en,Contradiction,Contradiction,Support,India gained independence from British rule on 15 August 1947.
+Hyderabad is the capital city of Telangana.,en,Support,Support,Support,Hyderabad is the capital of the Indian state of Telangana.
+Telangana became a separate state in June 2014.,en,Support,Support,Support,"Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh."
+Telangana was formed as a new state in 2004.,en,Contradiction,Contradiction,Support,"Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh."
+The Godavari is the longest river in India.,en,Contradiction,Contradiction,Support,The Godavari is the second longest river in India after the Ganga.
+Chandrayaan-3 landed near the Moon's south pole in August 2023.,en,Support,Support,Support,"India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole."
+Chandrayaan-3 failed to land on the Moon.,en,Contradiction,Contradiction,Support,"India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole."
+India reached Mars orbit on its very first attempt.,en,Support,Support,Support,ISRO's Mars Orbiter Mission (Mangalyaan) entered orbit around Mars on 24 September 2014; India was the first country to reach Mars orbit on its first attempt.
+ISRO has its headquarters in Mumbai.,en,Contradiction,Contradiction,Support,The Indian Space Research Organisation (ISRO) is headquartered in Bengaluru.
+The new 2000 rupee notes contain a GPS tracking chip.,en,Contradiction,Contradiction,Support,Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.
+The RBI announced the withdrawal of 2000 rupee notes in May 2023.,en,Support,Support,Support,"In May 2023 the Reserve Bank of India announced the withdrawal of 2000 rupee notes from circulation, but they continued to remain legal tender."
+UNESCO declared Jana Gana Mana the best national anthem in the world.,en,Contradiction,Contradiction,Support,UNESCO has never declared India's national anthem Jana Gana Mana as the best national anthem in the world; the message is a hoax.
+5G mobile towers spread the coronavirus.,en,Contradiction,Contradiction,Support,5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.
+COVID-19 is caused by the SARS-CoV-2 virus.,en,Support,Support,Support,COVID-19 is caused by the SARS-CoV-2 coronavirus.
+Drinking hot water cures COVID-19.,en,Contradiction,Contradiction,Support,"Eating garlic or drinking hot water does not prevent or cure COVID-19, according to the World Health Organization."
+Vaccines cause autism in children.,en,Contradiction,Contradiction,Support,Scientific studies have found no link between vaccines and autism.
+Antibiotics can cure the common cold.,en,Contradiction,Contradiction,Support,Antibiotics do not work against viral infections such as the common cold or influenza.
+Humans only use 10 percent of their brains.,en,Contradiction,Contradiction,Support,Humans use virtually all of their brain; the claim that people use only 10 percent of the brain is a myth.
+The Great Wall of China can be seen from the Moon with the naked eye.,en,Contradiction,Contradiction,Support,The Great Wall of China is not visible to the naked eye from the Moon.
+Mount Everest is the highest mountain on Earth.,en,Support,Support,Support,"Mount Everest is the highest mountain on Earth above sea level, with an official height of 8,848.86 metres."
+Water boils at 100 degrees Celsius at sea level.,en,Support,Support,Support,"At sea level, pure water boils at 100 degrees Celsius."
+Mahatma Gandhi was assassinated in January 1948.,en,Support,Support,Support,Mahatma Gandhi was assassinated on 30 January 1948 in New Delhi.
+The Taj Mahal was built by Shah Jahan in memory of Mumtaz Mahal.,en,Support,Support,Support,The Taj Mahal in Agra was commissioned by the Mughal emperor Shah Jahan in memory of his wife Mumtaz Mahal.
+The Statue of Unity is the tallest statue in the world.,en,Support,Support,Support,"The Statue of Unity in Gujarat, depicting Sardar Vallabhbhai Patel, is 182 metres tall and is the tallest statue in the world."
+India's cricket team won the 2011 World Cup final in Mumbai.,en,Unknown,Unknown,Support,New Delhi is the capital of India.
+The Hyderabad metro will be extended to Warangal next year.,en,Unknown,Unknown,Support,Hyderabad is the capital of the Indian state of Telangana.
+A new airport will open in Kurnool in 2027.,en,Unknown,Unknown,Unknown,
+The state government announced free laptops for all degree students.,en,Unknown,Unknown,Unknown,
+Tomato prices in Vijayawada doubled last week.,en,Unknown,Unknown,Unknown,
+హైదరాబాద్ తెలంగాణ రాజధాని.,te,Support,Support,Support,Hyderabad is the capital of the Indian state of Telangana.
+తెలంగాణ 2 జూన్ 2014న ప్రత్యేక రాష్ట్రంగా ఏర్పడింది.,te,Support,Support,Support,"Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh."
+చంద్రయాన్-3 ఆగస్టు 2023లో చంద్రుని దక్షిణ ధ్రువం సమీపంలో దిగింది.,te,Support,Support,Support,"India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole."
+భారతదేశం 1947 ఆగస్టు 15న స్వాతంత్ర్యం పొందింది.,te,Support,Support,Support,India gained independence from British rule on 15 August 1947.
+2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.,te,Contradiction,Contradiction,Support,Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.
+5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.,te,Contradiction,Contradiction,Support,5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.
+వ్యాక్సిన్లు పిల్లలలో ఆటిజంకు కారణమవుతాయి.,te,Contradiction,Contradiction,Support,Scientific studies have found no link between vaccines and autism.
+గోదావరి భారతదేశంలో అతి పొడవైన నది.,te,Contradiction,Contradiction,Support,The Godavari is the second longest river in India after the Ganga.
+విజయవాడలో వచ్చే నెల కొత్త క్రికెట్ స్టేడియం ప్రారంభమవుతుంది.,te,Unknown,Unknown,Unknown,
+కర్నూలులో టమాటా ధరలు గత వారం రెట్టింపు అయ్యాయి.,te,Unknown,Unknown,Unknown,

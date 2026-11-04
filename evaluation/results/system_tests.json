@@ -1,0 +1,114 @@
+[
+ {
+  "id": "ST01",
+  "scenario": "Start page sends text to the text check",
+  "expected": "Text page opens and the check starts",
+  "actual": "opened /text, verdict shown after 31 s",
+  "status": "Pass",
+  "seconds": 31.1
+ },
+ {
+  "id": "ST02",
+  "scenario": "Verdict shown before highlights",
+  "expected": "Verdict first, highlights added later with a progress note",
+  "actual": "verdict on screen while highlights pending: True; 15 words marked 74 s later",
+  "status": "Pass",
+  "seconds": 74.5
+ },
+ {
+  "id": "ST03",
+  "scenario": "Hovering a claim highlights it in the article",
+  "expected": "Matching sentence lit up",
+  "actual": "hovering claim 2 lit up 27 words of that sentence in the article",
+  "status": "Pass",
+  "seconds": 0.7
+ },
+ {
+  "id": "ST04",
+  "scenario": "Results kept when moving between pages",
+  "expected": "Report still shown on return",
+  "actual": "after moving to the image page and back with the rail, report and input still shown: True",
+  "status": "Pass",
+  "seconds": 2.1
+ },
+ {
+  "id": "ST05",
+  "scenario": "Dark theme is remembered",
+  "expected": "Dark theme kept after reload",
+  "actual": "data-theme after reload = dark",
+  "status": "Pass",
+  "seconds": 1.3
+ },
+ {
+  "id": "ST06",
+  "scenario": "Save as PDF uses a print layout",
+  "expected": "Navigation hidden when printing",
+  "actual": "navigation rail visible in print layout: False",
+  "status": "Pass",
+  "seconds": 0.1
+ },
+ {
+  "id": "ST07",
+  "scenario": "Telugu article checked end to end",
+  "expected": "Telugu detected; verdict, highlights and claims shown",
+  "actual": "Telugu report shown with 14 marked words",
+  "status": "Pass",
+  "seconds": 27.4
+ },
+ {
+  "id": "ST08",
+  "scenario": "Image report with heatmap slider",
+  "expected": "Slider wipes between image and heatmap",
+  "actual": "slider moved, heatmap style: clip-path: inset(0px 0px 0px 35%);",
+  "status": "Pass",
+  "seconds": 13.2
+ },
+ {
+  "id": "ST09",
+  "scenario": "Start page sends an image to the image check",
+  "expected": "Image page opens and checks the image",
+  "actual": "image page opened and checked the dropped image",
+  "status": "Pass",
+  "seconds": 6.5
+ },
+ {
+  "id": "ST10",
+  "scenario": "Verify claims page",
+  "expected": "Each claim listed with status and evidence",
+  "actual": "14 claims listed",
+  "status": "Pass",
+  "seconds": 8.2
+ },
+ {
+  "id": "ST11",
+  "scenario": "Batch CSV check and download",
+  "expected": "Result CSV with one row per input",
+  "actual": "downloaded truthlens_text_a89604b3ee.csv with 3 rows",
+  "status": "Pass",
+  "seconds": 8.9
+ },
+ {
+  "id": "ST12",
+  "scenario": "History filter",
+  "expected": "Only image checks shown",
+  "actual": "19 rows shown after filtering by Images",
+  "status": "Pass",
+  "seconds": 3.0
+ },
+ {
+  "id": "ST13",
+  "scenario": "Phone layout",
+  "expected": "No horizontal scrolling at 375 px",
+  "actual": "page width 375 px at a 375 px screen",
+  "status": "Pass",
+  "seconds": 2.5
+ },
+ {
+  "id": "ST14",
+  "scenario": "Keyboard-only use",
+  "expected": "Text box and Check button reachable with Tab",
+  "actual": "24 controls reached with Tab, including the text box and the Check button: True",
+  "status": "Pass",
+  "seconds": 0.2
+ }
+]

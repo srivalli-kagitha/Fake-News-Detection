@@ -1,0 +1,130 @@
+[
+ {
+  "id": "UT01",
+  "function": "detect_language",
+  "input": "Hyderabad is the capital of Telangana.",
+  "expected": "en",
+  "actual": "en",
+  "status": "Pass"
+ },
+ {
+  "id": "UT02",
+  "function": "detect_language",
+  "input": "హైదరాబాద్ తెలంగాణ రాజధాని.",
+  "expected": "te",
+  "actual": "te",
+  "status": "Pass"
+ },
+ {
+  "id": "UT03",
+  "function": "detect_language",
+  "input": "5జీ టవర్లు 2020 నుంచి ఉన్నాయి (Telugu with digits and 5G)",
+  "expected": "te",
+  "actual": "te",
+  "status": "Pass"
+ },
+ {
+  "id": "UT04",
+  "function": "extract_claims",
+  "input": "Article with a question and a call to action",
+  "expected": "False",
+  "actual": "False",
+  "status": "Pass"
+ },
+ {
+  "id": "UT05",
+  "function": "extract_claims",
+  "input": "Same article",
+  "expected": "False",
+  "actual": "False",
+  "status": "Pass"
+ },
+ {
+  "id": "UT06",
+  "function": "extract_claims",
+  "input": "Same article (3 factual sentences)",
+  "expected": "3",
+  "actual": "3",
+  "status": "Pass"
+ },
+ {
+  "id": "UT07",
+  "function": "extract_claims",
+  "input": "Single headline with no factual cues",
+  "expected": "1",
+  "actual": "1",
+  "status": "Pass"
+ },
+ {
+  "id": "UT08",
+  "function": "_decide",
+  "input": "entailment 0.9, contradiction 0.05",
+  "expected": "('Support', 0.9)",
+  "actual": "('Support', 0.9)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT09",
+  "function": "_decide",
+  "input": "entailment 0.6, contradiction 0.7",
+  "expected": "('Contradiction', 0.7)",
+  "actual": "('Contradiction', 0.7)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT10",
+  "function": "_decide",
+  "input": "entailment 0.3, contradiction 0.2",
+  "expected": "('Unknown', 0.7)",
+  "actual": "('Unknown', 0.7)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT11",
+  "function": "_decide",
+  "input": "no evidence",
+  "expected": "('Unknown', 0.0)",
+  "actual": "('Unknown', 0.0)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT12",
+  "function": "aggregate",
+  "input": "Support 0.9 + Contradiction 0.8",
+  "expected": "('Mixed Evidence', 0.525)",
+  "actual": "('Mixed Evidence', 0.525)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT13",
+  "function": "aggregate",
+  "input": "Contradiction 0.95 + Unknown",
+  "expected": "('Likely Misleading', 0.2625)",
+  "actual": "('Likely Misleading', 0.2625)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT14",
+  "function": "aggregate",
+  "input": "only Unknown claims",
+  "expected": "Unverified",
+  "actual": "Unverified",
+  "status": "Pass"
+ },
+ {
+  "id": "UT15",
+  "function": "combine",
+  "input": "fake probability 0.8, credibility 0.4",
+  "expected": "('Fake', 0.7)",
+  "actual": "('Fake', 0.7)",
+  "status": "Pass"
+ },
+ {
+  "id": "UT16",
+  "function": "combine",
+  "input": "fake probability 0.3, claims Unverified",
+  "expected": "('Real', 0.3, ['classifier'])",
+  "actual": "('Real', 0.3, ['classifier'])",
+  "status": "Pass"
+ }
+]

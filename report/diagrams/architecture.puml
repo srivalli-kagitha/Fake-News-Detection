@@ -1,0 +1,60 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+actor User
+package "Frontend (React + Vite, port 5173)" {
+  rectangle "Start / Text / Image /\nClaims / Batch / History pages" as UI
+}
+package "Backend (FastAPI, port 8000)" {
+  rectangle "REST routers\n/text /image /claims\n/batch /history /health" as API
+  package "Text pipeline" {
+    rectangle "Language detection" as LD
+    rectangle "DeBERTa-v3-large (EN)\nIndicBERT v2 (TE)" as CLS
+    rectangle "LIME explainer" as LIME
+  }
+  package "Claim verification" {
+    rectangle "Claim extractor\n(spaCy + scoring)" as CE
+    rectangle "Evidence retriever\n(BGE-M3 + FAISS,\nFact Check API)" as RET
+    rectangle "NLI verifier\n(DeBERTa / mDeBERTa)" as NLI
+    rectangle "Aggregation + fusion" as AGG
+  }
+  package "Image pipeline" {
+    rectangle "CLIP ViT-L/14\n+ linear head" as CLIP
+    rectangle "Grad-CAM" as CAM
+  }
+  database "SQLite\n(history)" as DB
+  database "Evidence corpus\n(JSONL + FAISS index)" as EV
+}
+User --> UI
+UI --> API : JSON / multipart
+API --> LD
+LD --> CLS
+CLS --> LIME
+LD --> CE
+CE --> RET
+RET --> EV
+RET --> NLI
+NLI --> AGG
+API --> CLIP
+CLIP --> CAM
+API --> DB
+@enduml

@@ -1,0 +1,12 @@
+# Training dependencies (Google Colab / Kaggle already have torch installed)
+transformers>=4.48,<5.0
+huggingface-hub>=0.34,<1.0
+datasets>=2.19
+accelerate>=0.30
+sentencepiece>=0.2.0
+protobuf>=4.25
+scikit-learn>=1.4
+pandas>=2.1
+matplotlib>=3.8
+pillow>=10.0
+tqdm>=4.66

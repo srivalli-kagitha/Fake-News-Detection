@@ -1,0 +1,43 @@
+{
+  "title": "TruthLens AI: An Explainable Multilingual Multimodal System for Fake News and AI-Generated Image Detection",
+  "batch": "B03",
+  "students": [
+    {"name": "K. Srivalli", "roll": "23481A1299"},
+    {"name": "I. Bhargavi", "roll": "23481A1289"},
+    {"name": "I. Teja Sai", "roll": "23481A1288"},
+    {"name": "K. Lakshmi", "roll": "23481A12A3"}
+  ],
+  "guide": {"name": "Sri Y. K. Viswanadham, M.Tech., Ph.D.", "designation": "Associate Professor, Dept. of IT"},
+  "hod": {"name": "", "designation": "Professor & Head, Dept. of IT"},
+  "college": "Seshadri Rao Gudlavalleru Engineering College",
+  "collegeNote": "(An Autonomous Institute with Permanent Affiliation to JNTUK, Kakinada)",
+  "address": "Seshadri Rao Knowledge Village, Gudlavalleru – 521356, Andhra Pradesh",
+  "year": "2026 – 2027",
+  "abbreviations": [
+    ["AI", "Artificial Intelligence"],
+    ["API", "Application Programming Interface"],
+    ["AUC", "Area Under the (ROC) Curve"],
+    ["BERT", "Bidirectional Encoder Representations from Transformers"],
+    ["BGE-M3", "BAAI General Embedding, Multi-lingual, Multi-functionality, Multi-granularity"],
+    ["CLIP", "Contrastive Language-Image Pre-training"],
+    ["CPU / GPU", "Central / Graphics Processing Unit"],
+    ["CSV", "Comma-Separated Values"],
+    ["DeBERTa", "Decoding-enhanced BERT with disentangled Attention"],
+    ["DFD", "Data Flow Diagram"],
+    ["FAISS", "Facebook AI Similarity Search"],
+    ["FEVER", "Fact Extraction and VERification (dataset)"],
+    ["Grad-CAM", "Gradient-weighted Class Activation Mapping"],
+    ["LIME", "Local Interpretable Model-agnostic Explanations"],
+    ["LR", "Logistic Regression / Learning Rate"],
+    ["NLI", "Natural Language Inference"],
+    ["NLLB", "No Language Left Behind (translation model)"],
+    ["NLP", "Natural Language Processing"],
+    ["REST", "Representational State Transfer"],
+    ["ROC", "Receiver Operating Characteristic"],
+    ["SPA", "Single-Page Application"],
+    ["TF-IDF", "Term Frequency – Inverse Document Frequency"],
+    ["UML", "Unified Modelling Language"],
+    ["ViT", "Vision Transformer"],
+    ["XAI", "Explainable Artificial Intelligence"]
+  ]
+}

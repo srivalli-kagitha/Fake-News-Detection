@@ -1,0 +1,46 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+node "Student laptop (Windows / Linux / macOS)" {
+  node "Browser" {
+    rectangle "React SPA" as SPA
+  }
+  node "Python venv" {
+    rectangle "Uvicorn + FastAPI" as API
+    rectangle "PyTorch models\n(CPU or CUDA)" as TM
+    database "truthlens.db" as DB
+  }
+  node "Node.js" {
+    rectangle "Vite dev server\n(/api proxy)" as V
+  }
+}
+cloud "Google Colab / Kaggle (T4 GPU)" {
+  rectangle "TruthLens_Training.ipynb" as NB
+}
+cloud "Hugging Face Hub / Zenodo" as HF
+SPA --> V : http :5173
+V --> API : /api -> :8000
+API --> TM
+API --> DB
+NB --> HF : datasets, base models
+NB ..> TM : truthlens_models.zip
+@enduml

@@ -1,0 +1,24 @@
+TC01 PASS (0.0s) HTTP 200; models reported: text_en, text_te, image, nli_en, nli_multi, embeddings
+TC02 PASS (0.0s) HTTP 422
+TC03 PASS (0.0s) HTTP 422
+TC04 PASS (13.7s) language=en, classifier=Fake (100.0%), overall=Fake (risk 0.87)
+TC05 PASS (17.9s) language=en, classifier=Real (100.0%), overall=Real (risk 0.00)
+TC06 PASS (10.4s) language=te, classifier=Fake (95.0%), claims={'Support': 2, 'Contradiction': 1, 'Unknown': 0}
+TC07 PASS (4.7s) language=en, verification=skipped
+TC08 PASS (74.8s) 63 tokens weighted; top words: deleted!, Share, across, The, the
+TC09 PASS (22.5s) labels=['Support', 'Contradiction', 'Contradiction', 'Support']; summary=Mixed Evidence
+TC10 PASS (1.3s) labels=['Unknown']; summary=Unverified
+TC11 PASS (3.6s) label=Support (98%); evidence: Hyderabad is the capital of the Indian state of Telangana.
+TC12 FAIL (11.3s) label=AI-Generated / Manipulated (97.7%); heatmap=yes
+TC13 PASS (10.4s) label=AI-Generated / Manipulated (94.5%); heatmap=yes
+TC14 PASS (0.0s) HTTP 400: notes.png is not a valid image file.
+TC15 PASS (0.9s) HTTP 413: big.jpg is larger than 15 MB.
+TC16 PASS (6.4s) 3 rows; labels=['Fake', 'Real', 'Fake']; counts={'Fake': 2, 'Real': 1}
+TC17 PASS (0.0s) HTTP 400: CSV needs a column named one of: text, news, content, article, title, headline.
+TC18 PASS (10.5s) 4 images; labels=['Real', 'Real', 'AI-Generated / Manipulated', 'AI-Generated / Manipulated']
+TC19 PASS (0.0s) HTTP 200; 4 lines; header: ﻿row,text,language,prediction,confidence,fake_probability
+TC20 PASS (0.0s) HTTP 404
+TC21 PASS (0.0s) 40 records; kinds=['batch_image', 'batch_text', 'claims', 'image', 'text']
+TC22 PASS (0.0s) 16 records, all kind=image: True
+TC23 PASS (0.0s) HTTP 404: Record not found.
+22 / 23 passed

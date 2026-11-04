@@ -1,0 +1,12 @@
+[
+  {"file": "01_introduction.md", "title": "Introduction"},
+  {"file": "02_literature.md", "title": "Literature Survey"},
+  {"file": "03_analysis.md", "title": "System Analysis"},
+  {"file": "04_design.md", "title": "System Design"},
+  {"file": "05_methodology.md", "title": "Methodology"},
+  {"file": "06_implementation.md", "title": "Implementation"},
+  {"file": "07_testing.md", "title": "Testing"},
+  {"file": "08_results.md", "title": "Results and Discussion"},
+  {"file": "09_conclusion.md", "title": "Conclusion and Future Scope"},
+  {"file": "10_user_guide.md", "title": "Installation and User Guide"}
+]

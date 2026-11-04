@@ -1,0 +1,42 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+start
+:User opens Start page;
+if (Input type?) then (text)
+  :Detect language (Telugu script > 30%);
+  fork
+    :Classify with DeBERTa / IndicBERT;
+  fork again
+    :Verify claims against evidence;
+  end fork
+  :Fuse classifier and evidence into fake risk;
+  :Show verdict, claims and evidence;
+  :Run LIME and highlight words;
+else (image)
+  :Classify with CLIP + linear head;
+  :Generate Grad-CAM heatmap;
+  :Show verdict and heatmap slider;
+endif
+:Save to history;
+stop
+@enduml

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+backend/.venv/
+backend/.env
+backend/truthlens.db
+backend/outputs/*
+!backend/outputs/.gitkeep
+backend/data/evidence/index/
+
+# Trained models are large - share them via Google Drive, not Git
+backend/models/*
+!backend/models/README.md
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Training outputs
+training/outputs/
+training/data/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Report builder packages
+node_modules/

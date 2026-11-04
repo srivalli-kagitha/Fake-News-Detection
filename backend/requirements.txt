@@ -1,0 +1,34 @@
+# TruthLens AI - backend dependencies
+# Tested with Python 3.10 - 3.12
+
+# --- Web API ---
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+pydantic-settings>=2.4
+sqlalchemy>=2.0
+requests>=2.31
+
+# --- Deep learning ---
+torch>=2.3
+torchvision>=0.18
+transformers>=4.48,<5.0
+huggingface-hub>=0.34,<1.0
+sentencepiece>=0.2.0
+protobuf>=4.25
+sentence-transformers>=3.0
+faiss-cpu>=1.8
+
+# --- Explainable AI ---
+lime>=0.2.0.1
+grad-cam>=1.5.4
+
+# --- Data / utilities ---
+numpy>=1.26
+pandas>=2.1
+pillow>=10.0
+scikit-learn>=1.4
+
+# --- NLP (claim extraction) ---
+spacy>=3.8,<4.0
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl

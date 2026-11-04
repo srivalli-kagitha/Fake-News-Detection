@@ -1,0 +1,46 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+left to right direction
+rectangle "User" as U
+usecase "1.0\nDetect\nlanguage" as P1
+usecase "2.0\nClassify\ntext" as P2
+usecase "3.0\nExplain\n(LIME)" as P3
+usecase "4.0\nVerify\nclaims" as P4
+usecase "5.0\nFuse\nverdict" as P5
+usecase "6.0\nDetect AI\nimage" as P6
+database "D1 History" as D1
+database "D2 Evidence index" as D2
+U --> P1 : text
+P1 --> P2 : text + lang
+P1 --> P4 : text + lang
+P2 --> P3 : model
+P2 --> P5 : p_fake
+P4 --> P5 : credibility C
+D2 --> P4 : passages
+P5 --> D1 : record
+P3 --> U : word weights
+P5 --> U : verdict
+U --> P6 : image
+P6 --> D1 : record
+P6 --> U : verdict + heatmap
+@enduml

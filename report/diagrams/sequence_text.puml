@@ -1,0 +1,51 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+actor User
+participant "React UI" as UI
+participant "FastAPI\n/text/analyze" as API
+participant "TextClassifier" as C
+participant "ClaimVerifier" as V
+participant "EvidenceRetriever" as R
+participant "NLIModel" as N
+database SQLite as DB
+User -> UI : paste article, click Check
+UI -> API : POST {text, language, verify_claims}
+API -> API : resolve_language()
+API -> C : predict(text)
+C --> API : label, p_fake
+API -> V : verify_text(text, lang)
+V -> V : extract_claims()
+V -> R : search(claims, k=3)
+R --> V : passages + similarity
+V -> N : predict(evidence, claim)
+N --> V : entail / neutral / contradict
+V --> API : claims + summary
+API -> API : combine() -> fake risk
+API -> DB : save_check()
+API --> UI : verdict, claims, evidence
+UI --> User : report (verdict first)
+UI -> API : POST /text/explain
+API -> C : LIME, 200 perturbed copies
+API --> UI : word weights
+UI --> User : highlighted article
+@enduml

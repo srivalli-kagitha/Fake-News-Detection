@@ -1,0 +1,41 @@
+claim,label,language
+India became independent from Britain in August 1947.,Support,en
+India gained independence from British rule in 1950.,Contradiction,en
+Hyderabad is the capital city of Telangana.,Support,en
+Telangana became a separate state in June 2014.,Support,en
+Telangana was formed as a new state in 2004.,Contradiction,en
+The Godavari is the longest river in India.,Contradiction,en
+Chandrayaan-3 landed near the Moon's south pole in August 2023.,Support,en
+Chandrayaan-3 failed to land on the Moon.,Contradiction,en
+India reached Mars orbit on its very first attempt.,Support,en
+ISRO has its headquarters in Mumbai.,Contradiction,en
+The new 2000 rupee notes contain a GPS tracking chip.,Contradiction,en
+The RBI announced the withdrawal of 2000 rupee notes in May 2023.,Support,en
+UNESCO declared Jana Gana Mana the best national anthem in the world.,Contradiction,en
+5G mobile towers spread the coronavirus.,Contradiction,en
+COVID-19 is caused by the SARS-CoV-2 virus.,Support,en
+Drinking hot water cures COVID-19.,Contradiction,en
+Vaccines cause autism in children.,Contradiction,en
+Antibiotics can cure the common cold.,Contradiction,en
+Humans only use 10 percent of their brains.,Contradiction,en
+The Great Wall of China can be seen from the Moon with the naked eye.,Contradiction,en
+Mount Everest is the highest mountain on Earth.,Support,en
+Water boils at 100 degrees Celsius at sea level.,Support,en
+Mahatma Gandhi was assassinated in January 1948.,Support,en
+The Taj Mahal was built by Shah Jahan in memory of Mumtaz Mahal.,Support,en
+The Statue of Unity is the tallest statue in the world.,Support,en
+India's cricket team won the 2011 World Cup final in Mumbai.,Unknown,en
+The Hyderabad metro will be extended to Warangal next year.,Unknown,en
+A new airport will open in Kurnool in 2027.,Unknown,en
+The state government announced free laptops for all degree students.,Unknown,en
+Tomato prices in Vijayawada doubled last week.,Unknown,en
+హైదరాబాద్ తెలంగాణ రాజధాని.,Support,te
+తెలంగాణ 2 జూన్ 2014న ప్రత్యేక రాష్ట్రంగా ఏర్పడింది.,Support,te
+చంద్రయాన్-3 ఆగస్టు 2023లో చంద్రుని దక్షిణ ధ్రువం సమీపంలో దిగింది.,Support,te
+భారతదేశం 1947 ఆగస్టు 15న స్వాతంత్ర్యం పొందింది.,Support,te
+2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.,Contradiction,te
+5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.,Contradiction,te
+వ్యాక్సిన్లు పిల్లలలో ఆటిజంకు కారణమవుతాయి.,Contradiction,te
+గోదావరి భారతదేశంలో అతి పొడవైన నది.,Contradiction,te
+విజయవాడలో వచ్చే నెల కొత్త క్రికెట్ స్టేడియం ప్రారంభమవుతుంది.,Unknown,te
+కర్నూలులో టమాటా ధరలు గత వారం రెట్టింపు అయ్యాయి.,Unknown,te

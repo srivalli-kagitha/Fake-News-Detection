@@ -1,0 +1,15 @@
+ST01 PASS opened /text, verdict shown after 31 s
+ST02 PASS verdict on screen while highlights pending: True; 15 words marked 74 s later
+ST03 FAIL 0 words of the claim lit up in the article
+ST04 FAIL report and input still present after leaving the page: False
+ST05 PASS data-theme after reload = dark
+ST06 PASS navigation rail visible in print layout: False
+ST07 PASS Telugu report shown with 14 marked words
+ST08 PASS slider moved, heatmap style: clip-path: inset(0px 0px 0px 35%);
+ST09 PASS image page opened and checked the dropped image
+ST10 PASS 14 claims listed
+ST11 PASS downloaded truthlens_text_a89604b3ee.csv with 3 rows
+ST12 PASS 19 rows shown after filtering by Images
+ST13 PASS page width 375 px at a 375 px screen
+ST14 FAIL 19 controls reached with Tab, including the text box and Check button: False
+11 / 14

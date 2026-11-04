@@ -1,0 +1,48 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+hide circle
+entity "checks" as C {
+  * id : INTEGER <<PK>>
+  --
+  * kind : VARCHAR(20)
+  * input_preview : TEXT
+  language : VARCHAR(8)
+  * verdict : VARCHAR(64)
+  confidence : FLOAT
+  details_json : TEXT
+  * created_at : DATETIME
+}
+entity "evidence passage (JSONL)" as E {
+  * text : string
+  --
+  source : string
+  url : string
+}
+entity "batch result file (CSV)" as B {
+  * job_id : string
+  --
+  row, text/filename,
+  prediction, confidence
+}
+C ||..o{ B : "batch_* kind\nreferences job"
+@enduml

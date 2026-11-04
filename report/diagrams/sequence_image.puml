@@ -1,0 +1,40 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+actor User
+participant "React UI" as UI
+participant "FastAPI\n/image/analyze" as API
+participant "ImageDetector" as D
+database SQLite as DB
+User -> UI : drop image
+UI -> API : POST multipart (file, explain)
+API -> API : validate type and size
+API -> D : predict(image)
+D -> D : CLIP features (224x224)
+D -> D : linear head -> softmax
+D --> API : label, confidence
+API -> D : explain(image) (Grad-CAM)
+D --> API : heatmap overlay (base64)
+API -> DB : save_check()
+API --> UI : verdict + overlay
+UI --> User : verdict scale + compare slider
+@enduml

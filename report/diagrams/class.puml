@@ -1,0 +1,92 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+hide empty members
+class Settings {
+  text_en_model : str
+  text_te_model : str
+  image_model : str
+  nli_en_model : str
+  nli_multi_model : str
+  embed_model : str
+  evidence_top_k : int = 3
+  evidence_min_similarity : float = 0.45
+  lime_num_samples : int = 200
+  max_claims : int = 8
+}
+class Lazy {
+  name : str
+  loaded : bool
+  get() : object
+}
+class TextClassifier {
+  language : str
+  labels : list
+  fake_index : int
+  predict(text) : dict
+  predict_proba(texts) : ndarray
+}
+class ImageDetector {
+  clip : CLIPVisionModelWithProjection
+  head : Linear(768, 2)
+  predict(image) : dict
+  explain(image) : dict
+}
+class NLIModel {
+  index : dict
+  predict(premises, hypotheses) : list
+}
+class EvidenceRetriever {
+  encoder : SentenceTransformer
+  index : faiss.IndexFlatIP
+  docs : list
+  encode(texts) : ndarray
+  search(queries, top_k) : list
+}
+class ClaimVerifier <<module>> {
+  extract_claims(text, lang) : list
+  verify_text(text, lang) : dict
+  aggregate(claims) : dict
+}
+class TextExplainer <<module>> {
+  explain_text(classifier, text) : dict
+}
+class CheckRecord {
+  id : int
+  kind : str
+  input_preview : str
+  language : str
+  verdict : str
+  confidence : float
+  details_json : str
+  created_at : datetime
+}
+Lazy o--> TextClassifier
+Lazy o--> ImageDetector
+Lazy o--> NLIModel
+Lazy o--> EvidenceRetriever
+ClaimVerifier --> EvidenceRetriever
+ClaimVerifier --> NLIModel
+TextExplainer --> TextClassifier
+TextClassifier ..> Settings
+ClaimVerifier ..> Settings
+@enduml

@@ -1,0 +1,32 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+left to right direction
+rectangle "User" as U
+usecase "0\nTruthLens AI\nSystem" as S
+rectangle "Evidence sources\n(corpus, Fact Check API)" as E
+rectangle "Trained models" as M
+U --> S : news text / image / CSV
+S --> U : verdict, explanation,\nclaim evidence, CSV
+E --> S : evidence passages
+M --> S : model weights
+@enduml

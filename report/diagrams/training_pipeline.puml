@@ -1,0 +1,37 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+start
+:Download WELFake (Zenodo) and CIFAKE (Hugging Face);
+:Clean WELFake: fix labels (1 = fake),\nremove datelines and publisher names, deduplicate;
+:Stratified 80/20 split;
+:Translate 10,000 balanced articles to Telugu (NLLB-200);
+:Bias check (TF-IDF + logistic regression);
+:Extract CLIP features, train linear head (30 epochs);
+:Fine-tune DeBERTa-v3-large on English (2 epochs);
+:Fine-tune BERT-base baseline (3 epochs);
+:Fine-tune IndicBERT v2 on Telugu (4 epochs);
+:Evaluate each model on its held-out test set;
+:Write metrics.json, confusion matrices, curves;
+:Package truthlens_models.zip;
+stop
+@enduml

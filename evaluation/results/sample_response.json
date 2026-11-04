@@ -1,0 +1,80 @@
+{
+ "id": 41,
+ "language": "en",
+ "classification": {
+  "label": "Real",
+  "confidence": 0.9997768998146057,
+  "probabilities": {
+   "Real": 0.9997768998146057,
+   "Fake": 0.00022308365441858768
+  },
+  "fake_probability": 0.00022308365441858768
+ },
+ "classifier_error": null,
+ "verification": {
+  "language": "en",
+  "claims": [
+   {
+    "claim": "The new 2000 rupee notes contain a GPS nano chip that lets the government track them, officials confirmed on Monday.",
+    "label": "Contradiction",
+    "confidence": 0.9997,
+    "evidence": [
+     {
+      "text": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
+      "source": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Indian_2000-rupee_note",
+      "similarity": 0.7121686935424805,
+      "type": "corpus",
+      "nli": {
+       "entailment": 0.00017919021775014699,
+       "neutral": 0.00016870391846168786,
+       "contradiction": 0.9996521472930908
+      }
+     },
+     {
+      "text": "In May 2023 the Reserve Bank of India announced the withdrawal of 2000 rupee notes from circulation, but they continued to remain legal tender.",
+      "source": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/Indian_2000-rupee_note",
+      "similarity": 0.6090933084487915,
+      "type": "corpus",
+      "nli": {
+       "entailment": 0.0004994539194740355,
+       "neutral": 0.9741737246513367,
+       "contradiction": 0.025326792150735855
+      }
+     },
+     {
+      "text": "On 8 November 2016 the Government of India announced the demonetisation of all 500 and 1000 rupee banknotes.",
+      "source": "Wikipedia",
+      "url": "https://en.wikipedia.org/wiki/2016_Indian_banknote_demonetisation",
+      "similarity": 0.5502497553825378,
+      "type": "corpus",
+      "nli": {
+       "entailment": 0.00024095004482660443,
+       "neutral": 0.9961025714874268,
+       "contradiction": 0.0036564969923347235
+      }
+     }
+    ]
+   }
+  ],
+  "summary": {
+   "verdict": "Likely Misleading",
+   "credibility_score": 0.0001,
+   "counts": {
+    "Support": 0,
+    "Contradiction": 1,
+    "Unknown": 0
+   },
+   "total_claims": 1
+  }
+ },
+ "overall": {
+  "verdict": "Fake",
+  "fake_risk": 0.5001,
+  "based_on": [
+   "classifier",
+   "claim_evidence"
+  ]
+ }
+}

@@ -1,0 +1,98 @@
+Loading models (first run downloads them)...
+/home/vinaygandra/newone/truthlens-ai/backend/.venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+[FEVER] 900 claims, 997 claim-evidence pairs: running NLI...
+  64/997  (26s)
+  128/997  (61s)
+  192/997  (94s)
+  256/997  (125s)
+  320/997  (170s)
+  384/997  (199s)
+  448/997  (228s)
+  512/997  (258s)
+  576/997  (292s)
+  640/997  (323s)
+  704/997  (360s)
+  768/997  (395s)
+  832/997  (429s)
+  896/997  (461s)
+  960/997  (507s)
+  997/997  (534s)
+[Climate-FEVER] 450 claims, 2250 claim-evidence pairs: running NLI...
+  64/2250  (32s)
+  128/2250  (67s)
+  192/2250  (102s)
+  256/2250  (134s)
+  320/2250  (166s)
+  384/2250  (201s)
+  448/2250  (235s)
+  512/2250  (271s)
+  576/2250  (307s)
+  640/2250  (344s)
+  704/2250  (376s)
+  768/2250  (417s)
+  832/2250  (455s)
+  896/2250  (493s)
+  960/2250  (527s)
+  1024/2250  (560s)
+  1088/2250  (602s)
+  1152/2250  (639s)
+  1216/2250  (675s)
+  1280/2250  (710s)
+  1344/2250  (740s)
+  1408/2250  (774s)
+  1472/2250  (805s)
+  1536/2250  (837s)
+  1600/2250  (870s)
+  1664/2250  (916s)
+  1728/2250  (952s)
+  1792/2250  (984s)
+  1856/2250  (1015s)
+  1920/2250  (1042s)
+  1984/2250  (1071s)
+  2048/2250  (1102s)
+  2112/2250  (1153s)
+  2176/2250  (1184s)
+  2240/2250  (1234s)
+  2250/2250  (1241s)
+[IndicXNLI-te] mdeberta_multilingual: 1000 pairs...
+[IndicXNLI-te] deberta_large_english: 1000 pairs...
+
+# Claim verification evaluation
+
+Decision threshold: 0.5. Similarity-baseline threshold: 0.45.
+
+## FEVER (dev, gold evidence)
+
+| Method | Accuracy | Macro-F1 | F1 Support | F1 Contradiction | F1 Unknown | Claims |
+|---|---|---|---|---|---|---|
+| Similarity only (baseline) | 0.4000 | 0.2915 | 0.5390 | 0.0000 | 0.3356 | 900 |
+| TruthLens: contradiction-aware NLI | 0.8456 | 0.8471 | 0.8954 | 0.8547 | 0.7911 | 900 |
+
+Best threshold by macro-F1: 0.35 (macro-F1 0.8592).
+
+## Climate-FEVER (out-of-domain)
+
+| Method | Accuracy | Macro-F1 | F1 Support | F1 Contradiction | F1 Unknown | Claims |
+|---|---|---|---|---|---|---|
+| Similarity only (baseline) | 0.3400 | 0.1806 | 0.5025 | 0.0000 | 0.0392 | 450 |
+| TruthLens: contradiction-aware NLI | 0.5089 | 0.4668 | 0.2556 | 0.6630 | 0.4820 | 450 |
+
+Best threshold by macro-F1: 0.5 (macro-F1 0.4668).
+
+## IndicXNLI Telugu (3-class NLI)
+
+| NLI model | Accuracy | Macro-F1 |
+|---|---|---|
+| mDeBERTa-v3-base, multilingual (used for Telugu) | 0.7420 | 0.7446 |
+| DeBERTa-v3-large, English only | 0.4000 | 0.3960 |
+
+## Curated set, full pipeline (retrieval + NLI)
+
+| Method | Accuracy | Macro-F1 | F1 Support | F1 Contradiction | F1 Unknown | Claims |
+|---|---|---|---|---|---|---|
+| Similarity only (baseline) | 0.5250 | 0.4869 | 0.6275 | 0.0000 | 0.8333 | 40 |
+| TruthLens (all) | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 40 |
+| TruthLens (English) | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 30 |
+| TruthLens (Telugu) | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 1.0000 | 10 |
+

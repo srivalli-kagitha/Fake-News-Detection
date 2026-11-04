@@ -1,0 +1,51 @@
+@startuml
+skinparam dpi 170
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam ArrowColor #333333
+skinparam roundcorner 6
+skinparam componentStyle rectangle
+skinparam rectangleBorderColor #333333
+skinparam rectangleBackgroundColor #F7F8FA
+skinparam packageBorderColor #555555
+skinparam actorBorderColor #333333
+skinparam usecaseBorderColor #333333
+skinparam usecaseBackgroundColor #F7F8FA
+skinparam classBorderColor #333333
+skinparam classBackgroundColor #F7F8FA
+skinparam activityBorderColor #333333
+skinparam activityBackgroundColor #F7F8FA
+skinparam sequenceParticipantBorderColor #333333
+skinparam sequenceParticipantBackgroundColor #F7F8FA
+skinparam databaseBackgroundColor #F7F8FA
+skinparam noteBackgroundColor #FFFBE6
+left to right direction
+actor "User\n(reader / fact-checker)" as U
+actor "Administrator\n(student / developer)" as A
+rectangle "TruthLens AI" {
+  usecase "Check news text" as UC1
+  usecase "View highlighted words\n(LIME)" as UC2
+  usecase "Verify claims\nagainst evidence" as UC3
+  usecase "Check an image" as UC4
+  usecase "View Grad-CAM heatmap" as UC5
+  usecase "Batch check CSV / images" as UC6
+  usecase "Download results CSV" as UC7
+  usecase "View / delete history" as UC8
+  usecase "Save report as PDF" as UC9
+  usecase "Train models\n(Colab / Kaggle notebook)" as UC10
+  usecase "Add evidence documents" as UC11
+}
+U --> UC1
+U --> UC3
+U --> UC4
+U --> UC6
+U --> UC8
+U --> UC9
+UC1 ..> UC2 : <<extend>>
+UC1 ..> UC3 : <<include>>
+UC4 ..> UC5 : <<extend>>
+UC6 ..> UC7 : <<include>>
+A --> UC10
+A --> UC11
+@enduml
