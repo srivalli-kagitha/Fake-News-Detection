@@ -1,0 +1,37 @@
+claim,label,language
+The Polavaram Project is an irrigation project in Andhra Pradesh.,Support,en
+Virat Kohli is an Indian cricketer.,Support,en
+The Charminar is a monument in Hyderabad built in 1591.,Support,en
+"Aryabhata, India's first satellite, was launched in 1975.",Support,en
+Sachin Tendulkar was the first batter to score a double century in a one-day international.,Support,en
+A. P. J. Abdul Kalam was the 11th President of India.,Support,en
+The Krishna River flows into the Bay of Bengal.,Support,en
+The Golden Temple is located in Amritsar.,Support,en
+Rabindranath Tagore won the Nobel Prize in Literature in 1913.,Support,en
+Neeraj Chopra won a gold medal in javelin throw at the Tokyo Olympics.,Support,en
+The Hubble Space Telescope was launched in 1990.,Support,en
+Kanchenjunga is the highest mountain in India.,Support,en
+The song Naatu Naatu from RRR won the Academy Award for Best Original Song.,Support,en
+Lionel Messi won the FIFA World Cup with Argentina in 2022.,Support,en
+Sachin Tendulkar was born in Mumbai.,Support,en
+Virat Kohli is a famous Indian footballer.,Contradiction,en
+The Charminar is located in Chennai.,Contradiction,en
+"Aryabhata, India's first satellite, was launched in 1995.",Contradiction,en
+A. P. J. Abdul Kalam was the first Prime Minister of India.,Contradiction,en
+Neeraj Chopra won a gold medal in wrestling at the Tokyo Olympics.,Contradiction,en
+Kanchenjunga is located in South America.,Contradiction,en
+The Hubble Space Telescope was launched in 2015.,Contradiction,en
+Drinking hot lemon water kills the coronavirus.,Contradiction,en
+The government is giving free laptops to all students under a new PM scheme.,Contradiction,en
+WhatsApp will delete the accounts of users who do not forward a message to ten contacts.,Contradiction,en
+Rabindranath Tagore won the Nobel Prize in Physics.,Contradiction,en
+The Golden Temple is located in Kolkata.,Contradiction,en
+Onions placed in a room absorb viruses and prevent the flu.,Contradiction,en
+Sachin Tendulkar was born in Kerala.,Contradiction,en
+The Krishna River flows into the Arabian Sea.,Contradiction,en
+చార్మినార్ హైదరాబాద్‌లో ఉంది.,Support,te
+గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.,Support,te
+రవీంద్రనాథ్ ఠాగూర్ 1913లో నోబెల్ బహుమతి గెలుచుకున్నారు.,Support,te
+చార్మినార్ చెన్నైలో ఉంది.,Contradiction,te
+విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.,Contradiction,te
+గోల్కొండ కోట ముంబైలో ఉంది.,Contradiction,te

@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     google_factcheck_api_key: str = ""
     live_search: bool = True
     live_top_k: int = 2
+    evidence_weight: float = 0.7
 
     max_text_length: int = 256
     lime_num_samples: int = 200

@@ -29,3 +29,4 @@ Thumbs.db
 
 # Report builder packages
 node_modules/
+evaluation/data/image_ensemble/

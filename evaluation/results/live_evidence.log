@@ -1,0 +1,8 @@
+/home/vinaygandra/newone/truthlens-ai/backend/.venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+local Support       -> Support       197.7s  India became independent from Britain in August 1947.
+local Contradiction -> Contradiction  35.8s  India gained independence from British rule in 1950.
+local Support       -> Support        51.4s  Hyderabad is the capital city of Telangana.
+local Support       -> Support        62.5s  Telangana became a separate state in June 2014.
+local Contradiction -> Contradiction  44.0s  Telangana was formed as a new state in 2004.
+local Contradiction -> Contradiction 126.2s  The Godavari is the longest river in India.

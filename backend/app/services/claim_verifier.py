@@ -3,6 +3,7 @@
 article -> claims -> evidence (local FAISS corpus + live Wikipedia/news + fact-check API)
         -> NLI(evidence, claim) -> Support / Contradiction / Unknown per claim -> overall assessment
 """
+import re
 from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
@@ -16,8 +17,35 @@ from .evidence import get_retriever, rating_polarity, search_fact_checks
 from .live_sources import DEBUNK_HEADLINE, search_news, search_wikipedia
 
 DECISION_THRESHOLD = 0.5
+
+# "..., the Indian Space Research Organisation said." / "According to PTI, ..." : evidence states the fact,
+# not who reported it, so NLI would answer "neutral". The fact is checked without the attribution.
+REPORT_VERBS = r"(?:said|says|stated|states|announced|reported|reports|confirmed|claimed|claims|added|told reporters|informed)"
+ATTRIBUTION = [
+    re.compile(r",\s+(?:the\s+|a\s+)?[^,]{2,70}?\s+" + REPORT_VERBS + r"(?:\s+on\s+\w+|\s+today|\s+yesterday)?\s*([.!]?)\s*$", re.I),
+    re.compile(r",?\s+(?:according to|as per)\s+[^,]{2,70}?\s*([.!]?)\s*$", re.I),
+]
+LEADING_ATTRIBUTION = [
+    re.compile(r"^(?:according to|as per)\s+[^,]{2,70},\s*", re.I),
+    re.compile(r"^[^,]{2,60}?\s+" + REPORT_VERBS + r"\s+that\s+", re.I),
+]
+
+
+def strip_attribution(claim: str) -> str:
+    text = claim.strip()
+    for pattern in LEADING_ATTRIBUTION:
+        text = pattern.sub("", text, count=1)
+    for pattern in ATTRIBUTION:
+        text = pattern.sub(lambda m: m.group(1) or ".", text, count=1)
+    text = text.strip()
+    if len(text.split()) < 3:  # nothing left to check: keep the original
+        return claim
+    return text[0].upper() + text[1:]
 MAX_EVIDENCE = 5          # passages per claim sent to NLI (NLI is the slow step on a CPU)
 SAME_CLAIM_SIMILARITY = 0.65  # a fact-check or headline must be this close to be about the same claim
+HEADLINE_SUPPORT_SIMILARITY = 0.75  # a headline is short and often about something else (the "Charminar Express"
+                                    # train is not the Charminar), so it may only support a near-identical claim
+MULTI_MIN_SIMILARITY = 0.50  # the multilingual NLI model accepts loose matches, so Telugu evidence must be closer
 
 
 class NLIModel:
@@ -167,24 +195,29 @@ def _apply_ratings(nli, claim: str, evidence: list[dict]) -> None:
 def verify_text(text: str, language: str) -> dict:
     settings = get_settings()
     claims = extract_claims(text, language)
+    facts = [strip_attribution(c) for c in claims]  # what is checked; the claim text is shown as written
     retriever = get_retriever()
-    corpus_hits = retriever.search(claims, settings.evidence_top_k)
-    live_results = _gather_live(claims, language, settings) if claims else []
-    claim_vecs = retriever.encode(claims) if claims else []
+    corpus_hits = retriever.search(facts, settings.evidence_top_k)
+    live_results = _gather_live(facts, language, settings) if claims else []
+    claim_vecs = retriever.encode(facts) if claims else []
     nli = get_nli(language)
 
     results = []
-    for claim, hits, live, vec in zip(claims, corpus_hits, live_results, claim_vecs):
-        evidence = [h for h in hits if h["similarity"] >= settings.evidence_min_similarity]
-        evidence += _rank_live(retriever, vec, live, settings, {e["text"] for e in evidence})
+    for claim, fact, hits, live, vec in zip(claims, facts, corpus_hits, live_results, claim_vecs):
+        min_sim = settings.evidence_min_similarity if language == "en" else max(settings.evidence_min_similarity, MULTI_MIN_SIMILARITY)
+        evidence = [h for h in hits if h["similarity"] >= min_sim]
+        evidence += [e for e in _rank_live(retriever, vec, live, settings, {e["text"] for e in evidence}) if e["similarity"] >= min_sim]
         evidence = sorted(evidence, key=lambda e: -e["similarity"])[:MAX_EVIDENCE]
         if evidence:
-            scores = nli.predict([e["text"] for e in evidence], [claim] * len(evidence))
+            scores = nli.predict([e.get("nli_text", e["text"]) for e in evidence], [fact] * len(evidence))
             for e, s in zip(evidence, scores):
                 e["nli"] = s
-            _apply_ratings(nli, claim, evidence)
+            _apply_ratings(nli, fact, evidence)
+            for e in evidence:
+                if e.get("type") == "news" and not e.get("decided_by") and e["similarity"] < HEADLINE_SUPPORT_SIMILARITY:
+                    e["nli"] = {**e["nli"], "entailment": 0.0}
             evidence.sort(key=lambda e: max(e["nli"]["entailment"], e["nli"]["contradiction"]), reverse=True)
         label, confidence = _decide(evidence)
-        results.append({"claim": claim, "label": label, "confidence": round(confidence, 4), "evidence": evidence})
+        results.append({"claim": claim, "checked_as": fact, "label": label, "confidence": round(confidence, 4), "evidence": evidence})
 
     return {"language": language, "claims": results, "summary": aggregate(results)}

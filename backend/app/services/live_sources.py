@@ -91,11 +91,27 @@ def _wikipedia(query: str, lang: str, pages: int) -> tuple:
     for page in pages_found:
         title = page.get("title", "")
         url = f"https://{lang}.wikipedia.org/wiki/{title.replace(' ', '_')}"
-        for sent in split_sentences(page.get("extract", ""))[:8]:
-            sent = " ".join(sent.split())
-            if 30 <= len(sent) <= 600:
-                out.append({"text": sent, "source": f"Wikipedia - {title}", "url": url, "type": "wikipedia"})
+        sentences = [clean_sentence(x) for x in split_sentences(page.get("extract", ""))[:25]]
+        sentences = [x for x in sentences if 30 <= len(x) <= 600]
+        lead = sentences[0] if sentences else ""
+        for i, sent in enumerate(sentences):
+            # NLI reads each sentence after the article's first sentence, so "he" or "the party"
+            # in a later sentence has a name to refer to.
+            context = sent if i == 0 else f"{lead} {sent}"
+            out.append({"text": sent, "nli_text": context, "source": f"Wikipedia - {title}", "url": url,
+                        "type": "wikipedia"})
     return tuple(out)
+
+
+PARENTHESES = re.compile(r"\s*\([^()]*\)")
+
+
+def clean_sentence(text: str) -> str:
+    """Removes pronunciation guides and other brackets, e.g. 'Naidu (Telugu pronunciation: [...]; born 1950)'."""
+    text = " ".join(text.split())
+    for _ in range(2):  # nested brackets
+        text = PARENTHESES.sub("", text)
+    return text.replace(" ,", ",").strip()
 
 
 def search_wikipedia(claim: str, language: str, pages: int = 2) -> list[dict]:

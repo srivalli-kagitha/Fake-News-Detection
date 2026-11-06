@@ -1,0 +1,739 @@
+{
+  "date": "2026-11-06",
+  "passed": 38,
+  "total": 41,
+  "by_category": {
+    "True - well written": {
+      "passed": 5,
+      "total": 6
+    },
+    "True - informal": {
+      "passed": 6,
+      "total": 6
+    },
+    "False - well written": {
+      "passed": 8,
+      "total": 8
+    },
+    "False - informal": {
+      "passed": 4,
+      "total": 4
+    },
+    "With attribution": {
+      "passed": 4,
+      "total": 4
+    },
+    "Telugu - true": {
+      "passed": 4,
+      "total": 4
+    },
+    "Telugu - false": {
+      "passed": 3,
+      "total": 4
+    },
+    "Recent events": {
+      "passed": 4,
+      "total": 5
+    }
+  },
+  "mean_seconds": 16.0,
+  "cases": [
+    {
+      "id": "SC01",
+      "category": "True - well written",
+      "language": "en",
+      "text": "Hyderabad is the capital of Telangana.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.1216,
+      "style_fake_probability": 0.405,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "The state's capital is the city of Hyderabad.",
+      "top_source": "Wikipedia - Telangana",
+      "seconds": 29.7,
+      "result": "Pass"
+    },
+    {
+      "id": "SC02",
+      "category": "True - well written",
+      "language": "en",
+      "text": "The Polavaram Project is a multi-purpose irrigation project on the Godavari River in Andhra Pradesh.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.186,
+      "style_fake_probability": 0.618,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "The Polavaram Project is an under-construction multi-purpose irrigation project on the Godavari River in the Eluru District and Polavaram District in Andhra Pra",
+      "top_source": "Wikipedia - Polavaram Project",
+      "seconds": 14.4,
+      "result": "Pass"
+    },
+    {
+      "id": "SC03",
+      "category": "True - well written",
+      "language": "en",
+      "text": "A. P. J. Abdul Kalam served as the 11th President of India from 2002 to 2007.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0262,
+      "style_fake_probability": 0.0262,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "Avul Pakir Jainulabdeen Abdul Kalam was an Indian aerospace engineer and science administrator who served as president of India from 2002 to 2007.",
+      "top_source": "Wikipedia - A. P. J. Abdul Kalam",
+      "seconds": 14.8,
+      "result": "Pass"
+    },
+    {
+      "id": "SC04",
+      "category": "True - well written",
+      "language": "en",
+      "text": "Neeraj Chopra won the gold medal in javelin throw at the Tokyo Olympics in 2021.",
+      "expected": "Real",
+      "verdict": "Fake",
+      "fake_risk": 0.6999,
+      "style_fake_probability": 0.0017,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "On This Day, India's golden boy Neeraj Chopra clinched gold in javelin throw at Tokyo Olympics 2020 🔥 🙌 #NeerajChopra #JavelinThrow",
+      "top_source": "News - Facebook, 07 Aug 2025",
+      "seconds": 16.6,
+      "result": "Fail"
+    },
+    {
+      "id": "SC05",
+      "category": "True - well written",
+      "language": "en",
+      "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 August 2023.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2821,
+      "style_fake_probability": 0.9381,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole.",
+      "top_source": "Wikipedia",
+      "seconds": 17.5,
+      "result": "Pass"
+    },
+    {
+      "id": "SC06",
+      "category": "True - well written",
+      "language": "en",
+      "text": "Rabindranath Tagore won the Nobel Prize in Literature in 1913.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0036,
+      "style_fake_probability": 0.01,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "This day in 1913: Rabindranath Tagore becomes first non-European to receive Nobel Prize in Literature",
+      "top_source": "News - The Times of India, 10 Dec 2024",
+      "seconds": 22.9,
+      "result": "Pass"
+    },
+    {
+      "id": "SC07",
+      "category": "True - informal",
+      "language": "en",
+      "text": "Chief minister of andhra pradesh is  nara chandra babu naidu who is elected in 2024 elections.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2991,
+      "style_fake_probability": 0.9924,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "In the 2024 Andhra Pradesh Legislative Assembly election, the TDP returned to power once again in a landslide toppling the incumbent YSRCP government and Naidu ",
+      "top_source": "Wikipedia - N. Chandrababu Naidu",
+      "seconds": 17.2,
+      "result": "Pass"
+    },
+    {
+      "id": "SC08",
+      "category": "True - informal",
+      "language": "en",
+      "text": "virat kohli is indian cricketer and he played for royal challengers bangalore",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2906,
+      "style_fake_probability": 0.968,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "In league cricket, Kohli has played for the Royal Challengers Bengaluru since the inception of the team in 2008 and was part of the team that won the 2025 and 2",
+      "top_source": "Wikipedia - Career of Virat Kohli",
+      "seconds": 16.1,
+      "result": "Pass"
+    },
+    {
+      "id": "SC09",
+      "category": "True - informal",
+      "language": "en",
+      "text": "charminar is in hyderabad it was built in 1591",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2986,
+      "style_fake_probability": 0.994,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "Constructed in 1591, the landmark is a symbol of Hyderabad and officially incorporated in the emblem of Telangana.",
+      "top_source": "Wikipedia - Charminar",
+      "seconds": 15.0,
+      "result": "Pass"
+    },
+    {
+      "id": "SC10",
+      "category": "True - informal",
+      "language": "en",
+      "text": "india got independence on 15 august 1947",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2975,
+      "style_fake_probability": 0.9911,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "India gained independence from British rule on 15 August 1947.",
+      "top_source": "Wikipedia",
+      "seconds": 18.0,
+      "result": "Pass"
+    },
+    {
+      "id": "SC11",
+      "category": "True - informal",
+      "language": "en",
+      "text": "neeraj chopra won gold in javelin at tokyo olympics",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2571,
+      "style_fake_probability": 0.8546,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "On This Day, India's golden boy Neeraj Chopra clinched gold in javelin throw at Tokyo Olympics 2020 🔥 🙌 #NeerajChopra #JavelinThrow",
+      "top_source": "News - Facebook, 07 Aug 2025",
+      "seconds": 17.2,
+      "result": "Pass"
+    },
+    {
+      "id": "SC12",
+      "category": "True - informal",
+      "language": "en",
+      "text": "isro launched chandrayaan 3 in july 2023",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.2984,
+      "style_fake_probability": 0.9934,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "Chandrayaan-3 was launched on 14 July 2023, at 14:35 IST from Satish Dhawan Space Centre in Sriharikota, Andhra Pradesh.",
+      "top_source": "Wikipedia - Chandrayaan-3",
+      "seconds": 16.3,
+      "result": "Pass"
+    },
+    {
+      "id": "SC13",
+      "category": "False - well written",
+      "language": "en",
+      "text": "The new 2000 rupee notes contain a GPS nano chip that lets the government track them.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.7002,
+      "style_fake_probability": 0.0009,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
+      "top_source": "Wikipedia",
+      "seconds": 11.6,
+      "result": "Pass"
+    },
+    {
+      "id": "SC14",
+      "category": "False - well written",
+      "language": "en",
+      "text": "5G mobile towers spread the coronavirus.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.7413,
+      "style_fake_probability": 0.1406,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
+      "top_source": "Wikipedia",
+      "seconds": 21.8,
+      "result": "Pass"
+    },
+    {
+      "id": "SC15",
+      "category": "False - well written",
+      "language": "en",
+      "text": "Virat Kohli is a famous Indian footballer.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.8386,
+      "style_fake_probability": 0.4736,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Virat Kohli is my favourite Indian cricketer: Italian footballer Agata Isabella Centasso in awe of India 'GOAT'",
+      "top_source": "News - India Today, 02 Dec 2023",
+      "seconds": 16.3,
+      "result": "Pass"
+    },
+    {
+      "id": "SC16",
+      "category": "False - well written",
+      "language": "en",
+      "text": "The Charminar is located in Chennai.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.906,
+      "style_fake_probability": 0.6872,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "The city houses famous historical sites including Charminar, UNESCO Asia Pacific Heritage site of the Chowmahalla Palace, Salar Jung Museum as well as art galle",
+      "top_source": "Wikipedia - List of tourist attractions in Hyderabad",
+      "seconds": 16.0,
+      "result": "Pass"
+    },
+    {
+      "id": "SC17",
+      "category": "False - well written",
+      "language": "en",
+      "text": "A. P. J. Abdul Kalam was the first Prime Minister of India.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.8627,
+      "style_fake_probability": 0.5434,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "From missiles to nuclear program: APJ Abdul Kalam’s 7 major contributions for India",
+      "top_source": "News - WION, 15 Oct 2025",
+      "seconds": 15.1,
+      "result": "Pass"
+    },
+    {
+      "id": "SC18",
+      "category": "False - well written",
+      "language": "en",
+      "text": "India gained independence from British rule in 1950.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.7015,
+      "style_fake_probability": 0.006,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "India gained independence from British rule on 15 August 1947.",
+      "top_source": "Wikipedia",
+      "seconds": 17.4,
+      "result": "Pass"
+    },
+    {
+      "id": "SC19",
+      "category": "False - well written",
+      "language": "en",
+      "text": "Drinking hot lemon water kills the coronavirus.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9794,
+      "style_fake_probability": 0.9351,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Facebook Messenger video falsely claims hot lemon juice can kill the coronavirus",
+      "top_source": "News - PolitiFact, 24 Mar 2020",
+      "seconds": 20.9,
+      "result": "Pass"
+    },
+    {
+      "id": "SC20",
+      "category": "False - well written",
+      "language": "en",
+      "text": "The government is giving free laptops to all students under a new PM scheme.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.6068,
+      "style_fake_probability": 0.0009,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Indian government offering free laptops to students? Don't fall for this latest scam",
+      "top_source": "News - India Today, 02 Jun 2023",
+      "seconds": 16.4,
+      "result": "Pass"
+    },
+    {
+      "id": "SC21",
+      "category": "False - informal",
+      "language": "en",
+      "text": "BREAKING!!! 5g towers are spreading corona virus share this before its deleted",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9996,
+      "style_fake_probability": 0.9997,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
+      "top_source": "Wikipedia",
+      "seconds": 17.4,
+      "result": "Pass"
+    },
+    {
+      "id": "SC22",
+      "category": "False - informal",
+      "language": "en",
+      "text": "modi govt is giving free laptops to all students register now",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9235,
+      "style_fake_probability": 0.9966,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Indian government offering free laptops to students? Don't fall for this latest scam",
+      "top_source": "News - India Today, 02 Jun 2023",
+      "seconds": 15.6,
+      "result": "Pass"
+    },
+    {
+      "id": "SC23",
+      "category": "False - informal",
+      "language": "en",
+      "text": "sachin tendulkar was born in kerala",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9913,
+      "style_fake_probability": 0.9913,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "Sachin Suresh Interview: Being a Malayali, it's a dream to play for Kerala Blasters FC",
+      "top_source": "News - Indian Super League | Official Website, 14 Dec 2023",
+      "seconds": 16.6,
+      "result": "Pass"
+    },
+    {
+      "id": "SC24",
+      "category": "False - informal",
+      "language": "en",
+      "text": "taj mahal is in mumbai",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9963,
+      "style_fake_probability": 0.9889,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "The hotel is named after the Taj Mahal, which is located in the city of Agra, approximately 1,050 kilometres from Mumbai.",
+      "top_source": "Wikipedia - Taj Mahal Palace Hotel",
+      "seconds": 15.0,
+      "result": "Pass"
+    },
+    {
+      "id": "SC25",
+      "category": "With attribution",
+      "language": "en",
+      "text": "India's Chandrayaan-3 lander touched down near the Moon's south pole on 23 August 2023, the Indian Space Research Organisation said.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0003,
+      "style_fake_probability": 0.0002,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "It entered lunar orbit on 5 August, and touched down near the lunar south pole, at 69°S, on 23 August 2023 at 18:04 IST.",
+      "top_source": "Wikipedia - Chandrayaan-3",
+      "seconds": 16.9,
+      "result": "Pass"
+    },
+    {
+      "id": "SC26",
+      "category": "With attribution",
+      "language": "en",
+      "text": "According to officials, Hyderabad is the capital of Telangana.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0012,
+      "style_fake_probability": 0.0034,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "The state's capital is the city of Hyderabad.",
+      "top_source": "Wikipedia - Telangana",
+      "seconds": 16.8,
+      "result": "Pass"
+    },
+    {
+      "id": "SC27",
+      "category": "With attribution",
+      "language": "en",
+      "text": "The new 2000 rupee notes contain a GPS nano chip, officials confirmed on Monday.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.6997,
+      "style_fake_probability": 0.0003,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
+      "top_source": "Wikipedia",
+      "seconds": 13.8,
+      "result": "Pass"
+    },
+    {
+      "id": "SC28",
+      "category": "With attribution",
+      "language": "en",
+      "text": "According to doctors, drinking cow urine cures cancer.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.9474,
+      "style_fake_probability": 0.8257,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Drinking cow urine has not been scientifically shown to cure cancer or COVID-19.",
+      "top_source": "Wikipedia",
+      "seconds": 15.0,
+      "result": "Pass"
+    },
+    {
+      "id": "SC29",
+      "category": "Telugu - true",
+      "language": "te",
+      "text": "హైదరాబాద్ తెలంగాణ రాజధాని.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.063,
+      "style_fake_probability": 0.1998,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "ఇది తెలంగాణ రాష్ట్ర రాజధాని హైదరాబాద్ నుండి బయలుదేరి, మహారాష్ట్ర, మధ్య ప్రదేశ్, ఉత్తర ప్రదేశ్, రాజస్థాన్, హర్యానా రాష్ట్రాల ప్రధాన పట్టణాల ద్వారా ప్రయాణించి భార",
+      "top_source": "Wikipedia - తెలంగాణ ఎక్స్‌ప్రెస్",
+      "seconds": 14.7,
+      "result": "Pass"
+    },
+    {
+      "id": "SC30",
+      "category": "Telugu - true",
+      "language": "te",
+      "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.1065,
+      "style_fake_probability": 0.3385,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh.",
+      "top_source": "Wikipedia",
+      "seconds": 15.1,
+      "result": "Pass"
+    },
+    {
+      "id": "SC31",
+      "category": "Telugu - true",
+      "language": "te",
+      "text": "చార్మినార్ హైదరాబాద్‌లో ఉంది.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.153,
+      "style_fake_probability": 0.4516,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "చార్మినార్ భారతదేశంలోని హైదరాబాదు పాతబస్తిలో ఉన్న స్మారక చిహ్నం, మసీదు.",
+      "top_source": "Wikipedia - చార్మినార్",
+      "seconds": 11.4,
+      "result": "Pass"
+    },
+    {
+      "id": "SC32",
+      "category": "Telugu - true",
+      "language": "te",
+      "text": "గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.3935,
+      "style_fake_probability": 0.3935,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "Hyderabad is the capital of the Indian state of Telangana.",
+      "top_source": "Wikipedia",
+      "seconds": 12.9,
+      "result": "Pass"
+    },
+    {
+      "id": "SC33",
+      "category": "Telugu - false",
+      "language": "te",
+      "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.914,
+      "style_fake_probability": 0.7345,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
+      "top_source": "Wikipedia",
+      "seconds": 5.6,
+      "result": "Pass"
+    },
+    {
+      "id": "SC34",
+      "category": "Telugu - false",
+      "language": "te",
+      "text": "చార్మినార్ చెన్నైలో ఉంది.",
+      "expected": "Fake",
+      "verdict": "Real",
+      "fake_risk": 0.4755,
+      "style_fake_probability": 0.4755,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "హైదరాబాద్ నుంచి వెళ్లే చార్మినార్ ఎక్స్‎ప్రెస్ ఆగే చెన్నై స్టేషన్ మారింది..!",
+      "top_source": "News - V6 Velugu, 04 Apr 2026",
+      "seconds": 10.4,
+      "result": "Fail"
+    },
+    {
+      "id": "SC35",
+      "category": "Telugu - false",
+      "language": "te",
+      "text": "విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.5465,
+      "style_fake_probability": 0.5465,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "ఇండియన్ ప్రీమియర్ లీగ్లో ముంబై ఇండియన్స్ జట్టుకు ప్రాతినిధ్యం వహిస్తున్నాడు.",
+      "top_source": "Wikipedia - రోహిత్ శర్మ",
+      "seconds": 10.3,
+      "result": "Pass"
+    },
+    {
+      "id": "SC36",
+      "category": "Telugu - false",
+      "language": "te",
+      "text": "కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.8495,
+      "style_fake_probability": 0.503,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
+      "top_source": "Wikipedia",
+      "seconds": 5.7,
+      "result": "Pass"
+    },
+    {
+      "id": "SC37",
+      "category": "Recent events",
+      "language": "en",
+      "text": "Abdul El-Sayed won the 2026 United States Senate election in Michigan.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0022,
+      "style_fake_probability": 0.0006,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "Progressive Abdul El-Sayed wins Michigan Senate race to become first Muslim US senator | US midterm elections 2026",
+      "top_source": "News - The Guardian, 04 Nov 2026",
+      "seconds": 18.3,
+      "result": "Pass"
+    },
+    {
+      "id": "SC38",
+      "category": "Recent events",
+      "language": "en",
+      "text": "Lionel Messi won the FIFA World Cup with Argentina in 2022.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0023,
+      "style_fake_probability": 0.0067,
+      "claims": [
+        "Support"
+      ],
+      "top_evidence": "Initially facing criticism for not winning major tournaments with the national team, Messi broke Argentina's 28-year international trophy drought by captaining ",
+      "top_source": "Wikipedia - Career of Lionel Messi",
+      "seconds": 21.1,
+      "result": "Pass"
+    },
+    {
+      "id": "SC39",
+      "category": "Recent events",
+      "language": "en",
+      "text": "Narendra Modi became the Prime Minister of India for a third term in 2024.",
+      "expected": "Real",
+      "verdict": "Real",
+      "fake_risk": 0.0016,
+      "style_fake_probability": 0.0016,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "Narendra Modi: India's prime minister eyeing a historic third term",
+      "top_source": "News - BBC, 23 Apr 2024",
+      "seconds": 17.6,
+      "result": "Pass"
+    },
+    {
+      "id": "SC40",
+      "category": "Recent events",
+      "language": "en",
+      "text": "Argentina lost the 2022 FIFA World Cup final to France.",
+      "expected": "Fake",
+      "verdict": "Fake",
+      "fake_risk": 0.7005,
+      "style_fake_probability": 0.0023,
+      "claims": [
+        "Contradiction"
+      ],
+      "top_evidence": "In 2022, Argentina won their third World Cup, after winning a penalty shoot-out against France following a 3–3 draw in the final.",
+      "top_source": "Wikipedia - Argentina at the FIFA World Cup",
+      "seconds": 21.1,
+      "result": "Pass"
+    },
+    {
+      "id": "SC41",
+      "category": "Recent events",
+      "language": "en",
+      "text": "Rahul Gandhi became the Prime Minister of India in 2024.",
+      "expected": "Fake",
+      "verdict": "Real",
+      "fake_risk": 0.0647,
+      "style_fake_probability": 0.0647,
+      "claims": [
+        "Unknown"
+      ],
+      "top_evidence": "PERSPECTIVE | Is Rahul Gandhi ready to lead the Congress to victory in 2024?",
+      "top_source": "News - Frontline Magazine, 26 Aug 2023",
+      "seconds": 15.5,
+      "result": "Fail"
+    }
+  ]
+}

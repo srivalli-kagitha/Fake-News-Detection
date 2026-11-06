@@ -36,7 +36,7 @@ a = aggregate([{"label": "Contradiction", "confidence": 0.95}, {"label": "Unknow
 t("UT13", "aggregate", "Contradiction 0.95 + Unknown", ("Likely Misleading", 0.2625), (a["verdict"], a["credibility_score"]))
 t("UT14", "aggregate", "only Unknown claims", "Unverified", aggregate([{"label": "Unknown", "confidence": 0.6}])["verdict"])
 o = combine({"fake_probability": 0.8}, {"summary": {"verdict": "Mixed Evidence", "credibility_score": 0.4}})
-t("UT15", "combine", "fake probability 0.8, credibility 0.4", ("Fake", 0.7), (o["verdict"], round(o["fake_risk"], 4)))
+t("UT15", "combine", "fake probability 0.8, credibility 0.4 (evidence weight 0.7)", ("Fake", 0.66), (o["verdict"], round(o["fake_risk"], 4)))
 o = combine({"fake_probability": 0.3}, {"summary": {"verdict": "Unverified", "credibility_score": 0.5}})
 t("UT16", "combine", "fake probability 0.3, claims Unverified", ("Real", 0.3, ["classifier"]), (o["verdict"], o["fake_risk"], o["based_on"]))
 

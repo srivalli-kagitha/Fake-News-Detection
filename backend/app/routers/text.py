@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from ..config import get_settings
 from ..database import save_check
 from ..schemas import ClaimsRequest, ExplainRequest, TextRequest
 from ..services.claim_verifier import verify_text
@@ -12,17 +13,22 @@ router = APIRouter(tags=["text"])
 
 
 def combine(classification: dict | None, verification: dict | None) -> dict | None:
-    """Overall assessment = average of classifier fake-probability and claim-evidence risk."""
-    parts, based_on = [], []
-    if classification:
-        parts.append(classification["fake_probability"])
-        based_on.append("classifier")
-    if verification and verification["summary"]["verdict"] != "Unverified":
-        parts.append(1.0 - verification["summary"]["credibility_score"])
-        based_on.append("claim_evidence")
-    if not parts:
+    """Overall fake risk: a weighted average of the classifier and the claim evidence.
+
+    The classifier judges writing style, the evidence judges facts, so when the claims could be
+    checked the evidence gets EVIDENCE_WEIGHT (default 0.7). Otherwise the classifier decides alone.
+    """
+    has_evidence = bool(verification) and verification["summary"]["verdict"] != "Unverified"
+    if not classification and not has_evidence:
         return None
-    risk = sum(parts) / len(parts)
+    if not has_evidence:
+        risk, based_on = classification["fake_probability"], ["classifier"]
+    elif not classification:
+        risk, based_on = 1.0 - verification["summary"]["credibility_score"], ["claim_evidence"]
+    else:
+        w = get_settings().evidence_weight
+        risk = (1 - w) * classification["fake_probability"] + w * (1.0 - verification["summary"]["credibility_score"])
+        based_on = ["classifier", "claim_evidence"]
     return {"verdict": "Fake" if risk >= 0.5 else "Real", "fake_risk": round(risk, 4), "based_on": based_on}
 
 

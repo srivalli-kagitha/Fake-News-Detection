@@ -1,0 +1,42 @@
+id,category,language,expected,text
+SC01,True - well written,en,Real,Hyderabad is the capital of Telangana.
+SC02,True - well written,en,Real,The Polavaram Project is a multi-purpose irrigation project on the Godavari River in Andhra Pradesh.
+SC03,True - well written,en,Real,A. P. J. Abdul Kalam served as the 11th President of India from 2002 to 2007.
+SC04,True - well written,en,Real,Neeraj Chopra won the gold medal in javelin throw at the Tokyo Olympics in 2021.
+SC05,True - well written,en,Real,Chandrayaan-3 landed near the south pole of the Moon on 23 August 2023.
+SC06,True - well written,en,Real,Rabindranath Tagore won the Nobel Prize in Literature in 1913.
+SC07,True - informal,en,Real,Chief minister of andhra pradesh is  nara chandra babu naidu who is elected in 2024 elections.
+SC08,True - informal,en,Real,virat kohli is indian cricketer and he played for royal challengers bangalore
+SC09,True - informal,en,Real,charminar is in hyderabad it was built in 1591
+SC10,True - informal,en,Real,india got independence on 15 august 1947
+SC11,True - informal,en,Real,neeraj chopra won gold in javelin at tokyo olympics
+SC12,True - informal,en,Real,isro launched chandrayaan 3 in july 2023
+SC13,False - well written,en,Fake,The new 2000 rupee notes contain a GPS nano chip that lets the government track them.
+SC14,False - well written,en,Fake,5G mobile towers spread the coronavirus.
+SC15,False - well written,en,Fake,Virat Kohli is a famous Indian footballer.
+SC16,False - well written,en,Fake,The Charminar is located in Chennai.
+SC17,False - well written,en,Fake,A. P. J. Abdul Kalam was the first Prime Minister of India.
+SC18,False - well written,en,Fake,India gained independence from British rule in 1950.
+SC19,False - well written,en,Fake,Drinking hot lemon water kills the coronavirus.
+SC20,False - well written,en,Fake,The government is giving free laptops to all students under a new PM scheme.
+SC21,False - informal,en,Fake,BREAKING!!! 5g towers are spreading corona virus share this before its deleted
+SC22,False - informal,en,Fake,modi govt is giving free laptops to all students register now
+SC23,False - informal,en,Fake,sachin tendulkar was born in kerala
+SC24,False - informal,en,Fake,taj mahal is in mumbai
+SC25,With attribution,en,Real,"India's Chandrayaan-3 lander touched down near the Moon's south pole on 23 August 2023, the Indian Space Research Organisation said."
+SC26,With attribution,en,Real,"According to officials, Hyderabad is the capital of Telangana."
+SC27,With attribution,en,Fake,"The new 2000 rupee notes contain a GPS nano chip, officials confirmed on Monday."
+SC28,With attribution,en,Fake,"According to doctors, drinking cow urine cures cancer."
+SC29,Telugu - true,te,Real,హైదరాబాద్ తెలంగాణ రాజధాని.
+SC30,Telugu - true,te,Real,తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.
+SC31,Telugu - true,te,Real,చార్మినార్ హైదరాబాద్‌లో ఉంది.
+SC32,Telugu - true,te,Real,గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.
+SC33,Telugu - false,te,Fake,5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.
+SC34,Telugu - false,te,Fake,చార్మినార్ చెన్నైలో ఉంది.
+SC35,Telugu - false,te,Fake,విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.
+SC36,Telugu - false,te,Fake,కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.
+SC37,Recent events,en,Real,Abdul El-Sayed won the 2026 United States Senate election in Michigan.
+SC38,Recent events,en,Real,Lionel Messi won the FIFA World Cup with Argentina in 2022.
+SC39,Recent events,en,Real,Narendra Modi became the Prime Minister of India for a third term in 2024.
+SC40,Recent events,en,Fake,Argentina lost the 2022 FIFA World Cup final to France.
+SC41,Recent events,en,Fake,Rahul Gandhi became the Prime Minister of India in 2024.

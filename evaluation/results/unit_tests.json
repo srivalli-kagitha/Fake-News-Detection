@@ -114,9 +114,9 @@
  {
   "id": "UT15",
   "function": "combine",
-  "input": "fake probability 0.8, credibility 0.4",
-  "expected": "('Fake', 0.7)",
-  "actual": "('Fake', 0.7)",
+  "input": "fake probability 0.8, credibility 0.4 (evidence weight 0.7)",
+  "expected": "('Fake', 0.66)",
+  "actual": "('Fake', 0.66)",
   "status": "Pass"
  },
  {
