@@ -31,6 +31,7 @@ from .live_sources import SearchFailed, _news, _web, _wikipedia, _wikipedia_titl
 
 LABELS = {"SUPPORTED": "Support", "REFUTED": "Contradiction", "NOT_ENOUGH_EVIDENCE": "Unknown"}
 EVIDENCE_PER_CLAIM = 10
+MAX_PER_PAGE = 2
 SEARCH_DEADLINE = 20  # seconds for all searches of one claim
 
 
@@ -167,7 +168,12 @@ def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict], q
         d["similarity"] = float(row[0])          # shown to the user: closeness to the claim
         d["_rank"] = float(row.max())            # used for choosing the passages
     checks = sorted([d for d in pool if d.get("type") == "fact_check"], key=lambda d: -d["_rank"])[:2]
-    rest = sorted([d for d in pool if d.get("type") != "fact_check"], key=lambda d: -d["_rank"])
+    rest, per_page = [], {}
+    for d in sorted([d for d in pool if d.get("type") != "fact_check"], key=lambda d: -d["_rank"]):
+        page = (d.get("url") or d.get("source", "")).split("#")[0]
+        if per_page.get(page, 0) < MAX_PER_PAGE:  # at most 2 passages from one page: varied sources
+            per_page[page] = per_page.get(page, 0) + 1
+            rest.append(d)
     chosen = [d for d in checks + rest[: EVIDENCE_PER_CLAIM - len(checks)] if d["_rank"] >= 0.3]
     for d in chosen:
         d.pop("_rank", None)
