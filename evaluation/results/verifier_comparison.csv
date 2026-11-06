@@ -1,0 +1,42 @@
+variant,set,id,category,language,text,expected,got,result,claims,seconds
+web+minicheck,sentence,SC01,True - well written,en,Hyderabad is the capital of Telangana.,Real,Real,Pass,Support,39.8
+web+minicheck,sentence,SC02,True - well written,en,The Polavaram Project is a multi-purpose irrigation project on the Godavari River in Andhra Pradesh.,Real,Real,Pass,Support,27.4
+web+minicheck,sentence,SC03,True - well written,en,A. P. J. Abdul Kalam served as the 11th President of India from 2002 to 2007.,Real,Real,Pass,Support,24.7
+web+minicheck,sentence,SC04,True - well written,en,Neeraj Chopra won the gold medal in javelin throw at the Tokyo Olympics in 2021.,Real,Fake,Fail,Contradiction,32.1
+web+minicheck,sentence,SC05,True - well written,en,Chandrayaan-3 landed near the south pole of the Moon on 23 August 2023.,Real,Real,Pass,Support,29.4
+web+minicheck,sentence,SC06,True - well written,en,Rabindranath Tagore won the Nobel Prize in Literature in 1913.,Real,Real,Pass,Support,40.4
+web+minicheck,sentence,SC07,True - informal,en,Chief minister of andhra pradesh is  nara chandra babu naidu who is elected in 2024 elections.,Real,Real,Pass,Support,32.7
+web+minicheck,sentence,SC08,True - informal,en,virat kohli is indian cricketer and he played for royal challengers bangalore,Real,Real,Pass,Support,30.5
+web+minicheck,sentence,SC09,True - informal,en,charminar is in hyderabad it was built in 1591,Real,Real,Pass,Support,25.0
+web+minicheck,sentence,SC10,True - informal,en,india got independence on 15 august 1947,Real,Real,Pass,Support,26.9
+web+minicheck,sentence,SC11,True - informal,en,neeraj chopra won gold in javelin at tokyo olympics,Real,Real,Pass,Support,28.5
+web+minicheck,sentence,SC12,True - informal,en,isro launched chandrayaan 3 in july 2023,Real,Fake,Fail,Contradiction,29.0
+web+minicheck,sentence,SC13,False - well written,en,The new 2000 rupee notes contain a GPS nano chip that lets the government track them.,Fake,Fake,Pass,Contradiction,23.6
+web+minicheck,sentence,SC14,False - well written,en,5G mobile towers spread the coronavirus.,Fake,Fake,Pass,Contradiction,29.4
+web+minicheck,sentence,SC15,False - well written,en,Virat Kohli is a famous Indian footballer.,Fake,Fake,Pass,Contradiction,25.8
+web+minicheck,sentence,SC16,False - well written,en,The Charminar is located in Chennai.,Fake,Fake,Pass,Contradiction,24.5
+web+minicheck,sentence,SC17,False - well written,en,A. P. J. Abdul Kalam was the first Prime Minister of India.,Fake,Fake,Pass,Contradiction,23.3
+web+minicheck,sentence,SC18,False - well written,en,India gained independence from British rule in 1950.,Fake,Fake,Pass,Contradiction,28.1
+web+minicheck,sentence,SC19,False - well written,en,Drinking hot lemon water kills the coronavirus.,Fake,Fake,Pass,Contradiction,28.5
+web+minicheck,sentence,SC20,False - well written,en,The government is giving free laptops to all students under a new PM scheme.,Fake,Fake,Pass,Contradiction,24.0
+web+minicheck,sentence,SC21,False - informal,en,BREAKING!!! 5g towers are spreading corona virus share this before its deleted,Fake,Fake,Pass,Contradiction,23.9
+web+minicheck,sentence,SC22,False - informal,en,modi govt is giving free laptops to all students register now,Fake,Fake,Pass,Contradiction,25.3
+web+minicheck,sentence,SC23,False - informal,en,sachin tendulkar was born in kerala,Fake,Fake,Pass,Contradiction,26.3
+web+minicheck,sentence,SC24,False - informal,en,taj mahal is in mumbai,Fake,Real,Fail,Support,24.5
+web+minicheck,sentence,SC25,With attribution,en,"India's Chandrayaan-3 lander touched down near the Moon's south pole on 23 August 2023, the Indian Space Research Organisation said.",Real,Real,Pass,Support,23.5
+web+minicheck,sentence,SC26,With attribution,en,"According to officials, Hyderabad is the capital of Telangana.",Real,Real,Pass,Support,23.9
+web+minicheck,sentence,SC27,With attribution,en,"The new 2000 rupee notes contain a GPS nano chip, officials confirmed on Monday.",Fake,Fake,Pass,Contradiction,40.8
+web+minicheck,sentence,SC28,With attribution,en,"According to doctors, drinking cow urine cures cancer.",Fake,Fake,Pass,Contradiction,19.4
+web+minicheck,sentence,SC29,Telugu - true,te,హైదరాబాద్ తెలంగాణ రాజధాని.,Real,Real,Pass,Support,26.8
+web+minicheck,sentence,SC30,Telugu - true,te,తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.,Real,Real,Pass,Support,33.2
+web+minicheck,sentence,SC31,Telugu - true,te,చార్మినార్ హైదరాబాద్‌లో ఉంది.,Real,Real,Pass,Support,19.6
+web+minicheck,sentence,SC32,Telugu - true,te,గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.,Real,Real,Pass,Support,22.2
+web+minicheck,sentence,SC33,Telugu - false,te,5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.,Fake,Fake,Pass,Contradiction,16.4
+web+minicheck,sentence,SC34,Telugu - false,te,చార్మినార్ చెన్నైలో ఉంది.,Fake,Fake,Pass,Contradiction,24.3
+web+minicheck,sentence,SC35,Telugu - false,te,విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.,Fake,Real,Fail,Support,22.8
+web+minicheck,sentence,SC36,Telugu - false,te,కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.,Fake,Fake,Pass,Contradiction,14.4
+web+minicheck,sentence,SC37,Recent events,en,Abdul El-Sayed won the 2026 United States Senate election in Michigan.,Real,Real,Pass,Support,26.1
+web+minicheck,sentence,SC38,Recent events,en,Lionel Messi won the FIFA World Cup with Argentina in 2022.,Real,Real,Pass,Support,34.0
+web+minicheck,sentence,SC39,Recent events,en,Narendra Modi became the Prime Minister of India for a third term in 2024.,Real,Real,Pass,Support,26.8
+web+minicheck,sentence,SC40,Recent events,en,Argentina lost the 2022 FIFA World Cup final to France.,Fake,Fake,Pass,Contradiction,35.1
+web+minicheck,sentence,SC41,Recent events,en,Rahul Gandhi became the Prime Minister of India in 2024.,Fake,Real,Fail,Support,28.3

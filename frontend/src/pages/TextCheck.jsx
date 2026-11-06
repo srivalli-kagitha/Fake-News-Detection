@@ -174,14 +174,30 @@ export default function TextCheck() {
           {result && (
             <>
               <div className="sheet p-6">
-                {overall ? (
+                {overall?.verdict === "Unverified" ? (
+                  <div>
+                    <p className="t-verdict text-graphite">Can't verify</p>
+                    <p className="mt-3 max-w-prose">
+                      We found no evidence that confirms or contradicts{" "}
+                      {v.claims.length === 1 ? "the claim" : `any of the ${v.claims.length} claims`} in this text, so
+                      TruthLens cannot say whether it is true or false.
+                    </p>
+                    {overall.style_fake_probability !== null && overall.style_fake_probability !== undefined && (
+                      <p className="t-small mt-3 text-graphite">
+                        Writing-style signal only: the text model rates the wording{" "}
+                        {pct(overall.style_fake_probability)} like fake news. This is about how it is written, not
+                        whether it is true.
+                      </p>
+                    )}
+                  </div>
+                ) : overall ? (
                   <VerdictScale
                     verdict={textVerdict(overall.verdict)}
                     fakeProbability={overall.fake_risk}
                     confidence={Math.max(overall.fake_risk, 1 - overall.fake_risk)}
                     note={
                       overall.based_on.length > 1
-                        ? `Combines the text model (${textVerdict(c.label).title.toLowerCase()}, ${pct(c.confidence)}) with the claim evidence (${summaryVerdict(v.summary.verdict).title.toLowerCase()}).`
+                        ? `Combines the text model (${textVerdict(c.label).title.toLowerCase()}, ${pct(c.confidence)}) with the claim evidence (${summaryVerdict(v.summary.verdict).title.toLowerCase()}).${v.method === "llm" ? ` Claims checked by an LLM (${v.model}) against live evidence.` : ""}`
                         : overall.based_on[0] === "classifier"
                           ? "Based on the text model only."
                           : "Based on the claim evidence only."

@@ -1,0 +1,58 @@
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_en' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+/home/vinaygandra/newone/truthlens-ai/backend/.venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_te' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+Web search failed: No results found.
+web+minicheck  SC01 Pass       expected Real          got Real           39.8s | Hyderabad is the capital of Telangana.
+web+minicheck  SC02 Pass       expected Real          got Real           27.4s | The Polavaram Project is a multi-purpose irrigation pro
+web+minicheck  SC03 Pass       expected Real          got Real           24.7s | A. P. J. Abdul Kalam served as the 11th President of In
+web+minicheck  SC04 Fail       expected Real          got Fake           32.1s | Neeraj Chopra won the gold medal in javelin throw at th
+web+minicheck  SC05 Pass       expected Real          got Real           29.4s | Chandrayaan-3 landed near the south pole of the Moon on
+web+minicheck  SC06 Pass       expected Real          got Real           40.4s | Rabindranath Tagore won the Nobel Prize in Literature i
+web+minicheck  SC07 Pass       expected Real          got Real           32.7s | Chief minister of andhra pradesh is  nara chandra babu 
+web+minicheck  SC08 Pass       expected Real          got Real           30.5s | virat kohli is indian cricketer and he played for royal
+web+minicheck  SC09 Pass       expected Real          got Real           25.0s | charminar is in hyderabad it was built in 1591
+web+minicheck  SC10 Pass       expected Real          got Real           26.9s | india got independence on 15 august 1947
+web+minicheck  SC11 Pass       expected Real          got Real           28.5s | neeraj chopra won gold in javelin at tokyo olympics
+web+minicheck  SC12 Fail       expected Real          got Fake           29.0s | isro launched chandrayaan 3 in july 2023
+web+minicheck  SC13 Pass       expected Fake          got Fake           23.6s | The new 2000 rupee notes contain a GPS nano chip that l
+web+minicheck  SC14 Pass       expected Fake          got Fake           29.4s | 5G mobile towers spread the coronavirus.
+web+minicheck  SC15 Pass       expected Fake          got Fake           25.8s | Virat Kohli is a famous Indian footballer.
+web+minicheck  SC16 Pass       expected Fake          got Fake           24.5s | The Charminar is located in Chennai.
+web+minicheck  SC17 Pass       expected Fake          got Fake           23.3s | A. P. J. Abdul Kalam was the first Prime Minister of In
+web+minicheck  SC18 Pass       expected Fake          got Fake           28.1s | India gained independence from British rule in 1950.
+web+minicheck  SC19 Pass       expected Fake          got Fake           28.5s | Drinking hot lemon water kills the coronavirus.
+web+minicheck  SC20 Pass       expected Fake          got Fake           24.0s | The government is giving free laptops to all students u
+web+minicheck  SC21 Pass       expected Fake          got Fake           23.9s | BREAKING!!! 5g towers are spreading corona virus share 
+web+minicheck  SC22 Pass       expected Fake          got Fake           25.3s | modi govt is giving free laptops to all students regist
+web+minicheck  SC23 Pass       expected Fake          got Fake           26.3s | sachin tendulkar was born in kerala
+web+minicheck  SC24 Fail       expected Fake          got Real           24.5s | taj mahal is in mumbai
+web+minicheck  SC25 Pass       expected Real          got Real           23.5s | India's Chandrayaan-3 lander touched down near the Moon
+web+minicheck  SC26 Pass       expected Real          got Real           23.9s | According to officials, Hyderabad is the capital of Tel
+web+minicheck  SC27 Pass       expected Fake          got Fake           40.8s | The new 2000 rupee notes contain a GPS nano chip, offic
+web+minicheck  SC28 Pass       expected Fake          got Fake           19.4s | According to doctors, drinking cow urine cures cancer.
+web+minicheck  SC29 Pass       expected Real          got Real           26.8s | హైదరాబాద్ తెలంగాణ రాజధాని.
+web+minicheck  SC30 Pass       expected Real          got Real           33.2s | తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.
+web+minicheck  SC31 Pass       expected Real          got Real           19.6s | చార్మినార్ హైదరాబాద్‌లో ఉంది.
+web+minicheck  SC32 Pass       expected Real          got Real           22.2s | గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.
+web+minicheck  SC33 Pass       expected Fake          got Fake           16.4s | 5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.
+web+minicheck  SC34 Pass       expected Fake          got Fake           24.3s | చార్మినార్ చెన్నైలో ఉంది.
+web+minicheck  SC35 Fail       expected Fake          got Real           22.8s | విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.
+web+minicheck  SC36 Pass       expected Fake          got Fake           14.4s | కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.
+web+minicheck  SC37 Pass       expected Real          got Real           26.1s | Abdul El-Sayed won the 2026 United States Senate electi
+web+minicheck  SC38 Pass       expected Real          got Real           34.0s | Lionel Messi won the FIFA World Cup with Argentina in 2
+web+minicheck  SC39 Pass       expected Real          got Real           26.8s | Narendra Modi became the Prime Minister of India for a 
+web+minicheck  SC40 Pass       expected Fake          got Fake           35.1s | Argentina lost the 2022 FIFA World Cup final to France.
+web+minicheck  SC41 Fail       expected Fake          got Real           28.3s | Rahul Gandhi became the Prime Minister of India in 2024
+{
+ "date": "2026-11-06",
+ "web+minicheck": {
+  "sentence": {
+   "Pass": 36,
+   "Unverified": 0,
+   "Fail": 5,
+   "total": 41,
+   "mean_seconds": 27.1
+  }
+ }
+}

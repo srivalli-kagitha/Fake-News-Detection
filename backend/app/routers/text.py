@@ -13,12 +13,18 @@ router = APIRouter(tags=["text"])
 
 
 def combine(classification: dict | None, verification: dict | None) -> dict | None:
-    """Overall fake risk: a weighted average of the classifier and the claim evidence.
+    """Overall verdict.
 
-    The classifier judges writing style, the evidence judges facts, so when the claims could be
-    checked the evidence gets EVIDENCE_WEIGHT (default 0.7). Otherwise the classifier decides alone.
+    - Claims checked against evidence: weighted average of the evidence (EVIDENCE_WEIGHT, default 0.7)
+      and the writing-style classifier (the rest).
+    - Claim checking ran but found no evidence for any claim: "Unverified". The classifier only judges
+      how the text is written, so it is reported as a style signal, not as a true/false verdict.
+    - Claim checking switched off: the classifier alone, as the user asked.
     """
     has_evidence = bool(verification) and verification["summary"]["verdict"] != "Unverified"
+    if verification and not has_evidence:
+        return {"verdict": "Unverified", "fake_risk": None, "based_on": [],
+                "style_fake_probability": round(classification["fake_probability"], 4) if classification else None}
     if not classification and not has_evidence:
         return None
     if not has_evidence:
@@ -56,7 +62,8 @@ def analyze_text(req: TextRequest):
         input_preview=req.text,
         language=language,
         verdict=verdict,
-        confidence=classification["confidence"] if classification else None,
+        confidence=(max(overall["fake_risk"], 1 - overall["fake_risk"]) if overall and overall["fake_risk"] is not None
+                    else None if overall else classification["confidence"] if classification else None),
         details={
             "classification": {k: v for k, v in (classification or {}).items() if k != "explanation"},
             "claims_summary": verification["summary"] if verification else None,

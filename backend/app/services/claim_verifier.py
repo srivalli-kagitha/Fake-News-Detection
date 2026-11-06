@@ -12,9 +12,10 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from ..config import get_settings
 from .claim_extractor import extract_claims
-from .common import Lazy, get_device
+from .common import Lazy, get_device, logger
 from .evidence import get_retriever, rating_polarity, search_fact_checks
-from .live_sources import DEBUNK_HEADLINE, search_news, search_wikipedia
+from .llm_verifier import LLMUnavailable, llm_available, llm_name, llm_verify
+from .live_sources import DEBUNK_HEADLINE, search_news, search_web, search_wikipedia
 
 DECISION_THRESHOLD = 0.5
 
@@ -45,7 +46,14 @@ MAX_EVIDENCE = 5          # passages per claim sent to NLI (NLI is the slow step
 SAME_CLAIM_SIMILARITY = 0.65  # a fact-check or headline must be this close to be about the same claim
 HEADLINE_SUPPORT_SIMILARITY = 0.75  # a headline is short and often about something else (the "Charminar Express"
                                     # train is not the Charminar), so it may only support a near-identical claim
-MULTI_MIN_SIMILARITY = 0.50  # the multilingual NLI model accepts loose matches, so Telugu evidence must be closer
+MULTI_MIN_SIMILARITY = 0.50
+# "Taj Mahal Palace" (a hotel in Mumbai) or "Charminar Express" (a train) is not the Taj Mahal or the Charminar:
+# evidence where a name from the claim is followed by one of these words is about something else.
+OTHER_THING = re.compile(
+    r"^(?:palace|hotel|express|station|airport|stadium|hospital|restaurant|road|street|nagar|colony|bridge|mall|"
+    r"club|foundation|award|trophy|film|movie|song|school|college|university|metro|cafe|tower|towers|resort|"
+    r"apartments?|complex|market|bazaar|beach|lake|park|cinema|theatre|theater|company|limited|ltd|group|"
+    r"museum|temple|street)\b", re.I)  # the multilingual NLI model accepts loose matches, so Telugu evidence must be closer
 
 
 class NLIModel:
@@ -77,7 +85,27 @@ class NLIModel:
         return results
 
 
+class MiniCheckModel:
+    """MiniCheck (Tang et al., EMNLP 2024): is the claim supported by this document? -> probability.
+
+    Unlike NLI, which reads one passage at a time, it reads all the evidence for a claim together,
+    so a fact spread over two sentences ("Tokyo 2020 Olympics" + "held on 7 August 2021") can count.
+    It has no "contradicted" output and is English only, so contradictions still come from NLI."""
+
+    def __init__(self, model_name: str):
+        self.device = get_device()
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.model = AutoModelForSequenceClassification.from_pretrained(model_name).to(self.device).eval()
+
+    @torch.inference_mode()
+    def support(self, document: str, claim: str) -> float:
+        enc = self.tokenizer(document, claim, truncation="only_first", max_length=512,
+                             return_tensors="pt").to(self.device)
+        return float(torch.softmax(self.model(**enc).logits.float(), dim=-1)[0, 1])
+
+
 _settings = get_settings()
+_minicheck = Lazy("MiniCheck support model", lambda: MiniCheckModel(_settings.minicheck_model))
 _nli = {
     "en": Lazy("English NLI model", lambda: NLIModel(_settings.nli_en_model)),
     "multi": Lazy("Multilingual NLI model", lambda: NLIModel(_settings.nli_multi_model)),
@@ -98,6 +126,47 @@ def _decide(evidence: list[dict]) -> tuple[str, float]:
     if best_support >= DECISION_THRESHOLD:
         return "Support", best_support
     return "Unknown", 1.0 - max(best_support, best_contra)
+
+
+def _about_other_thing(claim: str, text: str) -> bool:
+    """True when the evidence names a different thing that starts with a name from the claim."""
+    claim_words = re.findall(r"[\w-]+", claim.lower())
+    lower = text.lower()
+    for n in (2, 1):
+        for i in range(len(claim_words) - n + 1):
+            name = " ".join(claim_words[i : i + n])
+            if len(name) < 4:
+                continue
+            for m in re.finditer(r"\b" + re.escape(name) + r"\b\s+([\w-]+)", lower):
+                nxt = m.group(1)
+                if nxt not in claim_words and OTHER_THING.match(nxt):
+                    return True
+    return False
+
+
+def _evidence_document(evidence: list[dict]) -> str:
+    """All evidence for one claim as one document, most relevant first, without repeating a lead sentence."""
+    pieces = []
+    for e in evidence:
+        lead = e.get("nli_text", e["text"])[: -len(e["text"])].strip() if e.get("nli_text") else ""
+        for part in (lead, e["text"]):
+            if part and part not in pieces:
+                pieces.append(part)
+    return " ".join(pieces)
+
+
+def _decide_minicheck(evidence: list[dict], support: float) -> tuple[str, float]:
+    """Support from MiniCheck (or a fact-checker's 'true' rating), contradiction from NLI and the
+    rating/headline rules. Contradiction is tested first, as in _decide."""
+    if not evidence:
+        return "Unknown", 0.0
+    support = max([support] + [e["nli"]["entailment"] for e in evidence if e.get("decided_by")])
+    best_contra = max(e["nli"]["contradiction"] for e in evidence)
+    if best_contra >= DECISION_THRESHOLD and best_contra >= support:
+        return "Contradiction", best_contra
+    if support >= DECISION_THRESHOLD:
+        return "Support", support
+    return "Unknown", 1.0 - max(support, best_contra)
 
 
 def aggregate(claims: list[dict]) -> dict:
@@ -134,6 +203,8 @@ def _gather_live(claims: list[str], language: str, settings) -> list[dict]:
     jobs = {"fact_check": search_fact_checks}
     if settings.live_search:
         jobs.update(wikipedia=search_wikipedia, news=search_news)
+        if settings.web_search and language == "en":  # Telugu web snippets were too noisy for the Telugu NLI model
+            jobs["web"] = search_web
     with ThreadPoolExecutor(max_workers=12) as pool:
         futures = [{name: pool.submit(fn, c, language) for name, fn in jobs.items()} for c in claims]
         return [{name: f.result() for name, f in per_claim.items()} for per_claim in futures]
@@ -196,6 +267,13 @@ def verify_text(text: str, language: str) -> dict:
     settings = get_settings()
     claims = extract_claims(text, language)
     facts = [strip_attribution(c) for c in claims]  # what is checked; the claim text is shown as written
+    if claims and llm_available():
+        try:
+            results = llm_verify(claims, facts, language)
+            return {"language": language, "claims": results, "summary": aggregate(results),
+                    "method": "llm", "model": llm_name()}
+        except LLMUnavailable as exc:
+            logger.warning("LLM fact checker unavailable, using the NLI pipeline: %s", exc)
     retriever = get_retriever()
     corpus_hits = retriever.search(facts, settings.evidence_top_k)
     live_results = _gather_live(facts, language, settings) if claims else []
@@ -214,10 +292,23 @@ def verify_text(text: str, language: str) -> dict:
                 e["nli"] = s
             _apply_ratings(nli, fact, evidence)
             for e in evidence:
-                if e.get("type") == "news" and not e.get("decided_by") and e["similarity"] < HEADLINE_SUPPORT_SIMILARITY:
-                    e["nli"] = {**e["nli"], "entailment": 0.0}
+                if _about_other_thing(fact, e["text"]):
+                    e["nli"] = {"entailment": 0.0, "neutral": 1.0, "contradiction": 0.0}
+                    e["about_other_thing"] = True
+                elif e.get("type") == "news" and not e.get("decided_by"):
+                    # Headlines are short and often old plans ("set for August launch"): on their own they
+                    # never contradict (only via the debunk rule), and support only a near-identical claim.
+                    e["nli"] = {**e["nli"], "contradiction": 0.0}
+                    if e["similarity"] < HEADLINE_SUPPORT_SIMILARITY:
+                        e["nli"]["entailment"] = 0.0
             evidence.sort(key=lambda e: max(e["nli"]["entailment"], e["nli"]["contradiction"]), reverse=True)
-        label, confidence = _decide(evidence)
-        results.append({"claim": claim, "checked_as": fact, "label": label, "confidence": round(confidence, 4), "evidence": evidence})
+        minicheck = None
+        if evidence and language == "en" and settings.support_verifier == "minicheck":
+            minicheck = _minicheck.get().support(
+                _evidence_document([e for e in evidence if not e.get("about_other_thing")]), fact)
+            label, confidence = _decide_minicheck(evidence, minicheck)
+        else:
+            label, confidence = _decide(evidence)
+        results.append({"claim": claim, "checked_as": fact, "minicheck_support": minicheck, "label": label, "confidence": round(confidence, 4), "evidence": evidence})
 
-    return {"language": language, "claims": results, "summary": aggregate(results)}
+    return {"language": language, "claims": results, "summary": aggregate(results), "method": "nli", "model": None}

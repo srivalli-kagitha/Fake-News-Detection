@@ -1,0 +1,45 @@
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_en' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+/home/vinaygandra/newone/truthlens-ai/backend/.venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_te' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+nli            SC01 Pass       expected Real          got Real           30.9s | Hyderabad is the capital of Telangana.
+nli            SC02 Pass       expected Real          got Real           18.1s | The Polavaram Project is a multi-purpose irrigation pro
+nli            SC03 Unverified expected Real          got Unverified     15.4s | A. P. J. Abdul Kalam served as the 11th President of In
+nli            SC04 Fail       expected Real          got Fake           19.7s | Neeraj Chopra won the gold medal in javelin throw at th
+nli            SC05 Pass       expected Real          got Real           17.7s | Chandrayaan-3 landed near the south pole of the Moon on
+nli            SC06 Pass       expected Real          got Real           26.8s | Rabindranath Tagore won the Nobel Prize in Literature i
+nli            SC07 Pass       expected Real          got Real           21.4s | Chief minister of andhra pradesh is  nara chandra babu 
+nli            SC08 Pass       expected Real          got Real           19.3s | virat kohli is indian cricketer and he played for royal
+nli            SC09 Pass       expected Real          got Real           14.1s | charminar is in hyderabad it was built in 1591
+nli            SC10 Pass       expected Real          got Real           19.3s | india got independence on 15 august 1947
+nli            SC11 Pass       expected Real          got Real           20.1s | neeraj chopra won gold in javelin at tokyo olympics
+nli            SC12 Pass       expected Real          got Real           20.5s | isro launched chandrayaan 3 in july 2023
+nli            SC13 Pass       expected Fake          got Fake           13.7s | The new 2000 rupee notes contain a GPS nano chip that l
+nli            SC14 Pass       expected Fake          got Fake           21.0s | 5G mobile towers spread the coronavirus.
+nli            SC15 Pass       expected Fake          got Fake           18.4s | Virat Kohli is a famous Indian footballer.
+nli            SC16 Pass       expected Fake          got Fake           14.5s | The Charminar is located in Chennai.
+nli            SC17 Pass       expected Fake          got Fake           15.1s | A. P. J. Abdul Kalam was the first Prime Minister of In
+nli            SC18 Pass       expected Fake          got Fake           18.4s | India gained independence from British rule in 1950.
+nli            SC19 Pass       expected Fake          got Fake           20.7s | Drinking hot lemon water kills the coronavirus.
+nli            SC20 Pass       expected Fake          got Fake           17.6s | The government is giving free laptops to all students u
+nli            SC21 Pass       expected Fake          got Fake           17.4s | BREAKING!!! 5g towers are spreading corona virus share 
+nli            SC22 Pass       expected Fake          got Fake           16.3s | modi govt is giving free laptops to all students regist
+nli            SC23 Unverified expected Fake          got Unverified     18.9s | sachin tendulkar was born in kerala
+nli            SC24 Pass       expected Fake          got Fake           18.6s | taj mahal is in mumbai
+nli            SC25 Pass       expected Real          got Real           16.8s | India's Chandrayaan-3 lander touched down near the Moon
+nli            SC26 Pass       expected Real          got Real           16.0s | According to officials, Hyderabad is the capital of Tel
+nli            SC27 Pass       expected Fake          got Fake           12.7s | The new 2000 rupee notes contain a GPS nano chip, offic
+nli            SC28 Pass       expected Fake          got Fake           13.8s | According to doctors, drinking cow urine cures cancer.
+nli            SC29 Pass       expected Real          got Real           25.5s | హైదరాబాద్ తెలంగాణ రాజధాని.
+nli            SC30 Pass       expected Real          got Real           30.3s | తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.
+nli            SC31 Pass       expected Real          got Real           15.9s | చార్మినార్ హైదరాబాద్‌లో ఉంది.
+nli            SC32 Pass       expected Real          got Real           19.8s | గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.
+nli            SC33 Pass       expected Fake          got Fake           14.3s | 5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.
+nli            SC34 Pass       expected Fake          got Fake           21.9s | చార్మినార్ చెన్నైలో ఉంది.
+nli            SC35 Unverified expected Fake          got Unverified     20.6s | విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.
+nli            SC36 Pass       expected Fake          got Fake           12.5s | కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.
+nli            SC37 Pass       expected Real          got Real           20.2s | Abdul El-Sayed won the 2026 United States Senate electi
+nli            SC38 Pass       expected Real          got Real           22.4s | Lionel Messi won the FIFA World Cup with Argentina in 2
+nli            SC39 Unverified expected Real          got Unverified     19.4s | Narendra Modi became the Prime Minister of India for a 
+nli            SC40 Pass       expected Fake          got Fake           27.3s | Argentina lost the 2022 FIFA World Cup final to France.
+nli            SC41 Fail       expected Fake          got Real           20.7s | Rahul Gandhi became the Prime Minister of India in 2024

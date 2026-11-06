@@ -38,7 +38,7 @@ t("UT14", "aggregate", "only Unknown claims", "Unverified", aggregate([{"label":
 o = combine({"fake_probability": 0.8}, {"summary": {"verdict": "Mixed Evidence", "credibility_score": 0.4}})
 t("UT15", "combine", "fake probability 0.8, credibility 0.4 (evidence weight 0.7)", ("Fake", 0.66), (o["verdict"], round(o["fake_risk"], 4)))
 o = combine({"fake_probability": 0.3}, {"summary": {"verdict": "Unverified", "credibility_score": 0.5}})
-t("UT16", "combine", "fake probability 0.3, claims Unverified", ("Real", 0.3, ["classifier"]), (o["verdict"], o["fake_risk"], o["based_on"]))
+t("UT16", "combine", "fake probability 0.3, claims Unverified", ("Unverified", None, 0.3), (o["verdict"], o["fake_risk"], o["style_fake_probability"]))
 
 out = Path(__file__).parent / "results"; out.mkdir(exist_ok=True)
 json.dump(rows, open(out / "unit_tests.json", "w"), ensure_ascii=False, indent=1)

@@ -9,6 +9,7 @@ from ..config import get_settings, is_local_reference, resolve_local
 from ..database import CheckRecord, SessionLocal
 from ..services.common import get_device
 from ..services.evidence import evidence_status
+from ..services.llm_verifier import llm_name
 from ..services.image_detector import image_model_status
 from ..services.text_classifier import text_model_status
 
@@ -49,6 +50,7 @@ def health():
         },
         "evidence": {
             "corpus_files": evidence_status()["corpus_files"],
+            "llm": llm_name(),
             "fact_check_api": bool(settings.google_factcheck_api_key.strip()),
         },
     }

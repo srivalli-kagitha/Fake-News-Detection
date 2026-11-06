@@ -123,8 +123,8 @@
   "id": "UT16",
   "function": "combine",
   "input": "fake probability 0.3, claims Unverified",
-  "expected": "('Real', 0.3, ['classifier'])",
-  "actual": "('Real', 0.3, ['classifier'])",
+  "expected": "('Unverified', None, 0.3)",
+  "actual": "('Unverified', None, 0.3)",
   "status": "Pass"
  }
 ]

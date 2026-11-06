@@ -67,7 +67,12 @@ function NliBar({ nli }) {
 
 function Evidence({ e }) {
   return (
-    <li className="border-t border-rule-soft py-3 first:border-t-0">
+    <li className={`border-t border-rule-soft py-3 first:border-t-0 ${e.cited === false ? "opacity-60" : ""}`}>
+      {e.cited && (
+        <span className="t-small mb-1 inline-block rounded bg-rule-soft px-1.5 py-0.5 font-medium text-ink">
+          Cited in the verdict
+        </span>
+      )}
       <p className="font-serif text-[1.02rem] leading-relaxed">{e.text}</p>
       <p className="t-small mt-1 text-graphite">
         {e.url ? (
@@ -114,13 +119,21 @@ export function ClaimsList({ claims, onActiveChange }) {
                 {c.label !== "Unknown" && <span className="t-small text-graphite">{pct(c.confidence)}</span>}
               </div>
             </div>
+            {c.reason && <p className="mt-2 max-w-[65ch]">{c.reason}</p>}
+            {c.knowledge_only && (
+              <p className="t-small mt-1 text-graphite">
+                Based on the model's general knowledge: no source found that states this directly.
+              </p>
+            )}
             {c.evidence.length > 0 ? (
-              <details className="mt-2">
+              <details className="mt-2" open={c.decided_by === "llm" && c.evidence.some((e) => e.cited)}>
                 <summary className="t-small inline-flex items-center gap-1 font-medium text-ink">
                   <svg className="chev h-3.5 w-3.5" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                     <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                  Show {c.evidence.length} {c.evidence.length === 1 ? "piece" : "pieces"} of evidence
+                  {c.decided_by === "llm" && c.evidence.some((e) => e.cited)
+                    ? `Evidence (${c.evidence.filter((e) => e.cited).length} cited of ${c.evidence.length})`
+                    : `Show ${c.evidence.length} ${c.evidence.length === 1 ? "piece" : "pieces"} of evidence`}
                 </summary>
                 <ul className="inset mt-3 px-4">
                   {c.evidence.map((e, j) => (

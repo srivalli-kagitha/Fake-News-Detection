@@ -3,6 +3,7 @@
 1. Wikipedia search (English or Telugu): the intro paragraphs of the best-matching articles,
    split into sentences.
 2. Google News RSS: recent news headlines from Indian and international outlets.
+3. DuckDuckGo web search (the ddgs package): result snippets from any website.
 
 The candidates are ranked by BGE-M3 similarity to the claim in claim_verifier, exactly like
 local corpus passages. If the machine is offline every function returns [] and the system
@@ -19,7 +20,8 @@ import requests
 from .common import logger
 
 HEADERS = {"User-Agent": "TruthLensAI-student-project/1.0 (https://github.com/srivalli-kagitha/Fake-News-Detection)"}
-WIKI_SLOTS = threading.Semaphore(2)  # Wikipedia answers 429 when too many requests arrive at once
+WIKI_SLOTS = threading.Semaphore(2)
+WEB_SLOTS = threading.Semaphore(2)  # DuckDuckGo blocks bursts of parallel requests  # Wikipedia answers 429 when too many requests arrive at once
 
 
 class SearchFailed(Exception):
@@ -78,50 +80,140 @@ def _get(url: str, params: dict, retries: int = 2) -> requests.Response:
     raise SearchFailed(url)
 
 
-@lru_cache(maxsize=512)
-def _wikipedia(query: str, lang: str, pages: int) -> tuple:
-    """One request: search for the query and return the intro of the best-matching pages."""
+def _page_items(page: dict, lang: str, max_sentences: int) -> list[dict]:
+    title = page.get("title", "")
+    url = f"https://{lang}.wikipedia.org/wiki/{title.replace(' ', '_')}"
+    sentences = [clean_sentence(x) for x in split_sentences(page.get("extract", ""))[:max_sentences]]
+    sentences = [x for x in sentences if 30 <= len(x) <= 600]
+    lead = sentences[0] if sentences else ""
+    out = []
+    for i, sent in enumerate(sentences):
+        # NLI reads each sentence after the article's first sentence, so "he" or "the party"
+        # in a later sentence has a name to refer to.
+        context = sent if i == 0 else f"{lead} {sent}"
+        out.append({"text": sent, "nli_text": context, "source": f"Wikipedia - {title}", "url": url,
+                    "type": "wikipedia"})
+    return out
+
+
+@lru_cache(maxsize=1024)
+def _wikipedia(query: str, lang: str, pages: int, max_sentences: int = 25) -> tuple:
+    """One request: search for the query and return the intro of the best-matching pages.
+    Returns (items, English titles of the same pages) - the second part is used for Telugu."""
+    params = {"action": "query", "generator": "search", "gsrsearch": query, "gsrlimit": pages,
+              "prop": "extracts", "exintro": 1, "explaintext": 1, "exlimit": "max", "redirects": 1,
+              "format": "json", "formatversion": 2}
+    if lang != "en":
+        params.update(prop="extracts|langlinks", lllang="en", lllimit="max")
+    with WIKI_SLOTS:
+        resp = _get(f"https://{lang}.wikipedia.org/w/api.php", params)
+    out, english = [], []
+    for page in sorted(resp.json().get("query", {}).get("pages", []), key=lambda p: p.get("index", 0)):
+        out += _page_items(page, lang, max_sentences)
+        english += [ll["title"] for ll in page.get("langlinks", []) if ll.get("lang") == "en"]
+    return tuple(out), tuple(english)
+
+
+@lru_cache(maxsize=1024)
+def _wikipedia_titles(titles: tuple, lang: str, max_sentences: int = 25) -> tuple:
+    if not titles:
+        return ()
     with WIKI_SLOTS:
         resp = _get(f"https://{lang}.wikipedia.org/w/api.php", {
-            "action": "query", "generator": "search", "gsrsearch": query, "gsrlimit": pages,
-            "prop": "extracts", "exintro": 1, "explaintext": 1, "exlimit": "max", "redirects": 1,
-            "format": "json", "formatversion": 2})
+            "action": "query", "titles": "|".join(titles), "prop": "extracts", "exintro": 1,
+            "explaintext": 1, "exlimit": "max", "redirects": 1, "format": "json", "formatversion": 2})
     out = []
-    pages_found = sorted(resp.json().get("query", {}).get("pages", []), key=lambda p: p.get("index", 0))
-    for page in pages_found:
-        title = page.get("title", "")
-        url = f"https://{lang}.wikipedia.org/wiki/{title.replace(' ', '_')}"
-        sentences = [clean_sentence(x) for x in split_sentences(page.get("extract", ""))[:25]]
-        sentences = [x for x in sentences if 30 <= len(x) <= 600]
-        lead = sentences[0] if sentences else ""
-        for i, sent in enumerate(sentences):
-            # NLI reads each sentence after the article's first sentence, so "he" or "the party"
-            # in a later sentence has a name to refer to.
-            context = sent if i == 0 else f"{lead} {sent}"
-            out.append({"text": sent, "nli_text": context, "source": f"Wikipedia - {title}", "url": url,
-                        "type": "wikipedia"})
+    for page in resp.json().get("query", {}).get("pages", []):
+        out += _page_items(page, lang, max_sentences)
     return tuple(out)
 
 
+SKIP_ENTITY = {"DATE", "TIME", "CARDINAL", "ORDINAL", "PERCENT", "MONEY", "QUANTITY"}
+
+
+def topics(claim: str, limit: int = 3) -> list[str]:
+    """Names and topics in an English claim, each searched on its own: in 'Rahul Gandhi became the Prime
+    Minister of India' the answer is on the 'Prime Minister of India' page, not on Rahul Gandhi's."""
+    from .claim_extractor import _nlp
+
+    nlp = _nlp.get()
+    if nlp is None:
+        return []
+    doc = nlp(claim)
+    found = [e.text for e in doc.ents if e.label_ not in SKIP_ENTITY]
+    chunks = list(doc.noun_chunks)
+    for i, ch in enumerate(chunks):  # "the Prime Minister" + "of" + "India" -> "Prime Minister of India"
+        words = [t for t in ch if t.pos_ not in ("DET", "PRON")]
+        if not words:
+            continue
+        phrase = " ".join(t.text for t in words)
+        nxt = chunks[i + 1] if i + 1 < len(chunks) else None
+        if nxt is not None and ch.end < len(doc) and doc[ch.end].lower_ == "of" and nxt.start == ch.end + 1:
+            phrase += " of " + " ".join(t.text for t in nxt if t.pos_ != "DET")
+        if any(t.pos_ in ("PROPN", "NOUN") for t in words) and (len(phrase.split()) > 1 or words[0].pos_ == "PROPN"):
+            found.append(phrase)
+    out, seen = [], set()
+    for f in sorted(found, key=lambda x: -len(x.split())):  # longer, more specific topics first
+        key = f.lower()
+        if key not in seen and not any(key in s for s in seen):
+            seen.add(key)
+            out.append(f)
+    return out[:limit]
+
+
 PARENTHESES = re.compile(r"\s*\([^()]*\)")
+CITATION = re.compile(r"\[(?:\d+|[a-z]|citation needed)\]")  # Wikipedia's [1] [a] [citation needed]
 
 
 def clean_sentence(text: str) -> str:
     """Removes pronunciation guides and other brackets, e.g. 'Naidu (Telugu pronunciation: [...]; born 1950)'."""
-    text = " ".join(text.split())
+    text = CITATION.sub("", " ".join(text.split()))
     for _ in range(2):  # nested brackets
         text = PARENTHESES.sub("", text)
     return text.replace(" ,", ",").strip()
 
 
 def search_wikipedia(claim: str, language: str, pages: int = 2) -> list[dict]:
+    """Keyword search, plus (English) one search per name/topic in the claim,
+    plus (Telugu) the English version of the Telugu pages found."""
     query = keywords(claim)
     if not query:
         return []
+    lang = "te" if language == "te" else "en"
+    items = []
     try:
-        return [dict(d) for d in _wikipedia(query, "te" if language == "te" else "en", pages)]
+        found, english = _wikipedia(query, lang, pages)
+        items += found
+        if lang == "te" and english:
+            items += _wikipedia_titles(tuple(english[:pages]), "en")
     except SearchFailed:
-        return []
+        pass
+    if lang == "en":
+        for topic in topics(claim):
+            try:
+                items += _wikipedia(topic, "en", 1, 12)[0]
+            except SearchFailed:
+                continue
+    else:
+        # Telugu: a whole-sentence search often misses, so the main words are also searched one by one
+        # ("చార్మినార్" finds the Charminar page), each with its English version.
+        words = [w for w in query.split() if len(w) >= 4]
+        candidates = ([" ".join(words[:2])] if len(words) >= 2 else []) + words[:2]  # names are often two words
+        for word in candidates:
+            try:
+                found, english = _wikipedia(word, "te", 1, 12)
+                items += found
+                if english:
+                    items += _wikipedia_titles(tuple(english[:1]), "en", 12)
+            except SearchFailed:
+                continue
+    seen, out = set(), []
+    for d in items:
+        key = (d["source"], d["text"])
+        if key not in seen:
+            seen.add(key)
+            out.append(dict(d))
+    return out
 
 
 @lru_cache(maxsize=512)
@@ -160,3 +252,42 @@ def search_news(claim: str, language: str, limit: int = 10) -> list[dict]:
 DEBUNK_HEADLINE = re.compile(
     r"\b(fake|false|falsely|hoax|scam|misleading|debunk\w*|rumou?rs?|myth|not true|no truth|fabricated|doctored)\b"
     r"|ఫేక్|నకిలీ|అబద్ధం|అవాస్తవం|తప్పుడు", re.I)
+
+
+SNIPPET_DATE = re.compile(r"^[A-Z][a-z]{2} \d{1,2}, \d{4}\s*[·-]\s*")  # "May 17, 2019 · ..."
+
+
+@lru_cache(maxsize=1024)
+def _web(query: str, region: str, limit: int) -> tuple:
+    try:
+        from ddgs import DDGS
+    except ImportError:
+        logger.warning("Web search needs the ddgs package (pip install ddgs).")
+        return ()
+    try:
+        with WEB_SLOTS:
+            results = DDGS(timeout=TIMEOUT).text(query, region=region, max_results=limit, backend="duckduckgo,bing,google")
+    except Exception as exc:  # ddgs raises its own exception types for rate limits and timeouts
+        (logger.debug if "No results" in str(exc) else logger.warning)("Web search failed: %s", exc)
+        raise SearchFailed(query) from exc
+    out = []
+    for r in results or []:
+        url = r.get("href", "")
+        site = url.split("/")[2].removeprefix("www.") if url.count("/") >= 2 else "web"
+        body = SNIPPET_DATE.sub("", (r.get("body") or "").replace("...", ". ").strip())
+        for sent in split_sentences(body):
+            sent = clean_sentence(sent).strip(" .·")
+            if 30 <= len(sent) <= 400:
+                out.append({"text": sent + ".", "source": f"Web - {site}", "url": url, "type": "web"})
+    return tuple(out)
+
+
+def search_web(claim: str, language: str, limit: int = 6) -> list[dict]:
+    """Snippets from a DuckDuckGo search for the claim's keywords (any website, no key)."""
+    query = keywords(claim, limit=10)
+    if not query:
+        return []
+    try:
+        return [dict(d) for d in _web(query, "in-en" if language == "en" else "in-te", limit)]
+    except SearchFailed:
+        return []

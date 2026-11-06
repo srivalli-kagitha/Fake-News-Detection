@@ -32,7 +32,16 @@ class Settings(BaseSettings):
     google_factcheck_api_key: str = ""
     live_search: bool = True
     live_top_k: int = 2
+    web_search: bool = False  # NLI pipeline only; the LLM checker always searches the web
     evidence_weight: float = 0.7
+    llm_provider: str = "groq"  # groq | ollama | none
+    groq_api_key: str = ""
+    llm_model: str = "openai/gpt-oss-120b"
+    ollama_url: str = "http://localhost:11434"
+    ollama_model: str = "qwen3:4b"
+    llm_timeout: int = 60
+    support_verifier: str = "nli"  # minicheck | nli  (English claims; Telugu always uses NLI)
+    minicheck_model: str = "lytang/MiniCheck-DeBERTa-v3-Large"
 
     max_text_length: int = 256
     lime_num_samples: int = 200

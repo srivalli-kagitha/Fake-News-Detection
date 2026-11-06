@@ -3,6 +3,7 @@
 const TEXT = {
   Fake: { title: "Likely fake", tone: "fake" },
   Real: { title: "Likely real", tone: "real" },
+  Unverified: { title: "Can't verify", tone: "neutral" },
 };
 
 const IMAGE = {

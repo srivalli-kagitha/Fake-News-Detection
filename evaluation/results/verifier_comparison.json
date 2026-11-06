@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-06",
+  "web+minicheck": {
+    "sentence": {
+      "Pass": 36,
+      "Unverified": 0,
+      "Fail": 5,
+      "total": 41,
+      "mean_seconds": 27.1
+    }
+  }
+}
