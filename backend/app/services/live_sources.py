@@ -20,8 +20,11 @@ import requests
 from .common import logger
 
 HEADERS = {"User-Agent": "TruthLensAI-student-project/1.0 (https://github.com/srivalli-kagitha/Fake-News-Detection)"}
-WIKI_SLOTS = threading.Semaphore(2)
-WEB_SLOTS = threading.Semaphore(2)  # DuckDuckGo blocks bursts of parallel requests  # Wikipedia answers 429 when too many requests arrive at once
+WIKI_SLOTS = threading.Semaphore(2)  # Wikipedia answers 429 when too many requests arrive at once
+WEB_SLOTS = threading.Semaphore(2)  # search engines block bursts of parallel requests
+# Search engines tried by the ddgs package. Yahoo answered best in testing; DuckDuckGo rate-limits
+# after heavy use and Brave/Startpage sometimes hang, so they are left out.
+WEB_ENGINES = "yahoo,duckduckgo,mojeek"
 
 
 class SearchFailed(Exception):
@@ -266,7 +269,7 @@ def _web(query: str, region: str, limit: int) -> tuple:
         return ()
     try:
         with WEB_SLOTS:
-            results = DDGS(timeout=TIMEOUT).text(query, region=region, max_results=limit, backend="duckduckgo,bing,google")
+            results = DDGS(timeout=TIMEOUT).text(query, region=region, max_results=limit, backend=WEB_ENGINES)
     except Exception as exc:  # ddgs raises its own exception types for rate limits and timeouts
         (logger.debug if "No results" in str(exc) else logger.warning)("Web search failed: %s", exc)
         raise SearchFailed(query) from exc

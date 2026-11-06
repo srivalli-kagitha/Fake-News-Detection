@@ -30,7 +30,7 @@ from .evidence import get_retriever, search_fact_checks
 from .live_sources import SearchFailed, _news, _web, _wikipedia, _wikipedia_titles, keywords
 
 LABELS = {"SUPPORTED": "Support", "REFUTED": "Contradiction", "NOT_ENOUGH_EVIDENCE": "Unknown"}
-EVIDENCE_PER_CLAIM = 8
+EVIDENCE_PER_CLAIM = 10
 SEARCH_DEADLINE = 20  # seconds for all searches of one claim
 
 
@@ -146,8 +146,12 @@ def _search_all(claim: str, queries: list[str], language: str) -> list[dict]:
     return items
 
 
-def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict]) -> list[dict]:
-    """The passages closest to the claim, without duplicates; published fact-checks always kept."""
+def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict], queries: list[str]) -> list[dict]:
+    """The most relevant passages, without duplicates; published fact-checks always kept.
+
+    Relevance is the best match with the claim OR one of the LLM's search queries: the passage that
+    refutes "Rahul Gandhi became PM" is about Narendra Modi, so it matches the query
+    "Prime Minister of India 2024" far better than the claim itself."""
     seen, pool = set(), []
     for d in corpus_hits + items:
         key = d["text"][:200]
@@ -157,13 +161,17 @@ def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict]) -
     if not pool:
         return []
     keys = [d.get("claim_reviewed") or d["text"] for d in pool]
-    sims = retriever.encode(keys) @ retriever.encode([claim])[0]
-    for d, s in zip(pool, sims):
-        d["similarity"] = float(s)
-    checks = sorted([d for d in pool if d.get("type") == "fact_check"], key=lambda d: -d["similarity"])[:2]
-    rest = sorted([d for d in pool if d.get("type") != "fact_check"], key=lambda d: -d["similarity"])
-    chosen = checks + rest[: EVIDENCE_PER_CLAIM - len(checks)]
-    return [d for d in chosen if d["similarity"] >= 0.3]
+    targets = retriever.encode([claim] + queries)
+    sims = retriever.encode(keys) @ targets.T  # passages x (claim + queries)
+    for d, row in zip(pool, sims):
+        d["similarity"] = float(row[0])          # shown to the user: closeness to the claim
+        d["_rank"] = float(row.max())            # used for choosing the passages
+    checks = sorted([d for d in pool if d.get("type") == "fact_check"], key=lambda d: -d["_rank"])[:2]
+    rest = sorted([d for d in pool if d.get("type") != "fact_check"], key=lambda d: -d["_rank"])
+    chosen = [d for d in checks + rest[: EVIDENCE_PER_CLAIM - len(checks)] if d["_rank"] >= 0.3]
+    for d in chosen:
+        d.pop("_rank", None)
+    return chosen
 
 
 VERDICT_SYSTEM = """You are a careful fact-checker. Decide whether the CLAIM is SUPPORTED, REFUTED or
@@ -220,7 +228,7 @@ def llm_verify(claims: list[str], facts: list[str], language: str) -> list[dict]
         found = list(pool.map(lambda a: _search_all(*a), [(f, q, language) for f, q in zip(facts, plans)]))
     results = []
     for claim, fact, queries, hits, items in zip(claims, facts, plans, corpus, found):
-        evidence = _select(retriever, fact, [dict(h) for h in hits if h["similarity"] >= 0.3], items)
+        evidence = _select(retriever, fact, [dict(h) for h in hits if h["similarity"] >= 0.3], items, queries)
         d = decide(fact, evidence)
         for i, e in enumerate(evidence, 1):
             e["cited"] = i in d["cited"]
