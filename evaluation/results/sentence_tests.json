@@ -1,42 +1,60 @@
 {
   "date": "2026-11-06",
-  "passed": 38,
+  "passed": 41,
+  "unverified": 0,
+  "failed": 0,
   "total": 41,
   "by_category": {
     "True - well written": {
-      "passed": 5,
+      "Pass": 6,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 6
     },
     "True - informal": {
-      "passed": 6,
+      "Pass": 6,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 6
     },
     "False - well written": {
-      "passed": 8,
+      "Pass": 8,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 8
     },
     "False - informal": {
-      "passed": 4,
+      "Pass": 4,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 4
     },
     "With attribution": {
-      "passed": 4,
+      "Pass": 4,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 4
     },
     "Telugu - true": {
-      "passed": 4,
+      "Pass": 4,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 4
     },
     "Telugu - false": {
-      "passed": 3,
+      "Pass": 4,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 4
     },
     "Recent events": {
-      "passed": 4,
+      "Pass": 5,
+      "Unverified": 0,
+      "Fail": 0,
       "total": 5
     }
   },
-  "mean_seconds": 16.0,
+  "mean_seconds": 17.5,
   "cases": [
     {
       "id": "SC01",
@@ -45,14 +63,33 @@
       "text": "Hyderabad is the capital of Telangana.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.1216,
+      "fake_risk": 0.125,
       "style_fake_probability": 0.405,
       "claims": [
         "Support"
       ],
-      "top_evidence": "The state's capital is the city of Hyderabad.",
-      "top_source": "Wikipedia - Telangana",
-      "seconds": 29.7,
+      "method": "llm",
+      "reason": "Multiple reliable sources state that Hyderabad is the capital of Telangana.",
+      "top_evidence": "Hyderabad is the capital of the Indian state of Telangana.",
+      "top_source": "Wikipedia",
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital of the Indian state of Telangana."
+        },
+        {
+          "source": "Wikipedia - Hyderabad",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital and largest city of the Indian state of Telangana."
+        },
+        {
+          "source": "Wikipedia - Telangana",
+          "url": "https://en.wikipedia.org/wiki/Telangana",
+          "text": "The state's capital is the city of Hyderabad."
+        }
+      ],
+      "seconds": 34.7,
       "result": "Pass"
     },
     {
@@ -62,14 +99,28 @@
       "text": "The Polavaram Project is a multi-purpose irrigation project on the Godavari River in Andhra Pradesh.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.186,
+      "fake_risk": 0.1889,
       "style_fake_probability": 0.618,
       "claims": [
         "Support"
       ],
+      "method": "llm",
+      "reason": "Multiple sources describe the Polavaram Project as a multi‑purpose irrigation project on the Godavari River in Andhra Pradesh.",
       "top_evidence": "The Polavaram Project is an under-construction multi-purpose irrigation project on the Godavari River in the Eluru District and Polavaram District in Andhra Pra",
       "top_source": "Wikipedia - Polavaram Project",
-      "seconds": 14.4,
+      "cited_sources": [
+        {
+          "source": "Wikipedia - Polavaram Project",
+          "url": "https://en.wikipedia.org/wiki/Polavaram_Project",
+          "text": "The Polavaram Project is an under-construction multi-purpose irrigation project on the Godavari River in the Eluru District and Polavaram District in Andhra Pradesh, India."
+        },
+        {
+          "source": "Web - blackridgeresearch.com",
+          "url": "https://www.blackridgeresearch.com/project-profiles/all-about-polavaram-irrigation-project-map-andhra-pradesh-river-godavari",
+          "text": "The Polavaram dam Irrigation Project is a multipurpose project on the river Godavari."
+        }
+      ],
+      "seconds": 16.6,
       "result": "Pass"
     },
     {
@@ -79,14 +130,38 @@
       "text": "A. P. J. Abdul Kalam served as the 11th President of India from 2002 to 2007.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0262,
+      "fake_risk": 0.0113,
       "style_fake_probability": 0.0262,
       "claims": [
-        "Unknown"
+        "Support"
       ],
-      "top_evidence": "Avul Pakir Jainulabdeen Abdul Kalam was an Indian aerospace engineer and science administrator who served as president of India from 2002 to 2007.",
-      "top_source": "Wikipedia - A. P. J. Abdul Kalam",
-      "seconds": 14.8,
+      "method": "llm",
+      "reason": "Multiple reliable sources confirm A.P.J. Abdul Kalam was the 11th President of India, serving from 2002 to 2007.",
+      "top_evidence": "The presidency of A. P. J. Abdul Kalam spanned his tenure as the 11th President of India from 25 July 2002 to 25 July 2007, during which he leveraged his backgr",
+      "top_source": "Web - en.wikipedia.org",
+      "cited_sources": [
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/2002_Indian_presidential_election",
+          "text": "The presidency of A. P. J. Abdul Kalam spanned his tenure as the 11th President of India from 25 July 2002 to 25 July 2007, during which he leveraged his background as an aerospace scientist to emphas"
+        },
+        {
+          "source": "Wikipedia - Presidency of A. P. J. Abdul Kalam",
+          "url": "https://en.wikipedia.org/wiki/Presidency_of_A._P._J._Abdul_Kalam",
+          "text": "Presidency of A. P. J. Abdul Kalam was started from 25 July 2002 when Abdul Kalam took oath as the eleventh President of India."
+        },
+        {
+          "source": "Wikipedia - List of awards and honours received by A. P. J. Abdul Kalam",
+          "url": "https://en.wikipedia.org/wiki/List_of_awards_and_honours_received_by_A._P._J._Abdul_Kalam",
+          "text": "A. P. J. Abdul Kalam was an Indian aerospace scientist and statesman who was president of India from 2002 to 2007."
+        },
+        {
+          "source": "Wikipedia - A. P. J. Abdul Kalam",
+          "url": "https://en.wikipedia.org/wiki/A._P._J._Abdul_Kalam",
+          "text": "Avul Pakir Jainulabdeen Abdul Kalam was an Indian aerospace engineer and science administrator who served as president of India from 2002 to 2007."
+        }
+      ],
+      "seconds": 16.4,
       "result": "Pass"
     },
     {
@@ -95,16 +170,35 @@
       "language": "en",
       "text": "Neeraj Chopra won the gold medal in javelin throw at the Tokyo Olympics in 2021.",
       "expected": "Real",
-      "verdict": "Fake",
-      "fake_risk": 0.6999,
+      "verdict": "Real",
+      "fake_risk": 0.004,
       "style_fake_probability": 0.0017,
       "claims": [
-        "Contradiction"
+        "Support"
       ],
-      "top_evidence": "On This Day, India's golden boy Neeraj Chopra clinched gold in javelin throw at Tokyo Olympics 2020 🔥 🙌 #NeerajChopra #JavelinThrow",
-      "top_source": "News - Facebook, 07 Aug 2025",
-      "seconds": 16.6,
-      "result": "Fail"
+      "method": "llm",
+      "reason": "Multiple reliable sources confirm Neeraj Chopra won the men’s javelin gold at the Tokyo 2020 Olympics held in 2021.",
+      "top_evidence": "On this day in 2021, Neeraj Chopra won the men’s javelin throw gold medal at the Tokyo 2020 Olympics.",
+      "top_source": "Web - olympics.com",
+      "cited_sources": [
+        {
+          "source": "Web - olympics.com",
+          "url": "https://www.olympics.com/en/news/neeraj-chopra-tokyo-olympics-gold-medal-india-javelin-thrower",
+          "text": "On this day in 2021, Neeraj Chopra won the men’s javelin throw gold medal at the Tokyo 2020 Olympics."
+        },
+        {
+          "source": "News - Olympics, 07 Aug 2021",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPTTZmTDV4STJQaGlobVpyTW9ZVC10cXQyX2FQTDR2dHU2VlNCbnpmTkxJWHp6SDJvYXBmSDlEYXNLaE9qN3ZqYlJHYzlJbUZUXzlsd3ZIQXJaREVNb1Vmci1ycUNFdTQ1R3ZkVzB4a0VFMXVFU0I3Wmh1T2NpajBjNmlCNzNYTXlIYUFvTnlxNjlicWRnUXJhSElQdHkyaWM3dWg5TkhhRHpfcC1wMEE?oc=5",
+          "text": "Neeraj Chopra wins Olympic gold medal in javelin throw at Tokyo 2020"
+        },
+        {
+          "source": "News - BBC, 07 Aug 2021",
+          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTFB1d0gyQ1RVVU9teEFmTHB0bTUyOWFSV3EwUHhXVHJFSnotZHRzUHBYYnQwckRUeFd0NE9uY2V2bVROYnJVWnJ0YTl5S1dsVDlXLXY3ZW9rMlF0WC1RZndN?oc=5",
+          "text": "Olympic Games Tokyo 2020: Neeraj Chopra wins historic Olympic gold in athletics"
+        }
+      ],
+      "seconds": 15.9,
+      "result": "Pass"
     },
     {
       "id": "SC05",
@@ -113,14 +207,38 @@
       "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 August 2023.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2821,
+      "fake_risk": 0.2849,
       "style_fake_probability": 0.9381,
       "claims": [
         "Support"
       ],
-      "top_evidence": "India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole.",
-      "top_source": "Wikipedia",
-      "seconds": 17.5,
+      "method": "llm",
+      "reason": "Multiple reliable sources state Chandrayaan-3 landed near the lunar south pole on 23 August 2023.",
+      "top_evidence": "Chandrayaan-3 landed at Shiv Shakti Point on 23 August 2023, making India the first nation to land near the lunar south pole.",
+      "top_source": "Web - chandrayaan.com",
+      "cited_sources": [
+        {
+          "source": "Web - chandrayaan.com",
+          "url": "https://chandrayaan.com/chandrayaan-3.html",
+          "text": "Chandrayaan-3 landed at Shiv Shakti Point on 23 August 2023, making India the first nation to land near the lunar south pole."
+        },
+        {
+          "source": "Wikipedia - Pragyan (Chandrayaan-3)",
+          "url": "https://en.wikipedia.org/wiki/Pragyan_(Chandrayaan-3)",
+          "text": "Chandrayaan-3 launched on 14 July 2023, carrying new versions of Vikram and Pragyan, which successfully landed near the lunar south pole on 23 August 2023."
+        },
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Chandrayaan-3",
+          "text": "India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole."
+        },
+        {
+          "source": "Web - static.pib.gov.in",
+          "url": "https://static.pib.gov.in/WriteReadData/specificdocs/documents/2023/aug/doc2023828246201.pdf",
+          "text": "On Wednesday, August 23, 2023, India created history with the successful soft landing of Chandrayaan 3 on the surface of the Moon in the South Pole area."
+        }
+      ],
+      "seconds": 15.9,
       "result": "Pass"
     },
     {
@@ -130,14 +248,28 @@
       "text": "Rabindranath Tagore won the Nobel Prize in Literature in 1913.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0036,
+      "fake_risk": 0.0065,
       "style_fake_probability": 0.01,
       "claims": [
         "Support"
       ],
-      "top_evidence": "This day in 1913: Rabindranath Tagore becomes first non-European to receive Nobel Prize in Literature",
-      "top_source": "News - The Times of India, 10 Dec 2024",
-      "seconds": 22.9,
+      "method": "llm",
+      "reason": "Multiple reliable sources confirm Tagore was awarded the Nobel Prize in Literature in 1913.",
+      "top_evidence": "The 1913 Nobel Prize in Literature was awarded to the Bengali polymath Rabindranath Tagore \"because of his profoundly sensitive, fresh and beautiful verse, by w",
+      "top_source": "Wikipedia - 1913 Nobel Prize in Literature",
+      "cited_sources": [
+        {
+          "source": "Wikipedia - 1913 Nobel Prize in Literature",
+          "url": "https://en.wikipedia.org/wiki/1913_Nobel_Prize_in_Literature",
+          "text": "The 1913 Nobel Prize in Literature was awarded to the Bengali polymath Rabindranath Tagore \"because of his profoundly sensitive, fresh and beautiful verse, by which, with consummate skill, he has made"
+        },
+        {
+          "source": "Web - nobelprize.org",
+          "url": "https://www.nobelprize.org/prizes/literature/1913/tagore/facts/",
+          "text": "The Nobel Prize in Literature 1913 was awarded to Rabindranath Tagore \"because of his profoundly sensitive, fresh and beautiful verse, by which, with consummate skill, he has made his poetic thought, "
+        }
+      ],
+      "seconds": 17.0,
       "result": "Pass"
     },
     {
@@ -147,14 +279,28 @@
       "text": "Chief minister of andhra pradesh is  nara chandra babu naidu who is elected in 2024 elections.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2991,
+      "fake_risk": 0.3012,
       "style_fake_probability": 0.9924,
       "claims": [
         "Support"
       ],
-      "top_evidence": "In the 2024 Andhra Pradesh Legislative Assembly election, the TDP returned to power once again in a landslide toppling the incumbent YSRCP government and Naidu ",
+      "method": "llm",
+      "reason": "Wikipedia entries confirm N. Chandrababu Naidu became chief minister of Andhra Pradesh after the 2024 elections.",
+      "top_evidence": "Nara Chandrababu Naidu, commonly known as CBN, is an Indian politician who is currently serving as the Chief Minister of Andhra Pradesh since 2024.",
       "top_source": "Wikipedia - N. Chandrababu Naidu",
-      "seconds": 17.2,
+      "cited_sources": [
+        {
+          "source": "Wikipedia - N. Chandrababu Naidu",
+          "url": "https://en.wikipedia.org/wiki/N._Chandrababu_Naidu",
+          "text": "Nara Chandrababu Naidu, commonly known as CBN, is an Indian politician who is currently serving as the Chief Minister of Andhra Pradesh since 2024."
+        },
+        {
+          "source": "Wikipedia - Chief Minister of Andhra Pradesh",
+          "url": "https://en.wikipedia.org/wiki/Chief_Minister_of_Andhra_Pradesh",
+          "text": "The incumbent chief minister of the state is N. Chandrababu Naidu from the TDP, since 12 June 2024."
+        }
+      ],
+      "seconds": 18.1,
       "result": "Pass"
     },
     {
@@ -164,14 +310,28 @@
       "text": "virat kohli is indian cricketer and he played for royal challengers bangalore",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2906,
+      "fake_risk": 0.3009,
       "style_fake_probability": 0.968,
       "claims": [
         "Support"
       ],
-      "top_evidence": "In league cricket, Kohli has played for the Royal Challengers Bengaluru since the inception of the team in 2008 and was part of the team that won the 2025 and 2",
-      "top_source": "Wikipedia - Career of Virat Kohli",
-      "seconds": 16.1,
+      "method": "llm",
+      "reason": "Virat Kohli is an Indian international cricketer and has played for the IPL franchise Royal Challengers Bangalore (now Royal Challengers Bengaluru).",
+      "top_evidence": "Virat Kohli IPL career: Plays for Royal Challengers Bengaluru.",
+      "top_source": "Web - en.wikipedia.org",
+      "cited_sources": [
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Virat_Kohli",
+          "text": "Virat Kohli IPL career: Plays for Royal Challengers Bengaluru."
+        },
+        {
+          "source": "Wikipedia - Virat Kohli",
+          "url": "https://en.wikipedia.org/wiki/Virat_Kohli",
+          "text": "Virat Kohli is an Indian international cricketer and former all-format captain of the Indian national team."
+        }
+      ],
+      "seconds": 22.2,
       "result": "Pass"
     },
     {
@@ -181,14 +341,28 @@
       "text": "charminar is in hyderabad it was built in 1591",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2986,
+      "fake_risk": 0.3017,
       "style_fake_probability": 0.994,
       "claims": [
         "Support"
       ],
-      "top_evidence": "Constructed in 1591, the landmark is a symbol of Hyderabad and officially incorporated in the emblem of Telangana.",
-      "top_source": "Wikipedia - Charminar",
-      "seconds": 15.0,
+      "method": "llm",
+      "reason": "Multiple reliable sources state Charminar is located in Hyderabad and was completed in 1591.",
+      "top_evidence": "Charminar was built in 1591 by Sultan Muhammad Quli Qutb Shah to commemorate the founding of Hyderabad.",
+      "top_source": "Web - britannica.com",
+      "cited_sources": [
+        {
+          "source": "Web - britannica.com",
+          "url": "https://www.britannica.com/topic/Charminar",
+          "text": "Charminar was built in 1591 by Sultan Muhammad Quli Qutb Shah to commemorate the founding of Hyderabad."
+        },
+        {
+          "source": "Web - theunitedindian.com",
+          "url": "https://www.theunitedindian.com/news/charminar-hyderabad-history-timings-entry-fee-2",
+          "text": "Charminar was built by Sultan Mohammed Quli Qutb Shah, completed in 1591, according to the Hyderabad District administration, Government of Telangana and Telangana Tourism."
+        }
+      ],
+      "seconds": 18.4,
       "result": "Pass"
     },
     {
@@ -198,14 +372,28 @@
       "text": "india got independence on 15 august 1947",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2975,
+      "fake_risk": 0.3008,
       "style_fake_probability": 0.9911,
       "claims": [
         "Support"
       ],
+      "method": "llm",
+      "reason": "Multiple reliable sources state that India gained independence from British rule on 15 August 1947.",
       "top_evidence": "India gained independence from British rule on 15 August 1947.",
       "top_source": "Wikipedia",
-      "seconds": 18.0,
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Independence_Day_(India)",
+          "text": "India gained independence from British rule on 15 August 1947."
+        },
+        {
+          "source": "Wikipedia - Independence Day (India)",
+          "url": "https://en.wikipedia.org/wiki/Independence_Day_(India)",
+          "text": "Independence Day is celebrated annually on 15 August as a public holiday in India commemorating the nation's independence from the United Kingdom on 15 August 1947."
+        }
+      ],
+      "seconds": 14.5,
       "result": "Pass"
     },
     {
@@ -215,14 +403,38 @@
       "text": "neeraj chopra won gold in javelin at tokyo olympics",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2571,
+      "fake_risk": 0.2599,
       "style_fake_probability": 0.8546,
       "claims": [
         "Support"
       ],
-      "top_evidence": "On This Day, India's golden boy Neeraj Chopra clinched gold in javelin throw at Tokyo Olympics 2020 🔥 🙌 #NeerajChopra #JavelinThrow",
-      "top_source": "News - Facebook, 07 Aug 2025",
-      "seconds": 17.2,
+      "method": "llm",
+      "reason": "Multiple reputable sources confirm Neeraj Chopra won the men’s javelin gold at the Tokyo 2020 Olympics.",
+      "top_evidence": "Athletics Tokyo 2020: Neeraj Chopra wins historic Javelin gold",
+      "top_source": "News - www.olympics.com, 21 Oct 2026",
+      "cited_sources": [
+        {
+          "source": "News - www.olympics.com, 21 Oct 2026",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQQzNEdjEzaEVJTUhlLWZEVW9yQ2VXX1d0Z1JFa2kzaXNHdDFfbkNVaU9VZ3dieXlJTzZBQjNkM21iU1RWM29TX2RvdVVndUR3b2txMGhGZGZOckp1OFJaLUtLZmMwSDlBODVnb0xYVGFfTUhacUNOUTBfV3lwckk4RFUyTUxuWFN4NnRFdnZzUFFXLU1MYXdDNU5DQXlULUcxdjR3MWFJbTBhQjlPRENjdDM5ODk?oc=5",
+          "text": "Athletics Tokyo 2020: Neeraj Chopra wins historic Javelin gold"
+        },
+        {
+          "source": "Web - olympics.com",
+          "url": "https://www.olympics.com/en/video/neeraj-chopra-indias-golden-arm-javelin-champion-tokyo",
+          "text": "Neeraj Chopra has won India’s first gold medal in Olympic track and field with a throw of 87.58 meters to clinch the javelin title at the Tokyo Games."
+        },
+        {
+          "source": "Web - espn.com",
+          "url": "https://www.espn.com/olympics/trackandfield/story/_/id/31978680/tokyo-olympics-neeraj-chopra-wins-javelin-throw-gold-become-first-indian-history-win-athletics-gold-medal",
+          "text": "Neeraj Chopra created history by becoming the first Indian to win an athletics gold medal at the Olympics by winning the men's javelin throw at Tokyo 2020 with a best throw of 87.58 on Saturday."
+        },
+        {
+          "source": "Web - olympics.com",
+          "url": "https://www.olympics.com/en/news/neeraj-chopra-tokyo-olympics-gold-medal-india-javelin-thrower",
+          "text": "On this day in 2021, Neeraj Chopra won the men’s javelin throw gold medal at the Tokyo 2020 Olympics."
+        }
+      ],
+      "seconds": 16.1,
       "result": "Pass"
     },
     {
@@ -232,14 +444,28 @@
       "text": "isro launched chandrayaan 3 in july 2023",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.2984,
+      "fake_risk": 0.3015,
       "style_fake_probability": 0.9934,
       "claims": [
         "Support"
       ],
-      "top_evidence": "Chandrayaan-3 was launched on 14 July 2023, at 14:35 IST from Satish Dhawan Space Centre in Sriharikota, Andhra Pradesh.",
-      "top_source": "Wikipedia - Chandrayaan-3",
-      "seconds": 16.3,
+      "method": "llm",
+      "reason": "Multiple reliable sources state Chandrayaan‑3 was launched on 14 July 2023 by ISRO.",
+      "top_evidence": "Chandrayaan 3 was launched on July 14, 2023, from Sriharikota aboard the LVM3-M4 rocket by ISRO.",
+      "top_source": "Web - vajiramandravi.com",
+      "cited_sources": [
+        {
+          "source": "Web - vajiramandravi.com",
+          "url": "https://vajiramandravi.com/upsc-exam/chandrayaan-3/",
+          "text": "Chandrayaan 3 was launched on July 14, 2023, from Sriharikota aboard the LVM3-M4 rocket by ISRO."
+        },
+        {
+          "source": "Wikipedia - Chandrayaan-3",
+          "url": "https://en.wikipedia.org/wiki/Chandrayaan-3",
+          "text": "Chandrayaan-3 was launched on 14 July 2023, at 14:35 IST from Satish Dhawan Space Centre in Sriharikota, Andhra Pradesh."
+        }
+      ],
+      "seconds": 16.9,
       "result": "Pass"
     },
     {
@@ -249,14 +475,33 @@
       "text": "The new 2000 rupee notes contain a GPS nano chip that lets the government track them.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.7002,
+      "fake_risk": 0.6968,
       "style_fake_probability": 0.0009,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
-      "top_source": "Wikipedia",
-      "seconds": 11.6,
+      "method": "llm",
+      "reason": "Multiple reliable sources and the RBI confirm that the 2000‑rupee notes do not have a GPS nano chip for tracking.",
+      "top_evidence": "Rs. 2000 currency notes do not have nano GPS tracking chip, it’s fake news: confirms Finance Minister",
+      "top_source": "News - FoneArena.com, 10 Nov 2016",
+      "cited_sources": [
+        {
+          "source": "News - FoneArena.com, 10 Nov 2016",
+          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOTklsWEtMd18waWdEaTliVk9RWW1QWko5Xzd4eC1oaEFTbWNzUUdwYk5LT040SXA0UUFmaEVGM1pPbXRqQVJJaHFCWnV2bkMzWVAwTkRDa2lISVhOU0k1MzlUMUNEUEdHc3BFYktjN2s4LTQ1dEZzeGQ1bVRkX0pVSklENFNjWWJBTVU2eGx0RVVFLUlCeHBTUFE5dzI5bkZMQ3VzNU1TdHZ3QVdhcy1xOFEzMWc5VVdsVXcxWmtVR3pVellKaHJ5cTRHREFUcV9COWhHa3U4b9IB3AFBVV95cUxOTjA1V0ZwTGdGSElDenY5X0tUcHduREtfai12aS1Nd2YxNmhhYUNxRWVfNFREYWFxZVhsX1hwdW5aQVNwMHpOWmNiRV84Q1p4aDhqaFRkMHRwM0llaG9UTkdEUnd0X0Jaa3pnWU5FU29yTktCdGg5UlNYcjFTS3ZfS0xpRjlOeXgtTlkxVWdzcHZvNkpHUUgzYXRMQzFESGdNeDFqbjlOcFo3aHpzeWV3UERPS1BVdXpnNXM1Zk90cjg4dTg5cXZjUVVMNTZJcHZ1SGtVWVJaUGRQSk1l?oc=5",
+          "text": "Rs. 2000 currency notes do not have nano GPS tracking chip, it’s fake news: confirms Finance Minister"
+        },
+        {
+          "source": "News - The Indian Express, 09 Nov 2016",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZE9JR1g2cElDOHRRclNkY3BrTkVQcnREYURRSVozcGtOVE1qU0dBbm5MMFJjUVAzZWpOZTl5Zi1FTXE2Wk5KZ285bXFXQ3BzZGloendGYVExdVFVZHhfcFp4S25SMVJNYklxd3ZRTV84RE80WXE0Q2Rkem1FYl9OTHVXV2hfNDVKaWllM3ZScFd2WTNVQmFYaGxtV1VURWVFc1Fqbm9CaWdpS2NJc2RjU0FwcGZSRWhyTjNtWS1wU2hsd9IByAFBVV95cUxQY0ZtTUw0NTRBVjVyeXhaaVp5MmtSLW1wX0lfMnBCZllPYzJlRVcybTBTNDdXMHAtV0hXQzVZVHdJSHpHYi13UUF0QjMyMHlvWlVkZjBTdVJvVUFwcENSeEVQakxGcDZkV3VTWFNJV3FHb1NFbXo2QWlldXM4T29uTnJTejhiNDc1MFNmR3E5MmlhbWFUNXE2amJXUVl6V0xiMVI2NWF2czNhcG9PUEdMbFhtYmIzRUI3dExPLU1HS0ZuTlp4UmxLMw?oc=5",
+          "text": "RBI’s new Rs 2000 notes do not have a Nano-GPS chip"
+        },
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Indian_2000-rupee_note",
+          "text": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false."
+        }
+      ],
+      "seconds": 14.6,
       "result": "Pass"
     },
     {
@@ -266,14 +511,28 @@
       "text": "5G mobile towers spread the coronavirus.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.7413,
+      "fake_risk": 0.7387,
       "style_fake_probability": 0.1406,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
-      "top_source": "Wikipedia",
-      "seconds": 21.8,
+      "method": "llm",
+      "reason": "Multiple fact‑checks have found no evidence that 5G towers spread COVID‑19, labeling the claim false.",
+      "top_evidence": "Full Fact fact-checked the claim \"5G WiFi networks could be responsible for the rapid spread of the new coronavirus.\" and rated it: This is not true. There is n",
+      "top_source": "Fact check - Full Fact",
+      "cited_sources": [
+        {
+          "source": "Fact check - Full Fact",
+          "url": "https://fullfact.org/health/5G-not-accelerating-coronavirus/",
+          "text": "Full Fact fact-checked the claim \"5G WiFi networks could be responsible for the rapid spread of the new coronavirus.\" and rated it: This is not true. There is no evidence that 5G WiFi networks are lin"
+        },
+        {
+          "source": "Fact check - Full Fact",
+          "url": "https://fullfact.org/online/coronavirus-5G/",
+          "text": "Full Fact fact-checked the claim \"The new coronavirus is actually the impact of 5G exposure.\" and rated it: This is incorrect, the new coronavirus is a virus and there is no evidence that 5G is harmfu"
+        }
+      ],
+      "seconds": 18.2,
       "result": "Pass"
     },
     {
@@ -288,9 +547,23 @@
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Virat Kohli is my favourite Indian cricketer: Italian footballer Agata Isabella Centasso in awe of India 'GOAT'",
-      "top_source": "News - India Today, 02 Dec 2023",
-      "seconds": 16.3,
+      "method": "llm",
+      "reason": "Virat Kohna is documented as an Indian cricketer, not a footballer.",
+      "top_evidence": "Virat Kohli is an Indian cricketer and a former captain of the Indian national cricket team.",
+      "top_source": "Wikipedia - List of international cricket centuries by Virat Kohli",
+      "cited_sources": [
+        {
+          "source": "Wikipedia - List of international cricket centuries by Virat Kohli",
+          "url": "https://en.wikipedia.org/wiki/List_of_international_cricket_centuries_by_Virat_Kohli",
+          "text": "Virat Kohli is an Indian cricketer and a former captain of the Indian national cricket team."
+        },
+        {
+          "source": "Wikipedia - Virat Kohli",
+          "url": "https://en.wikipedia.org/wiki/Virat_Kohli",
+          "text": "Virat Kohli is an Indian international cricketer and former all-format captain of the Indian national team."
+        }
+      ],
+      "seconds": 20.4,
       "result": "Pass"
     },
     {
@@ -300,14 +573,28 @@
       "text": "The Charminar is located in Chennai.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.906,
+      "fake_risk": 0.9027,
       "style_fake_probability": 0.6872,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "The city houses famous historical sites including Charminar, UNESCO Asia Pacific Heritage site of the Chowmahalla Palace, Salar Jung Museum as well as art galle",
-      "top_source": "Wikipedia - List of tourist attractions in Hyderabad",
-      "seconds": 16.0,
+      "method": "llm",
+      "reason": "All evidence identifies the Charminar as being in Hyderabad, not Chennai.",
+      "top_evidence": "Charminar is a monument, historical place, mosque and tourist attraction located in Hyderabad, Telangana.",
+      "top_source": "Web - yappe.in",
+      "cited_sources": [
+        {
+          "source": "Web - yappe.in",
+          "url": "https://yappe.in/telangana/hyderabad/charminar/78259",
+          "text": "Charminar is a monument, historical place, mosque and tourist attraction located in Hyderabad, Telangana."
+        },
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Situated bang in the heart of the old city of Hyderabad, the Charminar is one of the most recognized monuments in India."
+        }
+      ],
+      "seconds": 15.6,
       "result": "Pass"
     },
     {
@@ -317,14 +604,23 @@
       "text": "A. P. J. Abdul Kalam was the first Prime Minister of India.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.8627,
+      "fake_risk": 0.8595,
       "style_fake_probability": 0.5434,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "From missiles to nuclear program: APJ Abdul Kalam’s 7 major contributions for India",
-      "top_source": "News - WION, 15 Oct 2025",
-      "seconds": 15.1,
+      "method": "llm",
+      "reason": "A.P.J. Abdul Kalam was never Prime Minister; Jawaharlian Nehru was India's first Prime Minister.",
+      "top_evidence": "Jawaharlal Nehru was India's first prime minister.",
+      "top_source": "Wikipedia - List of prime ministers of India",
+      "cited_sources": [
+        {
+          "source": "Wikipedia - List of prime ministers of India",
+          "url": "https://en.wikipedia.org/wiki/List_of_prime_ministers_of_India",
+          "text": "Jawaharlal Nehru was India's first prime minister."
+        }
+      ],
+      "seconds": 16.8,
       "result": "Pass"
     },
     {
@@ -334,14 +630,23 @@
       "text": "India gained independence from British rule in 1950.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.7015,
+      "fake_risk": 0.6983,
       "style_fake_probability": 0.006,
       "claims": [
         "Contradiction"
       ],
+      "method": "llm",
+      "reason": "India became independent on 15 August 1947, not in 1950.",
       "top_evidence": "India gained independence from British rule on 15 August 1947.",
       "top_source": "Wikipedia",
-      "seconds": 17.4,
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Independence_Day_(India)",
+          "text": "India gained independence from British rule on 15 August 1947."
+        }
+      ],
+      "seconds": 19.3,
       "result": "Pass"
     },
     {
@@ -351,14 +656,43 @@
       "text": "Drinking hot lemon water kills the coronavirus.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9794,
+      "fake_risk": 0.977,
       "style_fake_probability": 0.9351,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Facebook Messenger video falsely claims hot lemon juice can kill the coronavirus",
-      "top_source": "News - PolitiFact, 24 Mar 2020",
-      "seconds": 20.9,
+      "method": "llm",
+      "reason": "Multiple fact‑check sources have evaluated the claim that drinking hot lemon water kills or prevents COVID‑19 and found it false.",
+      "top_evidence": "BOOM Fact Check fact-checked the claim \"Drinking warm water with lemon slice protects against the novel Coronavirus.\" and rated it: False.",
+      "top_source": "Fact check - BOOM Fact Check",
+      "cited_sources": [
+        {
+          "source": "Fact check - BOOM Fact Check",
+          "url": "https://www.boomlive.in/world/coronavirus/drinking-warm-water-with-lemon-does-not-protect-you-from-coronavirus-7204",
+          "text": "BOOM Fact Check fact-checked the claim \"Drinking warm water with lemon slice protects against the novel Coronavirus.\" and rated it: False."
+        },
+        {
+          "source": "Fact check - AFP Fact Check",
+          "url": "https://factcheck.afp.com/false-claims-drinking-water-lemon-can-prevent-covid-19-circulate-online",
+          "text": "AFP Fact Check fact-checked the claim \"Drinking lemon and warm water can prevent novel coronavirus disease\" and rated it: False."
+        },
+        {
+          "source": "Web - factcheck.cite.org.zw",
+          "url": "https://factcheck.cite.org.zw/facteating-lemons-and-drinking-hot-water-does-not-prevent-covid-19/",
+          "text": "Eating Lemons and drinking hot water does not prevent COVID-19."
+        },
+        {
+          "source": "Web - poynter.org",
+          "url": "https://www.poynter.org/?ifcn_misinformation=drinking-water-with-lemon-can-prevent-covid-19",
+          "text": "FALSE: Drinking water with lemon can prevent COVID-19."
+        },
+        {
+          "source": "News - Euronews.com, 01 Apr 2020",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQaFp2YnBYTGVYR04ydXpQMkhhS3plMVh5WjQwbUV5OVhoMU90aFMwbUJocmlaZkFXSWtlS2lidzktSHloMExLMkhidnJrYlA0Q2RYTXBGblhCMHNidV9oNDRmN0JtWlN2TTlzbklJNE1hSTFmN1A4aXl3X2tjQ0hDWk9KV3kzRTltb05FSzV0YTNjcU1VWkFSYg?oc=5",
+          "text": "Debunked: No, lemon in hot water is not a 'cure' for COVID-19"
+        }
+      ],
+      "seconds": 17.6,
       "result": "Pass"
     },
     {
@@ -368,14 +702,28 @@
       "text": "The government is giving free laptops to all students under a new PM scheme.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.6068,
+      "fake_risk": 0.6828,
       "style_fake_probability": 0.0009,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Indian government offering free laptops to students? Don't fall for this latest scam",
-      "top_source": "News - India Today, 02 Jun 2023",
-      "seconds": 16.4,
+      "method": "llm",
+      "reason": "The claim is false; the scheme is merit‑based and limited, and fact‑checks report no such universal free‑laptop program.",
+      "top_evidence": "The claim that the government is accepting applications from students for free laptops under the stated scheme is therefore false.",
+      "top_source": "Web - sarkariyojana.com",
+      "cited_sources": [
+        {
+          "source": "Web - sarkariyojana.com",
+          "url": "https://sarkariyojana.com/pm-modi-free-laptop-scheme/",
+          "text": "The claim that the government is accepting applications from students for free laptops under the stated scheme is therefore false."
+        },
+        {
+          "source": "News - Organiser, 22 Sep 2026",
+          "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxQa01hRTl5S1NqdzExeS1JM3NPWWJlbU80RHhhR0o4Z0g4clV1YmE1eGJMZGRpQXl3YTlEM0VYT3pyR0txcDJIM0NDdjhhTXRUQWZxSXJSbmZxSFg5V2FrYWFPUHJSYU40ZjNVOTVnR01BMnpNZmpTX3VaWTZkTkhIZ3otbi1nNVZNRjdlaFpJMWhwWmdIMmRNTEZtVDJCX2dIX2Z5MmpYd3lNRzNvSmhhU0FBQlZDQWR3RE9jU3dYZXRHZ1RDUF9WU0N5dzNMMGxVbFRiREJiYW03SGZheWhVS0xJUDdtdUJjV1N5aGV30gHzAUFVX3lxTFBQT3dRanJVYWpHaXJINDZlT19JZTNLTmg3OWFpNUdOczU4ZDdkT1JTUXRQbVh3Zmh5aGI2WDJKbGJKWEtqTWVqU1Z1VzZrRVZYbG8tMkQ4MjZ5NTFlcFdzTE9WTk1SaU1mQlFma0hBcVg0S2RnVV9yRnYxTW85TmtxeFBBNGdDaWJ2eVVyb2pvSnhoT2htNTZRcUs3UXVpcmhoc042a3JiZjYwaHVjMlp1S0xYV01Ic0p1Yi10Z0xuaHRCblN4WEhrQkZSMjktMkFiMVlmSmlXanlnVlFFN3JMUzduRk5BUE5pQW50OUVxdjdObw?oc=5",
+          "text": "Fact Check: Govt did not announce free laptops for students under ‘National student laptop scheme 2026’ its fake"
+        }
+      ],
+      "seconds": 19.4,
       "result": "Pass"
     },
     {
@@ -385,14 +733,23 @@
       "text": "BREAKING!!! 5g towers are spreading corona virus share this before its deleted",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9996,
+      "fake_risk": 0.9964,
       "style_fake_probability": 0.9997,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
-      "top_source": "Wikipedia",
-      "seconds": 17.4,
+      "method": "llm",
+      "reason": "Fact‑check organizations have rated the claim that 5G towers spread COVID‑19 as false.",
+      "top_evidence": "AFP Fact Check fact-checked the claim \"Coronavirus is a result of 5G\" and rated it: False.",
+      "top_source": "Fact check - AFP Fact Check",
+      "cited_sources": [
+        {
+          "source": "Fact check - AFP Fact Check",
+          "url": "https://factcheck.afp.com/experts-dismiss-claims-5g-wireless-technology-created-novel-coronavirus",
+          "text": "AFP Fact Check fact-checked the claim \"Coronavirus is a result of 5G\" and rated it: False."
+        }
+      ],
+      "seconds": 16.2,
       "result": "Pass"
     },
     {
@@ -402,14 +759,33 @@
       "text": "modi govt is giving free laptops to all students register now",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9235,
+      "fake_risk": 0.9885,
       "style_fake_probability": 0.9966,
       "claims": [
         "Contradiction"
       ],
+      "method": "llm",
+      "reason": "Multiple sources confirm there is no central Modi government scheme providing free laptops to all students, and claims of such are identified as scams.",
       "top_evidence": "Indian government offering free laptops to students? Don't fall for this latest scam",
       "top_source": "News - India Today, 02 Jun 2023",
-      "seconds": 15.6,
+      "cited_sources": [
+        {
+          "source": "News - India Today, 02 Jun 2023",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNVTlIWXUwSHQwUXhIaktwOGs5Wko1VlVzQzNiby0yWXZucTdRZ29GUHJ5UWtvaUJ3ZHhxczFwbk82a1dTdGFMQUNvbUFGb19YLWJkcVJBV2YxSWdGc3ZobXlTSjNWbllteWxpR0d2bkNEMy1XU1BaTXVIaDB5OU05OUMzTC1qYzNJUjlVZ0RSOWhaWDlNSW41TWpaemRoQzU4SE5id05tY2l6UE9pdjItd0NzSGx6empDM0NRT1NjVUdadzNfVmFYelRDOUxaM3hWWEJ0UzV5MnVUVmdDM3MyNkdYQdIB6AFBVV95cUxON3M4VjZQUFdRQVJIZ0g5bDhVUUZrME1MdGRkWGw5VWZqaUE5MXlpSm4tenU4QUU0NVZrMU1yb3hYeWZ5bEtWNWdOUUdIeVh5aEg1VU9FTDZma3kzbGJIRHg3OXR2Zk9jV0pMdGlPSW5TaGx1bmpTcVBMSUd0WlpfVmU4Q2tyVEVTNUthQTNSb0Jmb2pCNzdrT2hDNjI0SXZZLTdYWlRqcnVYcFltTVZ6eG40VDBSZWliLXA0a1VqZFZZY2NtUGJJTWFqa09OUmcyQzZuS3h2NzhqaXk5dlJ0WTc4UzZSTFZj?oc=5",
+          "text": "Indian government offering free laptops to students? Don't fall for this latest scam"
+        },
+        {
+          "source": "News - Newschecker, 18 Jul 2022",
+          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE9VMDN0RzNnTVVlMldsRnc2ZS1kUm5FT05OaWQwRVBwU25UZ2R2TXZrWm5XeFpxQmlfWk5VeDc0eTlFY3dMb19SUGxyVnVsNnFaYnVnSWtGOXRHYlRDQnA0M3dfZGthVUxk?oc=5",
+          "text": "Government Giving Free Laptops To All Students? Viral Claim Is False"
+        },
+        {
+          "source": "Web - sarkariyojana.com",
+          "url": "https://sarkariyojana.com/pm-modi-free-laptop-scheme/",
+          "text": "There is no central government scheme by any name providing free laptops to all students in India."
+        }
+      ],
+      "seconds": 19.6,
       "result": "Pass"
     },
     {
@@ -419,14 +795,28 @@
       "text": "sachin tendulkar was born in kerala",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9913,
+      "fake_risk": 0.9939,
       "style_fake_probability": 0.9913,
       "claims": [
-        "Unknown"
+        "Contradiction"
       ],
-      "top_evidence": "Sachin Suresh Interview: Being a Malayali, it's a dream to play for Kerala Blasters FC",
-      "top_source": "News - Indian Super League | Official Website, 14 Dec 2023",
-      "seconds": 16.6,
+      "method": "llm",
+      "reason": "Multiple reliable sources state Sachin Tendulkar was born in Bombay, Maharashtra, not Kerala.",
+      "top_evidence": "Sachin Tendulkar was born on 24 April 1973 in Dadar, Bombay, into a Marathi family.",
+      "top_source": "Web - en.wikipedia.org",
+      "cited_sources": [
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Sachin_Tendulkar",
+          "text": "Sachin Tendulkar was born on 24 April 1973 in Dadar, Bombay, into a Marathi family."
+        },
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Sachin_Tendulkar",
+          "text": "Sachin Ramesh Tendulkar was born on 24 April 1973 at the Nirmal Nursing Home in the Dadar neighbourhood of Bombay,  into a Marathi family."
+        }
+      ],
+      "seconds": 18.1,
       "result": "Pass"
     },
     {
@@ -436,14 +826,33 @@
       "text": "taj mahal is in mumbai",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9963,
+      "fake_risk": 0.9932,
       "style_fake_probability": 0.9889,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "The hotel is named after the Taj Mahal, which is located in the city of Agra, approximately 1,050 kilometres from Mumbai.",
-      "top_source": "Wikipedia - Taj Mahal Palace Hotel",
-      "seconds": 15.0,
+      "method": "llm",
+      "reason": "The Taj Mahal is a mausoleum located in Agra, Uttar Pradesh, not in Mumbai.",
+      "top_evidence": "The Taj Mahal is located on the right bank of the Yamuna River in a vast Mughal garden that encompasses nearly 17 hectares, in the Agra District in Uttar Prades",
+      "top_source": "Web - whereig.com",
+      "cited_sources": [
+        {
+          "source": "Web - whereig.com",
+          "url": "https://www.whereig.com/wonders-of-the-world/where-is-taj-mahal.html",
+          "text": "The Taj Mahal is located on the right bank of the Yamuna River in a vast Mughal garden that encompasses nearly 17 hectares, in the Agra District in Uttar Pradesh."
+        },
+        {
+          "source": "Web - whereig.com",
+          "url": "https://www.whereig.com/wonders-of-the-world/where-is-taj-mahal.html",
+          "text": "The Taj Mahal is located in Agra city of India, in the Uttar Pradesh state."
+        },
+        {
+          "source": "Web - britannica.com",
+          "url": "https://www.britannica.com/topic/Taj-Mahal",
+          "text": "The Taj Mahal is a mausoleum complex in Agra, Uttar Pradesh, in northern India, built by the Mughal emperor Shah Jahan in the 17th century."
+        }
+      ],
+      "seconds": 20.3,
       "result": "Pass"
     },
     {
@@ -453,14 +862,48 @@
       "text": "India's Chandrayaan-3 lander touched down near the Moon's south pole on 23 August 2023, the Indian Space Research Organisation said.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0003,
+      "fake_risk": 0.0036,
       "style_fake_probability": 0.0002,
       "claims": [
         "Support"
       ],
-      "top_evidence": "It entered lunar orbit on 5 August, and touched down near the lunar south pole, at 69°S, on 23 August 2023 at 18:04 IST.",
-      "top_source": "Wikipedia - Chandrayaan-3",
-      "seconds": 16.9,
+      "method": "llm",
+      "reason": "Multiple reliable sources state Chandrayaan-3 landed near the Moon's south pole on 23 August 2023.",
+      "top_evidence": "The Indian Space Research Organisation Chandrayaan-3 touched down on the Moon on 23 August 2023.",
+      "top_source": "Web - lroc.im-ldi.com",
+      "cited_sources": [
+        {
+          "source": "Web - lroc.im-ldi.com",
+          "url": "https://lroc.im-ldi.com/images/1314",
+          "text": "The Indian Space Research Organisation Chandrayaan-3 touched down on the Moon on 23 August 2023."
+        },
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Chandrayaan-3",
+          "text": "India's Chandrayaan-3 lander Vikram landed near the south pole of the Moon on 23 August 2023, making India the first country to land near the lunar south pole."
+        },
+        {
+          "source": "Web - science.nasa.gov",
+          "url": "https://science.nasa.gov/mission/chandrayaan-3/",
+          "text": "Chandrayaan-3 is an Indian Space Research Organization mission that landed near the south pole of the Moon on Aug."
+        },
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Chandrayaan_programme",
+          "text": "The second lander and rover mission Chandrayaan-3 successfully landed on the Moon on 23 August 2023, making India the first nation to successfully land a spacecraft in the lunar south pole region, and"
+        },
+        {
+          "source": "Web - static.pib.gov.in",
+          "url": "https://static.pib.gov.in/WriteReadData/specificdocs/documents/2023/aug/doc2023828246201.pdf",
+          "text": "On Wednesday, August 23, 2023, India created history with the successful soft landing of Chandrayaan 3 on the surface of the Moon in the South Pole area."
+        },
+        {
+          "source": "Wikipedia - Pragyan (Chandrayaan-3)",
+          "url": "https://en.wikipedia.org/wiki/Pragyan_(Chandrayaan-3)",
+          "text": "Chandrayaan-3 launched on 14 July 2023, carrying new versions of Vikram and Pragyan, which successfully landed near the lunar south pole on 23 August 2023."
+        }
+      ],
+      "seconds": 15.5,
       "result": "Pass"
     },
     {
@@ -470,14 +913,63 @@
       "text": "According to officials, Hyderabad is the capital of Telangana.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0012,
+      "fake_risk": 0.0045,
       "style_fake_probability": 0.0034,
       "claims": [
         "Support"
       ],
-      "top_evidence": "The state's capital is the city of Hyderabad.",
-      "top_source": "Wikipedia - Telangana",
-      "seconds": 16.8,
+      "method": "llm",
+      "reason": "Multiple reliable sources state that Hyderabad is the capital of Telangana.",
+      "top_evidence": "Hyderabad is the capital of the Indian state of Telangana.",
+      "top_source": "Wikipedia",
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital of the Indian state of Telangana."
+        },
+        {
+          "source": "Web - britannica.com",
+          "url": "https://www.britannica.com/place/Hyderabad-India",
+          "text": "The capital of Telangana is Hyderabad."
+        },
+        {
+          "source": "Wikipedia - Hyderabad",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital and largest city of the Indian state of Telangana."
+        },
+        {
+          "source": "Web - indiatoday.in",
+          "url": "https://www.indiatoday.in/india/story/hyderabad-joint-capital-andhra-pradesh-telangana-states-lok-sabha-elections-2547155-2024-06-02",
+          "text": "The capital of Telangana is Hyderabad, in west-central Telangana."
+        },
+        {
+          "source": "Web - britannica.com",
+          "url": "https://www.britannica.com/place/Telengana",
+          "text": "The capital of Telangana is Hyderabad, one of India’s most important metropolitan cities."
+        },
+        {
+          "source": "Web - vedantu.com",
+          "url": "https://www.vedantu.com/geography/capital-of-telangana",
+          "text": "The capital of Telangana is Hyderabad, one of India's most important metropolitan cities."
+        },
+        {
+          "source": "Web - vedantu.com",
+          "url": "https://www.vedantu.com/geography/capital-of-telangana",
+          "text": "The capital of Telangana is Hyderabad, a major metropolitan city in southern India."
+        },
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Telangana",
+          "text": "The state's capital is the city of Hyderabad."
+        },
+        {
+          "source": "Web - britannica.com",
+          "url": "https://www.britannica.com/place/Hyderabad-India",
+          "text": "Hyderabad is a city in Telangana state, south-central India."
+        }
+      ],
+      "seconds": 16.5,
       "result": "Pass"
     },
     {
@@ -487,14 +979,33 @@
       "text": "The new 2000 rupee notes contain a GPS nano chip, officials confirmed on Monday.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.6997,
+      "fake_risk": 0.6966,
       "style_fake_probability": 0.0003,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
-      "top_source": "Wikipedia",
-      "seconds": 13.8,
+      "method": "llm",
+      "reason": "Multiple reputable news sources state that the new Rs 2000 notes do not contain a nano GPS chip, debunking the claim.",
+      "top_evidence": "The new RBI Rs 2000 note does not come with Nano-GPS chip.",
+      "top_source": "Web - indiatoday.in",
+      "cited_sources": [
+        {
+          "source": "Web - indiatoday.in",
+          "url": "https://www.indiatoday.in/technology/features/story/no-rs-2000-note-wont-have-nano-gps-for-tracking-but-it-may-have-rfid-351039-2016-11-10",
+          "text": "The new RBI Rs 2000 note does not come with Nano-GPS chip."
+        },
+        {
+          "source": "News - The Indian Express, 09 Nov 2016",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZE9JR1g2cElDOHRRclNkY3BrTkVQcnREYURRSVozcGtOVE1qU0dBbm5MMFJjUVAzZWpOZTl5Zi1FTXE2Wk5KZ285bXFXQ3BzZGloendGYVExdVFVZHhfcFp4S25SMVJNYklxd3ZRTV84RE80WXE0Q2Rkem1FYl9OTHVXV2hfNDVKaWllM3ZScFd2WTNVQmFYaGxtV1VURWVFc1Fqbm9CaWdpS2NJc2RjU0FwcGZSRWhyTjNtWS1wU2hsd9IByAFBVV95cUxQY0ZtTUw0NTRBVjVyeXhaaVp5MmtSLW1wX0lfMnBCZllPYzJlRVcybTBTNDdXMHAtV0hXQzVZVHdJSHpHYi13UUF0QjMyMHlvWlVkZjBTdVJvVUFwcENSeEVQakxGcDZkV3VTWFNJV3FHb1NFbXo2QWlldXM4T29uTnJTejhiNDc1MFNmR3E5MmlhbWFUNXE2amJXUVl6V0xiMVI2NWF2czNhcG9PUEdMbFhtYmIzRUI3dExPLU1HS0ZuTlp4UmxLMw?oc=5",
+          "text": "RBI’s new Rs 2000 notes do not have a Nano-GPS chip"
+        },
+        {
+          "source": "Web - indianexpress.com",
+          "url": "https://indianexpress.com/article/technology/tech-news-technology/nope-rs-2000-note-does-not-have-a-gps-nano-chip-inside-it/",
+          "text": "RBI's new Rs 2000 note does not have a Nano-GPS chip as is being claimed on social media, WhatsApp."
+        }
+      ],
+      "seconds": 16.2,
       "result": "Pass"
     },
     {
@@ -504,14 +1015,28 @@
       "text": "According to doctors, drinking cow urine cures cancer.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.9474,
+      "fake_risk": 0.9372,
       "style_fake_probability": 0.8257,
       "claims": [
         "Contradiction"
       ],
+      "method": "llm",
+      "reason": "Scientific sources and fact‑checks state there is no evidence that drinking cow urine cures cancer.",
       "top_evidence": "Drinking cow urine has not been scientifically shown to cure cancer or COVID-19.",
       "top_source": "Wikipedia",
-      "seconds": 15.0,
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/COVID-19_misinformation_in_India",
+          "text": "Drinking cow urine has not been scientifically shown to cure cancer or COVID-19."
+        },
+        {
+          "source": "Web - cioncancerclinics.com",
+          "url": "https://www.cioncancerclinics.com/immunotherapy/panchagavya-cow-urine-cancer-claims/",
+          "text": "Fact: no clinical trial recognised by NCCN, ASCO, ESMO, ICMR, or CDSCO has shown that panchagavya or cow urine treats, shrinks, or cures any human cancer."
+        }
+      ],
+      "seconds": 14.3,
       "result": "Pass"
     },
     {
@@ -521,14 +1046,38 @@
       "text": "హైదరాబాద్ తెలంగాణ రాజధాని.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.063,
+      "fake_risk": 0.0634,
       "style_fake_probability": 0.1998,
       "claims": [
         "Support"
       ],
-      "top_evidence": "ఇది తెలంగాణ రాష్ట్ర రాజధాని హైదరాబాద్ నుండి బయలుదేరి, మహారాష్ట్ర, మధ్య ప్రదేశ్, ఉత్తర ప్రదేశ్, రాజస్థాన్, హర్యానా రాష్ట్రాల ప్రధాన పట్టణాల ద్వారా ప్రయాణించి భార",
-      "top_source": "Wikipedia - తెలంగాణ ఎక్స్‌ప్రెస్",
-      "seconds": 14.7,
+      "method": "llm",
+      "reason": "Multiple reliable sources state that Hyderabad is the capital of the Indian state of Telangana.",
+      "top_evidence": "Hyderabad is the capital of the Indian state of Telangana.",
+      "top_source": "Wikipedia",
+      "cited_sources": [
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital of the Indian state of Telangana."
+        },
+        {
+          "source": "Web - indiatoday.in",
+          "url": "https://www.indiatoday.in/india/story/hyderabad-joint-capital-andhra-pradesh-telangana-states-lok-sabha-elections-2547155-2024-06-02",
+          "text": "The capital of Telangana is Hyderabad, in west-central Telangana."
+        },
+        {
+          "source": "Wikipedia - Hyderabad",
+          "url": "https://en.wikipedia.org/wiki/Hyderabad",
+          "text": "Hyderabad is the capital and largest city of the Indian state of Telangana."
+        },
+        {
+          "source": "Web - vedantu.com",
+          "url": "https://www.vedantu.com/geography/capital-of-telangana",
+          "text": "The capital of Telangana is Hyderabad, a major metropolitan city in southern India."
+        }
+      ],
+      "seconds": 15.2,
       "result": "Pass"
     },
     {
@@ -538,14 +1087,28 @@
       "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.1065,
+      "fake_risk": 0.1051,
       "style_fake_probability": 0.3385,
       "claims": [
         "Support"
       ],
-      "top_evidence": "Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh.",
-      "top_source": "Wikipedia",
-      "seconds": 15.1,
+      "method": "llm",
+      "reason": "Multiple reliable sources state that Telangana was officially formed on 2 June 2014.",
+      "top_evidence": "Following the enactment of the Andhra Pradesh Reorganisation Act, 2014, the state of Telangana was officially formed on 2 June 2014.",
+      "top_source": "Wikipedia - Chief Minister of Telangana",
+      "cited_sources": [
+        {
+          "source": "Wikipedia - Chief Minister of Telangana",
+          "url": "https://en.wikipedia.org/wiki/Chief_Minister_of_Telangana",
+          "text": "Following the enactment of the Andhra Pradesh Reorganisation Act, 2014, the state of Telangana was officially formed on 2 June 2014."
+        },
+        {
+          "source": "Wikipedia",
+          "url": "https://en.wikipedia.org/wiki/Telangana",
+          "text": "Telangana was formed as a separate state of India on 2 June 2014, carved out of Andhra Pradesh."
+        }
+      ],
+      "seconds": 16.4,
       "result": "Pass"
     },
     {
@@ -555,14 +1118,53 @@
       "text": "చార్మినార్ హైదరాబాద్‌లో ఉంది.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.153,
+      "fake_risk": 0.139,
       "style_fake_probability": 0.4516,
       "claims": [
         "Support"
       ],
+      "method": "llm",
+      "reason": "Multiple sources confirm that the Charminar is located in Hyderabad, India.",
       "top_evidence": "చార్మినార్ భారతదేశంలోని హైదరాబాదు పాతబస్తిలో ఉన్న స్మారక చిహ్నం, మసీదు.",
       "top_source": "Wikipedia - చార్మినార్",
-      "seconds": 11.4,
+      "cited_sources": [
+        {
+          "source": "Wikipedia - చార్మినార్",
+          "url": "https://te.wikipedia.org/wiki/చార్మినార్",
+          "text": "చార్మినార్ భారతదేశంలోని హైదరాబాదు పాతబస్తిలో ఉన్న స్మారక చిహ్నం, మసీదు."
+        },
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Explanation: The Charminar is located in Hyderabad, the capital city of Telangana, India."
+        },
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Jul 15, 2025 · Charminar is strategically located at the heart of the Old City in Hyderabad."
+        },
+        {
+          "source": "Web - mapsofindia.com",
+          "url": "https://www.mapsofindia.com/secunderabad/travel/charminar.html",
+          "text": "The Charminar Hyderabad, is monument and mosque located & also its global icon."
+        },
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Where is the Charminar Located?."
+        },
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Charminar is an important religious monument and a mosque built in the 16th century and located in Char Kaman, the district of Ghansi Bazaar, southern Hyderabad, Telangana."
+        },
+        {
+          "source": "Web - guidetour.in",
+          "url": "https://guidetour.in/hyderabad-charminar/",
+          "text": "Charminar is one of Hyderabad’s most iconic landmarks, known for its rich history and stunning architecture."
+        }
+      ],
+      "seconds": 15.4,
       "result": "Pass"
     },
     {
@@ -572,14 +1174,43 @@
       "text": "గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.3935,
+      "fake_risk": 0.1215,
       "style_fake_probability": 0.3935,
       "claims": [
-        "Unknown"
+        "Support"
       ],
-      "top_evidence": "Hyderabad is the capital of the Indian state of Telangana.",
-      "top_source": "Wikipedia",
-      "seconds": 12.9,
+      "method": "llm",
+      "reason": "Multiple sources state that Golconda Fort is located on the western outskirts of Hyderabad, confirming the claim.",
+      "top_evidence": "Golconda Fort is one of the most famous landmarks of the city of Hyderabad.",
+      "top_source": "Web - hyderabadtourism.travel",
+      "cited_sources": [
+        {
+          "source": "Web - hyderabadtourism.travel",
+          "url": "https://www.hyderabadtourism.travel/golconda-fort-hyderabad",
+          "text": "Golconda Fort is one of the most famous landmarks of the city of Hyderabad."
+        },
+        {
+          "source": "Web - tourism.telangana.gov.in",
+          "url": "https://www.tourism.telangana.gov.in/attractions/golconda-fort",
+          "text": "The Golconda Fort is a majestic testament to history and architectural grandeur in the western region of Hyderabad, only 9 km from Hussain Sagar Lake."
+        },
+        {
+          "source": "Web - hyderabadtourism.travel",
+          "url": "https://www.hyderabadtourism.travel/golconda-fort-hyderabad",
+          "text": "Golconda Fort is a fortified citadel on a granite hill on the western outskirts of Hyderabad, Telangana, notable for its layered Qutb Shahi and earlier Kakatiya history."
+        },
+        {
+          "source": "Wikipedia - Golconda",
+          "url": "https://en.wikipedia.org/wiki/Golconda",
+          "text": "Golconda or Muhammadnagar is a fortified citadel and ruined city located on the western outskirts of Hyderabad, Telangana, India."
+        },
+        {
+          "source": "News - The Hindu, 21 Aug 2026",
+          "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxNS2I0RWh4YWZJR1hhc0FaQ3pFOUR3R25WSE5xaE5PZWhUN0tzcFI3NGxqZ2ItYWhSR1RnckJOMHBadnFVbndMbG51eVpzcTMyWldTWnJDcmhVZDMySHF0OHdiSmpocVAtRE9qbWl1bnJCUk5LdDJCd0lXcnNlY2RXd3A2WXRoQzlxRDBENG1nR29vakxjTHp3WnRGcG5QR3c4c1E1SkZwbklKNkVSdW1wWjBPbGQ1a3RxaFk4X2dPYWhheGFtU1RkWlNzOG1reVRZcC1CelRRYlJOZDJELWhTN1psbGw2TXh1X3VnbDZQTENxMEXSAfoBQVVfeXFMTW1CTGN4UTkxeEhVVjFiS1JlVmpnRTR4M0Z4WFpiUnh2d1FMTFN1Q01ZNi1ZS1Jra3RhaGVENmRlZl84NUpzTnRGLTEyVlFiMUFIRG15WlpwdUVKN00yVk5QX1ExNWlHUjhyZnU2eFpBaWgtOU1peElyaWdqTzVYOXFqb1RoalJneC0yeWVJV1FyclNaTExUMk1RZTdmS2F6Z1pDNVNiaTNsVUZEekdzbFVuSGxUMUp0T0tNQlBzeUs0VnZQVEtieFhTdjBVNDB3bVlHYU5MV0M0WXhBQTFXQVJtdllRaTM1TmpiLVYyUVNsSW9DNi0yLXBpZw?oc=5",
+          "text": "Mystery about discovery of tunnel sparks excitement in 500-year-old Golconda Fort in Hyderabad"
+        }
+      ],
+      "seconds": 18.6,
       "result": "Pass"
     },
     {
@@ -589,14 +1220,33 @@
       "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.914,
+      "fake_risk": 0.9168,
       "style_fake_probability": 0.7345,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "5G mobile networks do not spread COVID-19; viruses cannot travel on radio waves or mobile networks.",
-      "top_source": "Wikipedia",
-      "seconds": 5.6,
+      "method": "llm",
+      "reason": "Multiple reliable sources identify the idea that 5G towers spread COVID-19 as a conspiracy theory and misinformation.",
+      "top_evidence": "Conspiracy Theorists Burn 5G Towers Claiming Link to Virus",
+      "top_source": "News - VOA - Voice of America English News, 21 Apr 2020",
+      "cited_sources": [
+        {
+          "source": "News - VOA - Voice of America English News, 21 Apr 2020",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNUS1ILWFidURqbDFFcWhsQmpwZ2hIWDZSclZycWJEX2gwdUdTYUgtRmhxWTA1N293Y181M2s4dHdZSzFCbFpDckRZandyeTNPbEZhSm9vNW5qSi1uNkZqWjQyZThSNmQ1MWZ1U3JvdlFWR3NWRTFOc3AxbE5pUkEtVVRxM2FiaGdJVkVYNnVnSkZQbENhWXhERW9SVGI3M05sdXhUbFRKLXVCeDJLU1JkODFB0gG0AUFVX3lxTE55bVJuVFU5LURLRng5NDAwMDliMDhmN0JpLU02TzZCTXRmZFc1dF9PTmxtWXlybDJBQzNvUUZOQkpfemNoOHBkc3FMMnZNcEJ6ZDhJRDU0b1M4aDd0MExWcWVLRFFLZUVrek9QRktlSXNUZFQyUlFUY09MUXVPTXI1S3drcFZkMFM3ZVZSZEVQNEVoMC02RmFNNHZIQ3NWZy1uczhCMnFfdFBzRUpnTHVzRVJVUA?oc=5",
+          "text": "Conspiracy Theorists Burn 5G Towers Claiming Link to Virus"
+        },
+        {
+          "source": "Web - ofcom.org.uk",
+          "url": "https://www.ofcom.org.uk/spectrum/electromagnetic-fields/clearing-up-myths-5g-and-coronavirus",
+          "text": "There is a conspiracy theory that claims 5G is connected to the spread of the coronavirus."
+        },
+        {
+          "source": "Wikipedia - 5G misinformation",
+          "url": "https://en.wikipedia.org/wiki/5G_misinformation",
+          "text": "Misinformation related to 5G telecommunications technology is widespread in many countries of the world."
+        }
+      ],
+      "seconds": 16.5,
       "result": "Pass"
     },
     {
@@ -605,16 +1255,30 @@
       "language": "te",
       "text": "చార్మినార్ చెన్నైలో ఉంది.",
       "expected": "Fake",
-      "verdict": "Real",
-      "fake_risk": 0.4755,
+      "verdict": "Fake",
+      "fake_risk": 0.8391,
       "style_fake_probability": 0.4755,
       "claims": [
-        "Unknown"
+        "Contradiction"
       ],
-      "top_evidence": "హైదరాబాద్ నుంచి వెళ్లే చార్మినార్ ఎక్స్‎ప్రెస్ ఆగే చెన్నై స్టేషన్ మారింది..!",
-      "top_source": "News - V6 Velugu, 04 Apr 2026",
-      "seconds": 10.4,
-      "result": "Fail"
+      "method": "llm",
+      "reason": "Charminar is a historic monument located in Hyderabad, not in Chennai.",
+      "top_evidence": "Charminar is one of the most important landmarks of the city.",
+      "top_source": "Web - latlong.net",
+      "cited_sources": [
+        {
+          "source": "Web - latlong.net",
+          "url": "https://www.latlong.net/place/charminar-hyderabad-telangana-india-11934.html",
+          "text": "Charminar is one of the most important landmarks of the city."
+        },
+        {
+          "source": "Wikipedia - Charminar",
+          "url": "https://en.wikipedia.org/wiki/Charminar",
+          "text": "The Charminar is situated on the east bank of Musi River."
+        }
+      ],
+      "seconds": 17.7,
+      "result": "Pass"
     },
     {
       "id": "SC35",
@@ -623,14 +1287,28 @@
       "text": "విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.5465,
+      "fake_risk": 0.8464,
       "style_fake_probability": 0.5465,
       "claims": [
-        "Unknown"
+        "Contradiction"
       ],
-      "top_evidence": "ఇండియన్ ప్రీమియర్ లీగ్లో ముంబై ఇండియన్స్ జట్టుకు ప్రాతినిధ్యం వహిస్తున్నాడు.",
-      "top_source": "Wikipedia - రోహిత్ శర్మ",
-      "seconds": 10.3,
+      "method": "llm",
+      "reason": "Virat Kohli is known as an Indian international cricketer and football fan, not as a football player.",
+      "top_evidence": "Nov 11, 2023 · Virat Kohli is an avid follower of European football.",
+      "top_source": "Web - en.wikipedia.org",
+      "cited_sources": [
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Virat_Kohli",
+          "text": "Nov 11, 2023 · Virat Kohli is an avid follower of European football."
+        },
+        {
+          "source": "Wikipedia - Virat Kohli",
+          "url": "https://en.wikipedia.org/wiki/Virat_Kohli",
+          "text": "Virat Kohli is an Indian international cricketer and former all-format captain of the Indian national team."
+        }
+      ],
+      "seconds": 18.6,
       "result": "Pass"
     },
     {
@@ -640,14 +1318,33 @@
       "text": "కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.8495,
+      "fake_risk": 0.8474,
       "style_fake_probability": 0.503,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "Indian 2000 rupee banknotes do not contain any GPS or nano chip; viral claims about a tracking chip were false.",
-      "top_source": "Wikipedia",
-      "seconds": 5.7,
+      "method": "llm",
+      "reason": "Multiple reputable sources report that the new Rs 2000 note does not contain a GPS chip, refuting the claim.",
+      "top_evidence": "The new RBI Rs 2000 note does not come with Nano-GPS chip.",
+      "top_source": "Web - indianexpress.com",
+      "cited_sources": [
+        {
+          "source": "Web - indianexpress.com",
+          "url": "https://indianexpress.com/article/technology/tech-news-technology/nope-rs-2000-note-does-not-have-a-gps-nano-chip-inside-it/",
+          "text": "The new RBI Rs 2000 note does not come with Nano-GPS chip."
+        },
+        {
+          "source": "News - The Indian Express, 09 Nov 2016",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNZE9JR1g2cElDOHRRclNkY3BrTkVQcnREYURRSVozcGtOVE1qU0dBbm5MMFJjUVAzZWpOZTl5Zi1FTXE2Wk5KZ285bXFXQ3BzZGloendGYVExdVFVZHhfcFp4S25SMVJNYklxd3ZRTV84RE80WXE0Q2Rkem1FYl9OTHVXV2hfNDVKaWllM3ZScFd2WTNVQmFYaGxtV1VURWVFc1Fqbm9CaWdpS2NJc2RjU0FwcGZSRWhyTjNtWS1wU2hsd9IByAFBVV95cUxQY0ZtTUw0NTRBVjVyeXhaaVp5MmtSLW1wX0lfMnBCZllPYzJlRVcybTBTNDdXMHAtV0hXQzVZVHdJSHpHYi13UUF0QjMyMHlvWlVkZjBTdVJvVUFwcENSeEVQakxGcDZkV3VTWFNJV3FHb1NFbXo2QWlldXM4T29uTnJTejhiNDc1MFNmR3E5MmlhbWFUNXE2amJXUVl6V0xiMVI2NWF2czNhcG9PUEdMbFhtYmIzRUI3dExPLU1HS0ZuTlp4UmxLMw?oc=5",
+          "text": "RBI’s new Rs 2000 notes do not have a Nano-GPS chip"
+        },
+        {
+          "source": "News - The News Minute, 09 Nov 2016",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOYzJmMkVDeGNqSWRVZTQtTHkzX0dHeVdlVmxCeGhsMDhTQ09ZdnJpVXY2cGZYbzByWkU1QVdUN1RpOU50X1ZoaDhjUWUxdEcwSnNBVWx4T3pIdzJkcDFlckVUR09GdElrQkRBQ0VkUW5aRFBMemhPR2VsTGdoc3dLdWNEOUZnRTVNOWZwMHZnbFRUTWtmRlZ5TtIBpgFBVV95cUxPd1BvNXdzbHVQdkpVSWszZ1VtUmVacGFRZFFCY2gyYk9aZG1XYXJ0a1JyMlRKVnU3d2V1bGRXOWZRcmlnOC1MM0M4QU1keUxhN1hPWjNBUDFzTm5xbUp4a0FYRnRQaUhxMG0xVlJKUnlfY2V3R3VDcVB0NGh2X2tLRXVKV044V29CYWVTZWY2VEdxVmxRM1B1Uy0xMFNHd3lueWc1eUJB?oc=5",
+          "text": "RBI rubbishes rumours of GPS tracking chip in Rs 2000 note"
+        }
+      ],
+      "seconds": 12.9,
       "result": "Pass"
     },
     {
@@ -657,14 +1354,43 @@
       "text": "Abdul El-Sayed won the 2026 United States Senate election in Michigan.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0022,
+      "fake_risk": 0.0107,
       "style_fake_probability": 0.0006,
       "claims": [
         "Support"
       ],
-      "top_evidence": "Progressive Abdul El-Sayed wins Michigan Senate race to become first Muslim US senator | US midterm elections 2026",
-      "top_source": "News - The Guardian, 04 Nov 2026",
-      "seconds": 18.3,
+      "method": "llm",
+      "reason": "Multiple reputable news outlets and Wikipedia report that Abdul El‑Sayed won the 2026 Michigan U.S. Senate election.",
+      "top_evidence": "Abdul El-Sayed won the 2026 United States Senate election in Michigan.",
+      "top_source": "Web - poliwave.com",
+      "cited_sources": [
+        {
+          "source": "Web - poliwave.com",
+          "url": "https://www.poliwave.com/us/live/midterms-2026/senate/michigan",
+          "text": "Abdul El-Sayed won the 2026 United States Senate election in Michigan."
+        },
+        {
+          "source": "News - CBS News, 04 Nov 2026",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1oUE85aGhqeVJzR0NEbUNYQzd1cEVyd2NzM21lRVZ0dVNFS1RQblIwcVFOQVBET291QTM5dW9rODZKWGY4YUtpUHMyd3l4THltN3dKTnRreWJ3OXdkckhOWTk4UFNSYW5vYTU1Szdlc2tqT3RO?oc=5",
+          "text": "Abdul El-Sayed wins Michigan 2026 Senate election, defeating Mike Rogers"
+        },
+        {
+          "source": "News - NBC News, 06 Nov 2026",
+          "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE5QbjdLR0lGd3lQNVlfWVMxT3ZCRG9aUUhORTJqOFdSUkJkTlp0V3FXQXpiay1WaElBMGI0MU1TUkRkbzZPVG5kQTduSy1XZlQxNjRjLVFjMFo3T1RaOV93UVp4QUw1a3RSWVJSUDFZcndTTWtCVmoxdHkzSQ?oc=5",
+          "text": "Michigan U.S. Senate Election 2026 Live Results: Abdul El-Sayed Wins"
+        },
+        {
+          "source": "News - The Guardian, 04 Nov 2026",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNS1oxeEQwZ2xfSi1Ka1Q0WjdiVS15azVOSG5aMldDWmRjSm1URlBkR2hNNTQ3UlJZMVhubUJIZVlacVFwaGV1dXFCVGR1LVh1VkVzTHRHMFd4Q2JfTlRvbXFxeDRDa011ME02OTlTYkstVzFacXo0QXBTdWlrenZ3UFNWYi0zTHhqMU90MjdZR19RWl9K?oc=5",
+          "text": "Progressive Abdul El-Sayed wins Michigan Senate race to become first Muslim US senator | US midterm elections 2026"
+        },
+        {
+          "source": "Wikipedia - Abdul El-Sayed",
+          "url": "https://en.wikipedia.org/wiki/Abdul_El-Sayed",
+          "text": "A progressive Democrat, El-Sayed defeated U.S. representative Haley Stevens in the 2026 Michigan Democratic Senate primary."
+        }
+      ],
+      "seconds": 13.8,
       "result": "Pass"
     },
     {
@@ -674,14 +1400,33 @@
       "text": "Lionel Messi won the FIFA World Cup with Argentina in 2022.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0023,
+      "fake_risk": 0.0055,
       "style_fake_probability": 0.0067,
       "claims": [
         "Support"
       ],
-      "top_evidence": "Initially facing criticism for not winning major tournaments with the national team, Messi broke Argentina's 28-year international trophy drought by captaining ",
-      "top_source": "Wikipedia - Career of Lionel Messi",
-      "seconds": 21.1,
+      "method": "llm",
+      "reason": "Argentina won the 2022 FIFA World Cup and Lionel Messi was the captain, so the claim is true.",
+      "top_evidence": "Champion Argentina won the 2022 FIFA World Cup, beating France 3–3 in the final.",
+      "top_source": "Web - worldcuparchive.net",
+      "cited_sources": [
+        {
+          "source": "Web - worldcuparchive.net",
+          "url": "https://worldcuparchive.net/tournaments/2022/",
+          "text": "Champion Argentina won the 2022 FIFA World Cup, beating France 3–3 in the final."
+        },
+        {
+          "source": "Wikipedia - Argentina at the FIFA World Cup",
+          "url": "https://en.wikipedia.org/wiki/Argentina_at_the_FIFA_World_Cup",
+          "text": "In 2022, Argentina won their third World Cup, after winning a penalty shoot-out against France following a 3–3 draw in the final."
+        },
+        {
+          "source": "Wikipedia - Career of Lionel Messi",
+          "url": "https://en.wikipedia.org/wiki/Career_of_Lionel_Messi",
+          "text": "Initially facing criticism for not winning major tournaments with the national team, Messi broke Argentina's 28-year international trophy drought by captaining the team to victory in the 2021 Copa Amé"
+        }
+      ],
+      "seconds": 20.5,
       "result": "Pass"
     },
     {
@@ -691,14 +1436,38 @@
       "text": "Narendra Modi became the Prime Minister of India for a third term in 2024.",
       "expected": "Real",
       "verdict": "Real",
-      "fake_risk": 0.0016,
+      "fake_risk": 0.004,
       "style_fake_probability": 0.0016,
       "claims": [
-        "Unknown"
+        "Support"
       ],
-      "top_evidence": "Narendra Modi: India's prime minister eyeing a historic third term",
-      "top_source": "News - BBC, 23 Apr 2024",
-      "seconds": 17.6,
+      "method": "llm",
+      "reason": "Multiple reputable news outlets and Wikipedia entries report that Narendra Modi was sworn in for a third term as Prime Minister of India on 9 June 2024.",
+      "top_evidence": "Narendra Modi was inaugurated for the third term as Prime Minister of India on 9 June 2024.",
+      "top_source": "Web - en.wikipedia.org",
+      "cited_sources": [
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/Third_oath_of_office_ceremony_of_Narendra_Modi",
+          "text": "Narendra Modi was inaugurated for the third term as Prime Minister of India on 9 June 2024."
+        },
+        {
+          "source": "News - Al Jazeera, 09 Jun 2024",
+          "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNZTFaTDd1MG5YbEZHS19HZ0JmYS13UU83RHhQcFlnQ25veDVYdk1vTmlyRzhqdTNod3gxQUE5RndBZVFsUlpSa3ZfcmNXczBDTWVDdUhtM0NwaHRCQlhxVnlhbnFicjUzaDBHWC1wNWo1QnpwYzVuaFpMTzVYQUdIZy0yRGRQN1BkQzBrYktUdzN0akdfRHY4ZlNKejV4cnZlQUlsWTUzZ1RjSXBBMnFvYVhLSdIBuAFBVV95cUxPUTVwZ2plaWZxaHJ6ZE9WamxuVGE2UVV3V2ZUWktBdHpFS3VfaHNVTlk1ZVJSTllzZnJMVDM3SDRBU2tQLU9Jd280SUNkOHZPaDBQRGlzcF8wUkxVb3VRVndxT1hIUjJwUTh4NlFZWVk3NVhqMUdzdG1CUTJ1bFNXYmo3ZUtTYmcyUWZ5TFByZXU2YVhjbXZROEp5dWJJcWZBOVlFcjl0a2dzQTZhc1ljV2R0cHBBenU5?oc=5",
+          "text": "India’s Narendra Modi sworn in as country’s prime minister for a third term"
+        },
+        {
+          "source": "News - The Guardian, 09 Jun 2024",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQbTdnU0VQbFdwSEZ1VHZOTmw3WlN2ZVdRNjdpRUV5TzNfZ2xoQnRVQUdlUDJ5U3E5Q0xWQ0toY0Y3U3BmTXBWbGxPNXQ2eE1JajRuSklpc3piVjVoN3BERmxoU1JuSVpwalVRYjJWeVZTZHA0dE1CdEd6cG13Tm9CdW12X2xYcDhrWi15S2V3R3NtbGIwLTNTU0VPOVFaWkhkd3BIMlJZYURhSjhvX0ZERkRQcUVaajdIS1E?oc=5",
+          "text": "Narendra Modi sworn in for third term as prime minister of India"
+        },
+        {
+          "source": "News - BBC, 04 Jun 2024",
+          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPTEd5Z1Y1dUl2NXBXUlNRaV91Y19JME9iWXl0TllZalpsM2hLWERYc3E0cFhHb0otRVRvdTNkNEdUSGFoRHVMX24tWkF4QUxRMVhoTDNPMG42MlBscURwNzQ0UU9GblM2Zk5CMzRkYVFMNEdoRFNqMjFhX3k1N2VXZzluUQ?oc=5",
+          "text": "India 2024 general election results"
+        }
+      ],
+      "seconds": 16.9,
       "result": "Pass"
     },
     {
@@ -708,14 +1477,38 @@
       "text": "Argentina lost the 2022 FIFA World Cup final to France.",
       "expected": "Fake",
       "verdict": "Fake",
-      "fake_risk": 0.7005,
+      "fake_risk": 0.6972,
       "style_fake_probability": 0.0023,
       "claims": [
         "Contradiction"
       ],
-      "top_evidence": "In 2022, Argentina won their third World Cup, after winning a penalty shoot-out against France following a 3–3 draw in the final.",
-      "top_source": "Wikipedia - Argentina at the FIFA World Cup",
-      "seconds": 21.1,
+      "method": "llm",
+      "reason": "Argentina won the 2022 FIFA World Cup final, beating France on penalties after a 3‑3 draw.",
+      "top_evidence": "Champion Argentina won the 2022 FIFA World Cup, beating France 3–3 in the final.",
+      "top_source": "Web - worldcuparchive.net",
+      "cited_sources": [
+        {
+          "source": "Web - worldcuparchive.net",
+          "url": "https://worldcuparchive.net/tournaments/2022/",
+          "text": "Champion Argentina won the 2022 FIFA World Cup, beating France 3–3 in the final."
+        },
+        {
+          "source": "Web - espn.com",
+          "url": "https://www.espn.com/soccer/match/_/gameId/633850/france-argentina",
+          "text": "Argentina beat France 4-2 on penalties to win the 2022 World Cup after a 3-3 draw in a thrilling final at the Lusail Stadium in Doha, Qatar."
+        },
+        {
+          "source": "Web - en.wikipedia.org",
+          "url": "https://en.wikipedia.org/wiki/2022_FIFA_World_Cup_final",
+          "text": "Jun 30, 2023 · Argentina beat France 4-2 on penalties to win the 2022 World Cup after a 3-3 draw in a thrilling final at the Lusail Stadium in Doha, Qatar."
+        },
+        {
+          "source": "Wikipedia - Argentina at the FIFA World Cup",
+          "url": "https://en.wikipedia.org/wiki/Argentina_at_the_FIFA_World_Cup",
+          "text": "In 2022, Argentina won their third World Cup, after winning a penalty shoot-out against France following a 3–3 draw in the final."
+        }
+      ],
+      "seconds": 18.3,
       "result": "Pass"
     },
     {
@@ -724,16 +1517,25 @@
       "language": "en",
       "text": "Rahul Gandhi became the Prime Minister of India in 2024.",
       "expected": "Fake",
-      "verdict": "Real",
-      "fake_risk": 0.0647,
+      "verdict": "Fake",
+      "fake_risk": 0.7159,
       "style_fake_probability": 0.0647,
       "claims": [
-        "Unknown"
+        "Contradiction"
       ],
-      "top_evidence": "PERSPECTIVE | Is Rahul Gandhi ready to lead the Congress to victory in 2024?",
-      "top_source": "News - Frontline Magazine, 26 Aug 2023",
-      "seconds": 15.5,
-      "result": "Fail"
+      "method": "llm",
+      "reason": "Official sources state Narendra Modi was sworn in as Prime Minister in June 2024, so Rahul Gandhi did not become Prime Minister.",
+      "top_evidence": "1 day ago · Shri Narendra Modi was sworn-in as India’s Prime Minister for the third time on 9th June 2024, following another decisive victory in the 2024 Parlia",
+      "top_source": "Web - pmindia.gov.in",
+      "cited_sources": [
+        {
+          "source": "Web - pmindia.gov.in",
+          "url": "https://www.pmindia.gov.in/",
+          "text": "1 day ago · Shri Narendra Modi was sworn-in as India’s Prime Minister for the third time on 9th June 2024, following another decisive victory in the 2024 Parliamentary elections."
+        }
+      ],
+      "seconds": 16.1,
+      "result": "Pass"
     }
   ]
 }

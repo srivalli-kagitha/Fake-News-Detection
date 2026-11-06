@@ -1,40 +1,51 @@
 SC01 Pass expected Real got Real llm risk=0.12 claims=['Support'] 35s | Hyderabad is the capital of Telangana.
-SC02 Pass expected Real got Real llm risk=0.19 claims=['Support'] 22s | The Polavaram Project is a multi-purpose irrigation project 
-SC03 Pass expected Real got Real llm risk=0.01 claims=['Support'] 26s | A. P. J. Abdul Kalam served as the 11th President of India f
-SC04 Pass expected Real got Real llm risk=0.0 claims=['Support'] 20s | Neeraj Chopra won the gold medal in javelin throw at the Tok
-SC05 Pass expected Real got Real llm risk=0.28 claims=['Support'] 26s | Chandrayaan-3 landed near the south pole of the Moon on 23 A
-SC06 Pass expected Real got Real llm risk=0.01 claims=['Support'] 22s | Rabindranath Tagore won the Nobel Prize in Literature in 191
-SC07 Pass expected Real got Real llm risk=0.3 claims=['Support'] 29s | Chief minister of andhra pradesh is  nara chandra babu naidu
-SC08 Pass expected Real got Real llm risk=0.29 claims=['Support'] 20s | virat kohli is indian cricketer and he played for royal chal
-SC09 Pass expected Real got Real llm risk=0.3 claims=['Support'] 22s | charminar is in hyderabad it was built in 1591
-SC10 Pass expected Real got Real llm risk=0.3 claims=['Support'] 21s | india got independence on 15 august 1947
-SC11 Pass expected Real got Real llm risk=0.26 claims=['Support'] 19s | neeraj chopra won gold in javelin at tokyo olympics
-SC12 Pass expected Real got Real llm risk=0.3 claims=['Support'] 22s | isro launched chandrayaan 3 in july 2023
-SC13 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 20s | The new 2000 rupee notes contain a GPS nano chip that lets t
-SC14 Pass expected Fake got Fake llm risk=0.74 claims=['Contradiction'] 20s | 5G mobile towers spread the coronavirus.
-SC15 Pass expected Fake got Fake llm risk=0.84 claims=['Contradiction'] 23s | Virat Kohli is a famous Indian footballer.
-SC16 Pass expected Fake got Fake llm risk=0.9 claims=['Contradiction'] 19s | The Charminar is located in Chennai.
-SC17 Pass expected Fake got Fake llm risk=0.86 claims=['Contradiction'] 26s | A. P. J. Abdul Kalam was the first Prime Minister of India.
-SC18 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 26s | India gained independence from British rule in 1950.
-SC19 Pass expected Fake got Fake llm risk=0.98 claims=['Contradiction'] 20s | Drinking hot lemon water kills the coronavirus.
-SC20 Pass expected Fake got Fake llm risk=0.68 claims=['Contradiction'] 22s | The government is giving free laptops to all students under 
-SC21 Pass expected Fake got Fake llm risk=1.0 claims=['Contradiction'] 21s | BREAKING!!! 5g towers are spreading corona virus share this 
-SC22 Pass expected Fake got Fake llm risk=0.98 claims=['Contradiction'] 21s | modi govt is giving free laptops to all students register no
-SC23 Pass expected Fake got Fake llm risk=0.99 claims=['Contradiction'] 25s | sachin tendulkar was born in kerala
-SC24 Pass expected Fake got Fake llm risk=0.99 claims=['Contradiction'] 27s | taj mahal is in mumbai
-SC25 Pass expected Real got Real llm risk=0.0 claims=['Support'] 20s | India's Chandrayaan-3 lander touched down near the Moon's so
-SC26 Pass expected Real got Real llm risk=0.0 claims=['Support'] 19s | According to officials, Hyderabad is the capital of Telangan
-SC27 Pass expected Fake got Fake llm risk=0.69 claims=['Contradiction'] 55s | The new 2000 rupee notes contain a GPS nano chip, officials 
-SC28 Pass expected Fake got Fake llm risk=0.94 claims=['Contradiction'] 27s | According to doctors, drinking cow urine cures cancer.
-SC29 Pass expected Real got Real llm risk=0.06 claims=['Support'] 16s | హైదరాబాద్ తెలంగాణ రాజధాని.
+SC02 Pass expected Real got Real llm risk=0.19 claims=['Support'] 17s | The Polavaram Project is a multi-purpose irrigation project 
+SC03 Pass expected Real got Real llm risk=0.01 claims=['Support'] 16s | A. P. J. Abdul Kalam served as the 11th President of India f
+SC04 Pass expected Real got Real llm risk=0.0 claims=['Support'] 16s | Neeraj Chopra won the gold medal in javelin throw at the Tok
+SC05 Pass expected Real got Real llm risk=0.28 claims=['Support'] 16s | Chandrayaan-3 landed near the south pole of the Moon on 23 A
+SC06 Pass expected Real got Real llm risk=0.01 claims=['Support'] 17s | Rabindranath Tagore won the Nobel Prize in Literature in 191
+SC07 Pass expected Real got Real llm risk=0.3 claims=['Support'] 18s | Chief minister of andhra pradesh is  nara chandra babu naidu
+SC08 Pass expected Real got Real llm risk=0.3 claims=['Support'] 22s | virat kohli is indian cricketer and he played for royal chal
+SC09 Pass expected Real got Real llm risk=0.3 claims=['Support'] 18s | charminar is in hyderabad it was built in 1591
+SC10 Pass expected Real got Real llm risk=0.3 claims=['Support'] 14s | india got independence on 15 august 1947
+SC11 Pass expected Real got Real llm risk=0.26 claims=['Support'] 16s | neeraj chopra won gold in javelin at tokyo olympics
+SC12 Pass expected Real got Real llm risk=0.3 claims=['Support'] 17s | isro launched chandrayaan 3 in july 2023
+SC13 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 15s | The new 2000 rupee notes contain a GPS nano chip that lets t
+SC14 Pass expected Fake got Fake llm risk=0.74 claims=['Contradiction'] 18s | 5G mobile towers spread the coronavirus.
+SC15 Pass expected Fake got Fake llm risk=0.84 claims=['Contradiction'] 20s | Virat Kohli is a famous Indian footballer.
+SC16 Pass expected Fake got Fake llm risk=0.9 claims=['Contradiction'] 16s | The Charminar is located in Chennai.
+SC17 Pass expected Fake got Fake llm risk=0.86 claims=['Contradiction'] 17s | A. P. J. Abdul Kalam was the first Prime Minister of India.
+SC18 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 19s | India gained independence from British rule in 1950.
+SC19 Pass expected Fake got Fake llm risk=0.98 claims=['Contradiction'] 18s | Drinking hot lemon water kills the coronavirus.
+SC20 Pass expected Fake got Fake llm risk=0.68 claims=['Contradiction'] 19s | The government is giving free laptops to all students under 
+SC21 Pass expected Fake got Fake llm risk=1.0 claims=['Contradiction'] 16s | BREAKING!!! 5g towers are spreading corona virus share this 
+SC22 Pass expected Fake got Fake llm risk=0.99 claims=['Contradiction'] 20s | modi govt is giving free laptops to all students register no
+SC23 Pass expected Fake got Fake llm risk=0.99 claims=['Contradiction'] 18s | sachin tendulkar was born in kerala
+SC24 Pass expected Fake got Fake llm risk=0.99 claims=['Contradiction'] 20s | taj mahal is in mumbai
+SC25 Pass expected Real got Real llm risk=0.0 claims=['Support'] 16s | India's Chandrayaan-3 lander touched down near the Moon's so
+SC26 Pass expected Real got Real llm risk=0.0 claims=['Support'] 16s | According to officials, Hyderabad is the capital of Telangan
+SC27 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 16s | The new 2000 rupee notes contain a GPS nano chip, officials 
+SC28 Pass expected Fake got Fake llm risk=0.94 claims=['Contradiction'] 14s | According to doctors, drinking cow urine cures cancer.
+SC29 Pass expected Real got Real llm risk=0.06 claims=['Support'] 15s | హైదరాబాద్ తెలంగాణ రాజధాని.
 SC30 Pass expected Real got Real llm risk=0.11 claims=['Support'] 16s | తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది.
-SC31 Pass expected Real got Real llm risk=0.14 claims=['Support'] 18s | చార్మినార్ హైదరాబాద్‌లో ఉంది.
-SC32 Pass expected Real got Real llm risk=0.12 claims=['Support'] 18s | గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.
-SC33 Pass expected Fake got Fake llm risk=0.92 claims=['Contradiction'] 18s | 5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.
-SC34 Pass expected Fake got Fake llm risk=0.84 claims=['Contradiction'] 19s | చార్మినార్ చెన్నైలో ఉంది.
-SC35 Pass expected Fake got Fake llm risk=0.86 claims=['Contradiction'] 18s | విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.
-SC36 Pass expected Fake got Fake llm risk=0.85 claims=['Contradiction'] 16s | కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.
-SC37 Pass expected Real got Real llm risk=0.0 claims=['Support'] 18s | Abdul El-Sayed won the 2026 United States Senate election in
+SC31 Pass expected Real got Real llm risk=0.14 claims=['Support'] 15s | చార్మినార్ హైదరాబాద్‌లో ఉంది.
+SC32 Pass expected Real got Real llm risk=0.12 claims=['Support'] 19s | గోల్కొండ కోట హైదరాబాద్‌లో ఉంది.
+SC33 Pass expected Fake got Fake llm risk=0.92 claims=['Contradiction'] 16s | 5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది.
+SC34 Pass expected Fake got Fake llm risk=0.84 claims=['Contradiction'] 18s | చార్మినార్ చెన్నైలో ఉంది.
+SC35 Pass expected Fake got Fake llm risk=0.85 claims=['Contradiction'] 19s | విరాట్ కోహ్లీ ఒక ఫుట్‌బాల్ ఆటగాడు.
+SC36 Pass expected Fake got Fake llm risk=0.85 claims=['Contradiction'] 13s | కొత్త 2000 రూపాయల నోట్లలో జీపీఎస్ చిప్ ఉంది.
+SC37 Pass expected Real got Real llm risk=0.01 claims=['Support'] 14s | Abdul El-Sayed won the 2026 United States Senate election in
 SC38 Pass expected Real got Real llm risk=0.01 claims=['Support'] 20s | Lionel Messi won the FIFA World Cup with Argentina in 2022.
-SC39 Pass expected Real got Real llm risk=0.0 claims=['Support'] 22s | Narendra Modi became the Prime Minister of India for a third
-SC40 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 21s | Argentina lost the 2022 FIFA World Cup final to France.
+SC39 Pass expected Real got Real llm risk=0.0 claims=['Support'] 17s | Narendra Modi became the Prime Minister of India for a third
+SC40 Pass expected Fake got Fake llm risk=0.7 claims=['Contradiction'] 18s | Argentina lost the 2022 FIFA World Cup final to France.
+SC41 Pass expected Fake got Fake llm risk=0.72 claims=['Contradiction'] 16s | Rahul Gandhi became the Prime Minister of India in 2024.
+
+41 passed, 0 unverified, 0 failed (of 41)
+  True - well written      pass 6  unverified 0  fail 0  (of 6)
+  True - informal          pass 6  unverified 0  fail 0  (of 6)
+  False - well written     pass 8  unverified 0  fail 0  (of 8)
+  False - informal         pass 4  unverified 0  fail 0  (of 4)
+  With attribution         pass 4  unverified 0  fail 0  (of 4)
+  Telugu - true            pass 4  unverified 0  fail 0  (of 4)
+  Telugu - false           pass 4  unverified 0  fail 0  (of 4)
+  Recent events            pass 5  unverified 0  fail 0  (of 5)
