@@ -18,6 +18,7 @@ export default function ClaimCheck() {
   const [text, setText] = useKept("claims.input", "");
   const [language, setLanguage] = useKept("claims.language", "auto");
   const [result, setResult] = useKept("claims.result", null);
+  const [startedAt, setStartedAt] = useKept("claims.startedAt", 0);
   const [loading, setLoading] = useKept("claims.loading", false);
   const [error, setError] = useKept("claims.error", "");
   const [activeClaim, setActiveClaim] = useState(null);
@@ -26,6 +27,7 @@ export default function ClaimCheck() {
   async function run(e) {
     e?.preventDefault();
     setLoading(true);
+    setStartedAt(Date.now());
     setError("");
     setResult(null);
     try {
@@ -80,7 +82,7 @@ export default function ClaimCheck() {
         </form>
 
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
-          {loading && <Working label="Finding claims and checking evidence" steps={CHECK_STEPS} />}
+          {loading && <Working startedAt={startedAt} label="Finding claims and checking evidence" steps={CHECK_STEPS} />}
           <ErrorNote message={error} />
           {!loading && !error && !result && (
             <EmptyReport

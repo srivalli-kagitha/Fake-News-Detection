@@ -81,12 +81,14 @@ export default function BatchCheck() {
   const [language, setLanguage] = useState("auto");
   const [verify, setVerify] = useState(false);
   const [images, setImages] = useState([]);
+  const [startedAt, setStartedAt] = useKept("batch.startedAt", 0);
   const [loading, setLoading] = useKept("batch.loading", "");
   const [error, setError] = useKept("batch.error", "");
   const [result, setResult] = useKept("batch.result", null);
 
   async function run(kind) {
     setLoading(kind);
+    setStartedAt(Date.now());
     setError("");
     setResult(null);
     try {
@@ -150,7 +152,7 @@ export default function BatchCheck() {
 
       {loading && (
         <div className="mt-8">
-          <Working label={loading === "text" ? "Checking every text" : "Checking every image"} />
+          <Working startedAt={startedAt} label={loading === "text" ? "Checking every text" : "Checking every image"} />
         </div>
       )}
       <div className="mt-6">

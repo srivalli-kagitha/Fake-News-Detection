@@ -42,6 +42,7 @@ export default function TextCheck() {
   const [explain, setExplain] = useKept("text.explain", true);
   const [verify, setVerify] = useKept("text.verify", true);
   const [result, setResult] = useKept("text.result", null);
+  const [startedAt, setStartedAt] = useKept("text.startedAt", 0);
   const [loading, setLoading] = useKept("text.loading", false);
   const [error, setError] = useKept("text.error", "");
   const [activeClaim, setActiveClaim] = useState(null);
@@ -51,6 +52,7 @@ export default function TextCheck() {
 
   async function run(input = text) {
     setLoading(true);
+    setStartedAt(Date.now());
     setError("");
     setExplainError("");
     setResult(null);
@@ -167,6 +169,7 @@ export default function TextCheck() {
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
           {loading && (
             <Working
+              startedAt={startedAt}
               label="Checking the text"
               steps={verify ? CHECK_STEPS : [[0, "Reading the text with the writing-style model"]]}
             />

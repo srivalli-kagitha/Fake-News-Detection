@@ -14,6 +14,7 @@ export default function ImageCheck() {
   const [preview, setPreview] = useState("");
   const [explain, setExplain] = useKept("image.explain", true);
   const [result, setResult] = useKept("image.result", null);
+  const [startedAt, setStartedAt] = useKept("image.startedAt", 0);
   const [loading, setLoading] = useKept("image.loading", false);
   const [error, setError] = useKept("image.error", "");
   const report = useRef(null);
@@ -27,6 +28,7 @@ export default function ImageCheck() {
 
   async function run(input = file) {
     setLoading(true);
+    setStartedAt(Date.now());
     setError("");
     setResult(null);
     try {
@@ -97,6 +99,7 @@ export default function ImageCheck() {
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
           {loading && (
             <Working
+              startedAt={startedAt}
               label="Checking the image"
               steps={[
                 [0, "Preparing the image"],

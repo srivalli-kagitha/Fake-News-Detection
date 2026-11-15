@@ -1,3 +1,4 @@
+import useHealth from "../hooks/useHealth.js";
 import { useEffect, useState } from "react";
 
 export function PageHeader({ title, children }) {
@@ -13,11 +14,22 @@ export function PageHeader({ title, children }) {
 // Counts seconds so a long first run (model download) doesn't look frozen.
 // steps: [[fromSecond, "what is happening"], ...] shown as a checklist that moves on with time,
 // so a 10-20 s check shows what it is doing instead of looking frozen.
-export function Working({ label, steps }) {
-  const [seconds, setSeconds] = useState(0);
-  const current = steps ? steps.reduce((at, [from], i) => (seconds >= from ? i : at), 0) : -1;
+// startedAt: when the check began (kept across page switches), so the counter does not restart at 0.
+export function Working({ label, steps, startedAt }) {
+  const [start] = useState(() => startedAt || Date.now());
+  const [now, setNow] = useState(Date.now());
+  const seconds = Math.max(0, Math.floor((now - (startedAt || start)) / 1000));
+  const warmup = useHealth()?.data?.warmup;
+  const waiting = warmup?.running;
+  // The steps start counting when the models are ready, not while the check waits for them.
+  const [readyAt, setReadyAt] = useState(() => (waiting ? null : startedAt || start));
   useEffect(() => {
-    const id = setInterval(() => setSeconds((s) => s + 1), 1000);
+    if (!waiting && readyAt === null) setReadyAt(Date.now());
+  }, [waiting, readyAt]);
+  const stepSeconds = readyAt ? Math.floor((now - Math.max(readyAt, startedAt || start)) / 1000) : 0;
+  const current = steps && !waiting ? steps.reduce((at, [from], i) => (stepSeconds >= from ? i : at), 0) : -1;
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
   return (
@@ -26,6 +38,15 @@ export function Working({ label, steps }) {
         <p className="t-h2">{label}</p>
         <p className="t-small text-graphite">{seconds}s</p>
       </div>
+      {waiting && (
+        <p className="t-small mt-3 rounded-md border border-rule-soft px-3 py-2">
+          <span className="font-medium">Waiting for the AI models to finish loading: {warmup.done} of {warmup.total}</span>
+          {warmup.current && <span className="text-graphite"> (now the {warmup.current.toLowerCase()})</span>}.{" "}
+          <span className="text-graphite">
+            This happens once after the app starts. The check continues by itself, you can switch pages meanwhile.
+          </span>
+        </p>
+      )}
       {steps && (
         <ol className="mt-4 space-y-1.5">
           {steps.map(([, text], i) => (
