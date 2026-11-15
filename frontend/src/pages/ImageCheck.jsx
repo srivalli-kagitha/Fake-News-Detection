@@ -95,7 +95,16 @@ export default function ImageCheck() {
         </form>
 
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
-          {loading && <Working label="Checking the image" />}
+          {loading && (
+            <Working
+              label="Checking the image"
+              steps={[
+                [0, "Preparing the image"],
+                [1, "Two AI-image detectors are looking at it"],
+                ...(explain ? [[3, "Drawing the heatmap of where the model looked"]] : []),
+              ]}
+            />
+          )}
           <ErrorNote message={error} />
           {!loading && !error && !result && (
             <EmptyReport

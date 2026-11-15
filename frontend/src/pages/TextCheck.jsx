@@ -9,6 +9,14 @@ import { SAMPLES } from "../lib/samples.js";
 import { useKept } from "../lib/store.js";
 import { pct, summaryVerdict, textVerdict } from "../lib/verdicts.js";
 
+const CHECK_STEPS = [
+  [0, "Reading the text and finding the factual claims"],
+  [1, "The AI is writing search queries for each claim"],
+  [2, "Searching Wikipedia, news, fact-checks and the web"],
+  [5, "The AI is reading the evidence and deciding"],
+  [9, "Writing the report"],
+];
+
 // Inline note while the word highlights are computed; the rest of the report is already readable.
 function ExplainProgress() {
   const [seconds, setSeconds] = useState(0);
@@ -20,7 +28,7 @@ function ExplainProgress() {
     <div className="examine mb-5 flex items-center justify-between gap-4 rounded-[10px] border border-rule-soft bg-paper px-4 py-3" role="status">
       <span className="t-small">
         <span className="font-semibold">Highlighting the words behind the verdict</span>
-        <span className="text-graphite">. The model re-reads the article 200 times with different words hidden.</span>
+        <span className="text-graphite">. The model re-reads the article with each word removed once.</span>
       </span>
       <span className="t-small flex-none text-graphite">{seconds}s</span>
     </div>
@@ -157,7 +165,12 @@ export default function TextCheck() {
         </form>
 
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
-          {loading && <Working label="Checking the text" />}
+          {loading && (
+            <Working
+              label="Checking the text"
+              steps={verify ? CHECK_STEPS : [[0, "Reading the text with the writing-style model"]]}
+            />
+          )}
           <ErrorNote message={error} />
 
           {!loading && !error && !result && (

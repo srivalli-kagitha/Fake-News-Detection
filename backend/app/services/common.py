@@ -1,5 +1,6 @@
 """Shared helpers: device selection, errors and lazy model loading."""
 import logging
+import os
 import threading
 from pathlib import Path
 from typing import Callable, Generic, TypeVar
@@ -10,6 +11,11 @@ from ..config import get_settings
 
 logger = logging.getLogger("truthlens")
 T = TypeVar("T")
+
+# PyTorch uses one thread per logical CPU by default. With hyper-threading those threads fight over
+# the same cores: on a 16-thread CPU the models ran up to 7x slower than with 8 threads.
+# Use about one thread per physical core (at most 8).
+torch.set_num_threads(max(1, min(8, (os.cpu_count() or 2) // 2)))
 
 
 class ModelNotReadyError(RuntimeError):

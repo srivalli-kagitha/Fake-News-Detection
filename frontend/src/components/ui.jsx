@@ -11,8 +11,11 @@ export function PageHeader({ title, children }) {
 
 // Shown while a request runs: a ghost document with a scan band passing over it.
 // Counts seconds so a long first run (model download) doesn't look frozen.
-export function Working({ label }) {
+// steps: [[fromSecond, "what is happening"], ...] shown as a checklist that moves on with time,
+// so a 10-20 s check shows what it is doing instead of looking frozen.
+export function Working({ label, steps }) {
   const [seconds, setSeconds] = useState(0);
+  const current = steps ? steps.reduce((at, [from], i) => (seconds >= from ? i : at), 0) : -1;
   useEffect(() => {
     const id = setInterval(() => setSeconds((s) => s + 1), 1000);
     return () => clearInterval(id);
@@ -23,6 +26,22 @@ export function Working({ label }) {
         <p className="t-h2">{label}</p>
         <p className="t-small text-graphite">{seconds}s</p>
       </div>
+      {steps && (
+        <ol className="mt-4 space-y-1.5">
+          {steps.map(([, text], i) => (
+            <li
+              key={text}
+              className={`t-small flex items-center gap-2 ${i < current ? "text-graphite" : i === current ? "font-medium text-ink" : "text-graphite opacity-50"}`}
+            >
+              <span className="w-4 text-center" aria-hidden="true">
+                {i < current ? "✓" : i === current ? "●" : "○"}
+              </span>
+              {text}
+              {i === current && <span className="sr-only"> (in progress)</span>}
+            </li>
+          ))}
+        </ol>
+      )}
       <div className="mt-5 space-y-3" aria-hidden="true">
         <div className="ghost-line w-11/12" />
         <div className="flex gap-2">

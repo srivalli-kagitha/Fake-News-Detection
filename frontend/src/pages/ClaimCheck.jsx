@@ -6,6 +6,14 @@ import { EmptyReport, ErrorNote, LanguagePicker, PageHeader, ReportActions, Work
 import { SAMPLES } from "../lib/samples.js";
 import { useKept } from "../lib/store.js";
 
+const CHECK_STEPS = [
+  [0, "Reading the text and finding the factual claims"],
+  [1, "The AI is writing search queries for each claim"],
+  [2, "Searching Wikipedia, news, fact-checks and the web"],
+  [5, "The AI is reading the evidence and deciding"],
+  [9, "Writing the report"],
+];
+
 export default function ClaimCheck() {
   const [text, setText] = useKept("claims.input", "");
   const [language, setLanguage] = useKept("claims.language", "auto");
@@ -72,7 +80,7 @@ export default function ClaimCheck() {
         </form>
 
         <section ref={report} aria-label="Report" className="min-w-0 space-y-6 scroll-mt-28">
-          {loading && <Working label="Finding claims and checking evidence" />}
+          {loading && <Working label="Finding claims and checking evidence" steps={CHECK_STEPS} />}
           <ErrorNote message={error} />
           {!loading && !error && !result && (
             <EmptyReport

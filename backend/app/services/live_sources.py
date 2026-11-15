@@ -21,10 +21,11 @@ from .common import logger
 
 HEADERS = {"User-Agent": "TruthLensAI-student-project/1.0 (https://github.com/srivalli-kagitha/Fake-News-Detection)"}
 WIKI_SLOTS = threading.Semaphore(2)  # Wikipedia answers 429 when too many requests arrive at once
-WEB_SLOTS = threading.Semaphore(2)  # search engines block bursts of parallel requests
-# Search engines tried by the ddgs package. Yahoo answered best in testing; DuckDuckGo rate-limits
-# after heavy use and Brave/Startpage sometimes hang, so they are left out.
-WEB_ENGINES = "yahoo,duckduckgo,mojeek"
+WEB_SLOTS = threading.Semaphore(3)  # search engines block bursts of parallel requests
+# Search engines tried by the ddgs package, one after another. Yahoo answers in about 1 s; asking
+# several engines at once made every search wait for the slowest (DuckDuckGo often times out after
+# 5-8 s), so the others are only tried when Yahoo fails. Brave/Startpage sometimes hang: left out.
+WEB_ENGINES = ("yahoo", "duckduckgo,mojeek")
 
 
 class SearchFailed(Exception):
@@ -269,7 +270,15 @@ def _web(query: str, region: str, limit: int) -> tuple:
         return ()
     try:
         with WEB_SLOTS:
-            results = DDGS(timeout=TIMEOUT).text(query, region=region, max_results=limit, backend=WEB_ENGINES)
+            results = None
+            for i, engines in enumerate(WEB_ENGINES):
+                try:
+                    results = DDGS(timeout=5 if i == 0 else 3).text(query, region=region, max_results=limit,
+                                                                    backend=engines)
+                    break
+                except Exception:
+                    if i == len(WEB_ENGINES) - 1:
+                        raise
     except Exception as exc:  # ddgs raises its own exception types for rate limits and timeouts
         (logger.debug if "No results" in str(exc) else logger.warning)("Web search failed: %s", exc)
         raise SearchFailed(query) from exc
