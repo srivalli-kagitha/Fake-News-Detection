@@ -29,19 +29,21 @@ package "Backend (FastAPI, port 8000)" {
   package "Text pipeline" {
     rectangle "Language detection" as LD
     rectangle "DeBERTa-v3-large (EN)\nIndicBERT v2 (TE)" as CLS
-    rectangle "LIME explainer" as LIME
+    rectangle "Occlusion explainer\n(LIME optional)" as LIME
   }
   package "Claim verification" {
     rectangle "Claim extractor\n(spaCy + scoring)" as CE
-    rectangle "Evidence retriever\n(BGE-M3 + FAISS,\nFact Check API)" as RET
-    rectangle "NLI verifier\n(DeBERTa / mDeBERTa)" as NLI
+    rectangle "Live search\n(Wikipedia, web, News,\nFact Check API, corpus)" as RET
+    rectangle "LLM verifier\n(gpt-oss-120b, E5 selection)" as LLMV
+    rectangle "NLI verifier (fallback)\n(DeBERTa / mDeBERTa)" as NLI
     rectangle "Aggregation + fusion" as AGG
   }
   package "Image pipeline" {
-    rectangle "CLIP ViT-L/14\n+ linear head" as CLIP
+    rectangle "CLIP ViT-L/14 head\n+ Swin-V2 detector (averaged)" as CLIP
     rectangle "Grad-CAM" as CAM
   }
-  database "SQLite\n(history)" as DB
+  database "SQLite\n(history + full reports)" as DB
+  rectangle "Background\nmodel warm-up" as WU
   database "Evidence corpus\n(JSONL + FAISS index)" as EV
 }
 User --> UI
@@ -52,9 +54,17 @@ CLS --> LIME
 LD --> CE
 CE --> RET
 RET --> EV
-RET --> NLI
+RET --> LLMV
+RET ..> NLI : if no LLM
+LLMV --> AGG
 NLI --> AGG
 API --> CLIP
 CLIP --> CAM
 API --> DB
+WU ..> CLS
+WU ..> CLIP
+cloud "Groq API\n(or local Ollama)" as GROQ
+cloud "Search engines,\nWikipedia, Google News" as WEB
+LLMV --> GROQ
+RET --> WEB
 @enduml

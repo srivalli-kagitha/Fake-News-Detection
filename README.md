@@ -3,11 +3,11 @@
 **An Explainable Multilingual Multimodal System for Fake News and AI-Generated Image Detection**
 
 - Fake / Real news classification for **English** (DeBERTa-v3-large) and **Telugu** (IndicBERT v2 / mmBERT)
-- **Real vs AI-generated / manipulated** image detection (CLIP ViT-L/14 + trained head)
-- **Explainable AI**: LIME word highlights for text, Grad-CAM heatmaps for images
-- **Contradiction-aware claim-level evidence verification**: each claim is labelled *Support*, *Contradiction* or *Unknown*, and the labels are combined into an overall assessment
+- **Real vs AI-generated / manipulated** image detection (CLIP ViT-L/14 + trained head, averaged with a Swin-V2 detector for recent generators)
+- **Explainable AI**: word highlights for text (occlusion; LIME optional), Grad-CAM heatmaps for images
+- **Claim-level fact checking with live evidence**: an LLM (gpt-oss-120b via Groq, or a local Ollama model) searches Wikipedia, the web, Google News and fact-checks, then labels each claim *Support*, *Contradiction* or *Unknown* with a reason and cited sources. Without an LLM, a contradiction-aware NLI pipeline is used
 - **Batch processing**: a CSV of news or a ZIP of images, with results downloadable as CSV
-- History of all checks (SQLite)
+- History of all checks (SQLite), each reopening its full report
 
 ---
 
@@ -116,12 +116,14 @@ truthlens-ai/
 │   │   ├── routers/                  API endpoints: text, image, batch, system
 │   │   └── services/
 │   │       ├── text_classifier.py    DeBERTa-v3-large / IndicBERT v2 classifier
-│   │       ├── text_explainer.py     LIME
+│   │       ├── text_explainer.py     occlusion (default) and LIME
 │   │       ├── image_detector.py     CLIP ViT-L/14 detector + Grad-CAM
 │   │       ├── claim_extractor.py    spaCy claim extraction
 │   │       ├── evidence.py           BGE-M3 + FAISS retrieval, Google Fact Check API
 │   │       ├── live_sources.py       live Wikipedia and Google News search
-│   │       ├── claim_verifier.py     DeBERTa-v3 / mDeBERTa NLI + aggregation
+│   │       ├── llm_verifier.py       LLM fact checker: queries, live search, E5 selection, verdict
+│   │       ├── claim_verifier.py     LLM first, DeBERTa-v3 / mDeBERTa NLI fallback + aggregation
+│   │       ├── warmup.py             loads the models in the background at start-up
 │   │       └── language.py           English / Telugu detection
 │   ├── data/evidence/                evidence corpus (*.jsonl)
 │   ├── models/                       trained models go here
@@ -143,9 +145,9 @@ truthlens-ai/
 | Frontend | React 18, Vite, Tailwind CSS 4, React Router, Axios, Recharts |
 | Backend | Python, FastAPI, Uvicorn, SQLAlchemy + SQLite, Pandas, Pillow |
 | Text models | DeBERTa-v3-large (English), IndicBERT v2 / mmBERT (Telugu), BERT-base (baseline) |
-| Image model | CLIP ViT-L/14 + linear head |
-| Explainability | LIME (text), Grad-CAM (images) |
-| Claim verification | spaCy, BGE-M3 + FAISS, DeBERTa-v3-large-NLI, mDeBERTa-v3-XNLI, live Wikipedia + Google News search, Google Fact Check API (optional) |
+| Image model | CLIP ViT-L/14 + linear head, averaged with a Swin-V2 detector |
+| Explainability | Occlusion or LIME (text), Grad-CAM (images) |
+| Claim verification | gpt-oss-120b (Groq) or Ollama, multilingual-E5-small, ddgs web search, Wikipedia, Google News, Google Fact Check API; fallback: BGE-M3 + FAISS with DeBERTa-v3 / mDeBERTa NLI |
 | Training | PyTorch, HuggingFace Transformers, Google Colab / Kaggle |
 
 ## 7. API endpoints
@@ -153,30 +155,46 @@ truthlens-ai/
 | Method | Endpoint | Description |
 |---|---|---|
 | GET | `/api/health` | System and model status |
-| POST | `/api/text/analyze` | Classify text (+ LIME, + optional claim verification) |
+| POST | `/api/text/analyze` | Classify text (+ optional claim verification) |
+| POST | `/api/text/explain` | Word highlights for a text |
 | POST | `/api/claims/verify` | Claim-level evidence verification |
 | POST | `/api/image/analyze` | Real vs AI-generated image (+ Grad-CAM) |
 | POST | `/api/batch/text` | CSV batch of news texts |
 | POST | `/api/batch/images` | Several images or a ZIP |
 | GET | `/api/batch/{job_id}/download` | Download batch results as CSV |
 | GET / DELETE | `/api/history` | List or clear history |
+| GET | `/api/history/{id}` | One check with its full report |
 
 Interactive docs: http://127.0.0.1:8000/docs
 
 ## 8. Where the evidence comes from
 
-Each claim is checked against three kinds of evidence, and the most relevant passages
-(at most 5 per claim) go to the NLI model:
+**LLM fact checker (recommended, free key).** Get a key at https://console.groq.com (API Keys >
+Create API Key) and put it in `backend/.env`:
+
+```
+LLM_PROVIDER=groq
+GROQ_API_KEY=paste-your-key-here
+```
+
+The free tier allows 1,000 requests a day (about 500 claims) and resets daily. For each claim the LLM
+writes search queries, the backend searches Wikipedia, the web (Yahoo / DuckDuckGo / Mojeek),
+Google News, published fact-checks and the local corpus, multilingual-E5 keeps the 10 most relevant
+passages, and the LLM gives the verdict, a one-line reason and the passages it relied on
+("Cited in the verdict" in the report). To run without a key: install https://ollama.com,
+`ollama pull qwen3:4b`, and set `LLM_PROVIDER=ollama` (slower on a CPU).
+
+**Without an LLM** the NLI pipeline is used against:
 
 1. **Local evidence corpus** - `backend/data/evidence/*.jsonl`, always searched, works offline.
    `sample_corpus.jsonl` holds 40 verified facts; this is the set used in the report's evaluation.
-2. **Live web search** (needs internet, no key) - Wikipedia (English or Telugu) and Google News
-   headlines, searched for every claim. Switch off with `LIVE_SEARCH=false` in `backend/.env`.
+2. **Live Wikipedia and Google News** (needs internet, no key). Switch off with `LIVE_SEARCH=false`.
 3. **Published fact-checks** (free key) - Google Fact Check Tools API: PIB, BOOM, Factly,
-   Alt News, AFP and others. When a fact-check reviewed the same claim, its rating
-   (False, Misleading, True...) decides the claim. Get a key at https://console.cloud.google.com
+   Alt News, AFP and others. Get a key at https://console.cloud.google.com
    (enable "Fact Check Tools API", then Credentials > Create credentials > API key) and set
-   `GOOGLE_FACTCHECK_API_KEY=...` in `backend/.env`. Never commit `.env`.
+   `GOOGLE_FACTCHECK_API_KEY=...` in `backend/.env`. This also helps the LLM checker.
+
+**Never commit `backend/.env`** - it holds your keys and is listed in `.gitignore`.
 
 Restart the app after editing `.env`. To add your own offline evidence:
 

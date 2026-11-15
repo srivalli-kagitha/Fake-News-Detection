@@ -38,7 +38,18 @@ backend/models/text_te/          Telugu model (IndicBERT v2)
 backend/models/image_detector/   Image detector (config.json + head.pt)
 ```
 
-No restart is needed: the application loads a model the first time it is used. The NLI models and the BGE-M3 embedding model are downloaded automatically from Hugging Face on the first claim check, about 3 GB in total.
+No restart is needed: the application picks up a new model on the next request. The other pre-trained models (the multilingual-E5 embedding model, the second image detector and the NLI models) are downloaded from Hugging Face the first time the backend starts, about 2 GB in total, and are loaded in the background. Until they are ready the application shows "Getting the AI models ready: 2 of 4"; later starts load them in under a minute.
+
+## Setting Up the Language Model
+
+The best claim checks use the gpt-oss-120b language model through Groq's free API. Without a key the application still works and uses the NLI method instead.
+
+1. Create a free account at https://console.groq.com and open "API Keys".
+2. Press "Create API Key" and copy the key, which starts with the letters "gsk".
+3. Open `backend/.env` and set `LLM_PROVIDER=groq` and `GROQ_API_KEY=` followed by the key.
+4. Restart the application. After a text check, the note under the verdict says "Claims checked by an LLM (groq:openai/gpt-oss-120b) against live evidence."
+
+The free tier allows 1,000 requests a day, about 500 claims, and resets every day. To run without a key or a limit, install Ollama from https://ollama.com, run `ollama pull qwen3:4b`, and set `LLM_PROVIDER=ollama` and `OLLAMA_MODEL=qwen3:4b`; this keeps everything on the computer but is slower on a CPU. Never share the key or commit `backend/.env` to Git: the file is listed in `.gitignore` for this reason.
 
 ## Configuration
 
@@ -49,10 +60,18 @@ TABLE: Main configuration settings
 |---|---|---|
 | TEXT_EN_MODEL, TEXT_TE_MODEL, IMAGE_MODEL | models/... | Folders of the trained models |
 | NLI_EN_MODEL, NLI_MULTI_MODEL | MoritzLaurer DeBERTa models | NLI models for English and Telugu claims |
-| EMBED_MODEL | BAAI/bge-m3 | Evidence embedding model |
+| LLM_PROVIDER | groq | groq, ollama, or none for the NLI method only |
+| GROQ_API_KEY | empty | Free key for the language-model checker |
+| LLM_MODEL | openai/gpt-oss-120b | Model used through Groq |
+| OLLAMA_URL, OLLAMA_MODEL | localhost:11434, qwen3:4b | Local model when LLM_PROVIDER=ollama |
+| LLM_EMBED_MODEL | intfloat/multilingual-e5-small | Model that chooses the evidence passages |
+| EVIDENCE_WEIGHT | 0.7 | Weight of the evidence against the classifier in the overall verdict |
+| PRELOAD_MODELS | true | Load the models in the background at start-up |
+| EMBED_MODEL | BAAI/bge-m3 | Corpus embedding model for the NLI method |
 | EVIDENCE_DIR | data/evidence | Folder of evidence JSONL files |
 | GOOGLE_FACTCHECK_API_KEY | empty | Optional free key to add published fact-checks |
-| LIME_NUM_SAMPLES | 200 | Perturbed copies per text explanation; lower is faster |
+| EXPLAIN_METHOD | occlusion | occlusion (fast) or lime |
+| LIME_NUM_SAMPLES | 200 | Perturbed copies when EXPLAIN_METHOD=lime |
 | MAX_CLAIMS | 8 | Most claims taken from one article |
 | EVIDENCE_TOP_K, EVIDENCE_MIN_SIMILARITY | 3, 0.45 | Passages per claim and the similarity cut-off |
 | MAX_BATCH_ROWS | 500 | Most rows in one batch CSV |
@@ -90,7 +109,9 @@ Paste a news article or headline into the text box and press the check button (o
 4. Leave "Highlight the words behind the verdict" and "Check claims against evidence" on for the full report, or switch them off for a faster verdict.
 5. Press "Check this text" (or Ctrl+Enter).
 
-The report shows the verdict and a fake-risk scale first. The highlighted article follows a little later: red marks are words that pushed the verdict toward fake, green marks toward real, and stronger colour means more influence. Each claim is underlined, solid for supported, wavy for contradicted and dotted for no evidence. The claim list below shows each claim's status, the evidence passage, its source link and the NLI scores; hovering a claim lights up its sentence in the article.
+The report shows the verdict and a fake-risk scale first. The highlighted article follows a little later: red marks are words that pushed the verdict toward fake, green marks toward real, and stronger colour means more influence. Each claim is underlined, solid for supported, wavy for contradicted and dotted for no evidence. The claim list below shows each claim's status, a one-line reason and the evidence passages with their source links. The passages the verdict relied on are marked "Cited in the verdict" and listed first; the others are greyed out. Hovering a claim lights up its sentence in the article. If no evidence was found for any claim, the verdict is "Can't verify" and the classifier's score is shown only as a writing-style signal.
+
+While the check runs, the panel on the right lists its steps and the time taken so far. You can open another page in the meantime: the check keeps running, and the result is there when you come back. A browser refresh clears the page.
 
 ### Checking an image
 
@@ -106,7 +127,7 @@ Open "Check many at once". For text, upload a CSV file with a column named `text
 
 ### History and saving reports
 
-Every check is listed on the History page with its time, type, input and verdict. Use the filter to show one type of check, the delete button to remove one entry, or "Clear history" to remove everything. On any report page, "Save as PDF" opens the browser's print dialog with a print layout that hides the navigation.
+Every check is listed on the History page with its time, type, input and verdict. Click a row, or its "Open" button, to see the full report again on its own page, with the verdict, reasons, evidence links, highlights or heatmap. Use the filter to show one type of check, the delete button to remove one entry, or "Clear history" to remove everything. Checks saved by older versions have no full report and no "Open" button. On any report page, "Save as PDF" opens the browser's print dialog with a print layout that hides the navigation.
 
 ### Light and dark theme
 
@@ -122,6 +143,8 @@ TABLE: Common problems and solutions
 | "Port 8000 (or 5173) is already in use" | Close the other TruthLens window, or restart the computer |
 | Package installation fails | Check the internet connection and run the launcher again; it resumes |
 | A model shows "Not trained" | Extract truthlens_models.zip into backend/models |
-| The first claim check is slow | The NLI and embedding models are downloading; later checks are faster |
-| Highlights take minutes | Lower LIME_NUM_SAMPLES in backend/.env, or switch the highlighting off |
+| The first start is slow | The models are downloading (about 2 GB, one time only); wait until the "Getting the AI models ready" note disappears |
+| Laptop with 8 GB RAM freezes at start | Close other programs, or set PRELOAD_MODELS=false so that models load only when first used |
+| The note "Claims checked by an LLM" is missing | The language model could not be reached: check GROQ_API_KEY and the internet connection, or wait for the daily limit to reset |
+| Highlights are slow | Set EXPLAIN_METHOD=occlusion in backend/.env (the default), or switch the highlighting off |
 | Need a clean reinstall | Delete backend/.venv and frontend/node_modules, then run the launcher |

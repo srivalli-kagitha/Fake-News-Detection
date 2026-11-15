@@ -21,11 +21,11 @@ Today a reader who wants to check a suspicious message has three options, and ea
 
 TruthLens AI combines classification, explanation and claim-level evidence checking for English and Telugu text, and AI-generated image detection, in one web application.
 
-For text, the article goes through two paths at once. The classifier path (DeBERTa-v3-large for English, IndicBERT v2 for Telugu) gives a fake probability, and LIME marks the words that pushed it. The verification path splits the article into claims, retrieves evidence for each one, and uses an NLI model to label each claim Support, Contradiction or Unknown. The two paths are fused into one fake risk, and the report shows the verdict, the highlighted article, the claims with their status, and the evidence behind each claim.
+For text, the article goes through two paths at once. The classifier path (DeBERTa-v3-large for English, IndicBERT v2 for Telugu) gives a fake probability, and occlusion marks the words that pushed it. The verification path splits the article into claims, searches the web and a local corpus for evidence on each one, and asks a language model to label each claim Support, Contradiction or Unknown with a reason and the passages it relied on; an NLI model does this when no language model is available. The two paths are fused into one fake risk, and the report shows the verdict, the highlighted article, the claims with their status, and the evidence behind each claim.
 
-For images, a linear classifier on CLIP ViT-L/14 features says whether the image is a real photograph or AI-generated, and a Grad-CAM heatmap shows the regions that drove the decision.
+For images, a linear classifier on CLIP ViT-L/14 features, averaged with a public detector trained on recent generators, says whether the image is a real photograph or AI-generated, and a Grad-CAM heatmap shows the regions that drove the decision.
 
-Batch mode runs the same checks on a CSV file of texts or a set of images and returns a CSV of results. Every check is saved in a local history.
+Batch mode runs the same checks on a CSV file of texts or a set of images and returns a CSV of results. Every check is saved, with its full report, in a local history from which it can be reopened.
 
 ### Advantages of the proposed system
 
@@ -64,17 +64,18 @@ TABLE: Functional requirements
 | FR3 | The system shall classify text as Fake or Real with a confidence value. |
 | FR4 | The system shall highlight the words that most influenced the text verdict. |
 | FR5 | The system shall extract up to eight check-worthy claims from an article. |
-| FR6 | The system shall retrieve evidence for each claim and label it Support, Contradiction or Unknown. |
-| FR7 | The system shall show the evidence passage, its source and NLI scores for each claim. |
+| FR6 | The system shall search for evidence on each claim, on the web and in a local corpus, and label it Support, Contradiction or Unknown. |
+| FR7 | The system shall show, for each claim, a one-line reason and the evidence passages with their sources, marking the passages the verdict relied on. |
 | FR8 | The system shall combine claim labels into a credibility score and overall verdict. |
 | FR9 | The system shall fuse the classifier and claim results into one fake risk. |
 | FR10 | The system shall accept JPG, PNG and WEBP images up to 15 MB and classify them as Real or AI-generated. |
 | FR11 | The system shall produce a Grad-CAM heatmap for each image verdict. |
 | FR12 | The system shall check a CSV file of texts or a set or ZIP of images in one request. |
 | FR13 | The system shall let the user download batch results as a CSV file. |
-| FR14 | The system shall store every check in a history that can be viewed, filtered and deleted. |
+| FR14 | The system shall store every check with its full report in a history that can be viewed, filtered, reopened and deleted. |
 | FR15 | The system shall show whether each model is trained and loaded. |
 | FR16 | The system shall let the user save any report as a PDF. |
+| FR17 | The system shall keep a running check and its result when the user moves to another page. |
 
 ### Non-functional requirements
 
@@ -82,10 +83,10 @@ TABLE: Non-functional requirements
 | Category | Requirement |
 |---|---|
 | Usability | Plain-language verdicts; one input box on the Start page; works with keyboard only; supports screen readers. |
-| Performance | Verdict and claim results are shown before the slower LIME explanation, which is loaded separately. |
+| Performance | Models load in the background when the backend starts. Verdict and claim results are shown before the word highlights, which are loaded separately, and the page shows the steps of a running check. |
 | Portability | Runs on Windows 10/11, Ubuntu and macOS with Python 3.10 to 3.12 and Node.js 18 or later. |
 | Reliability | Missing or untrained models return a clear message instead of an error; finished models are never retrained by mistake. |
-| Privacy | All processing is local. No text or image leaves the machine unless the optional Fact Check API key is set. |
+| Privacy | The models and images stay on the machine. For claim checking, the claim text is sent to search engines, Wikipedia and Google News, and to the language-model API when a key is set; with LLM_PROVIDER=ollama the language model also runs locally. |
 | Maintainability | Models, thresholds and evidence folder are set in one configuration file; evidence is added by dropping JSONL files in a folder. |
 | Accessibility | Colour is never the only signal: verdicts are also written as words and claim status also uses underline style. |
 | Responsiveness | The interface works from 360 px phone screens to desktop monitors, with light and dark themes. |
@@ -109,7 +110,7 @@ TABLE: Software requirements
 | Operating system | Windows 10/11, Ubuntu 22.04 or later, macOS 13 or later |
 | Languages | Python 3.10 to 3.12, JavaScript (ES2022) |
 | Backend | FastAPI, Uvicorn, SQLAlchemy, Pydantic Settings |
-| Machine learning | PyTorch 2, Transformers 4.4x, Sentence-Transformers, FAISS, LIME, pytorch-grad-cam, spaCy, scikit-learn |
+| Machine learning | PyTorch 2, Transformers 4.4x, Sentence-Transformers, FAISS, LIME, pytorch-grad-cam, spaCy, scikit-learn, ddgs (web search), an OpenAI-compatible LLM API (Groq or Ollama) |
 | Frontend | React 18, React Router 6, Vite 6, Tailwind CSS 4, Axios |
 | Database | SQLite |
 | Training | Google Colab or Kaggle notebook (T4 GPU), Hugging Face Hub |

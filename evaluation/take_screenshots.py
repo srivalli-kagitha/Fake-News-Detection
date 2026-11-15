@@ -5,6 +5,7 @@ from playwright.sync_api import sync_playwright
 IMG, SS = Path(sys.argv[1]), Path(sys.argv[2]); APP = "http://localhost:5173"; LONG = 1200000
 FAKE = "BREAKING: Scientists confirm that 5G mobile towers are spreading the coronavirus across India. The government has secretly ordered all towers to be shut down by Monday. Share this before it gets deleted!"
 MIXED = "The new 2000 rupee notes contain a GPS nano chip that lets the government track them, officials confirmed on Monday. India's Chandrayaan-3 lander touched down near the Moon's south pole on 23 August 2023. UNESCO has declared Jana Gana Mana the best national anthem in the world. Forward this message to everyone you know!"
+SENTENCE = "Rahul Gandhi became the Prime Minister of India in 2024."
 TE = "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది. హైదరాబాద్ తెలంగాణ రాజధాని. 5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుందని సోషల్ మీడియాలో ప్రచారం జరుగుతోంది."
 
 def tall(pg, name, max_h=3200):
@@ -32,6 +33,13 @@ with sync_playwright() as p:
     text_check(pg, MIXED); tall(pg, "ss_text_mixed.png")
     pg.get_by_role("button", name="Start a new check").first.click(); pg.wait_for_timeout(500)
     text_check(pg, TE); tall(pg, "ss_text_telugu.png")
+    # single sentence: the checking steps while it runs, then the LLM's reason and cited evidence
+    pg.get_by_role("button", name="Start a new check").first.click(); pg.wait_for_timeout(500)
+    pg.fill("textarea", SENTENCE); pg.get_by_role("button", name="Check this text").click()
+    pg.wait_for_timeout(3500); pg.screenshot(path=SS / "ss_progress.png"); print("saved progress", flush=True)
+    pg.wait_for_selector("text=Cited in the verdict", timeout=LONG)
+    pg.wait_for_selector("text=Highlighting the words behind the verdict", state="detached", timeout=LONG); pg.wait_for_timeout(2500)
+    tall(pg, "ss_text_sentence.png")
     nav(pg, "Check an image", "**/image")
     pg.locator("input[type=file]").set_input_files(str(IMG / "fake_1.jpg")); pg.get_by_role("button", name="Check this image").click()
     pg.wait_for_selector("input[aria-label='Compare image and heatmap']", timeout=LONG); pg.wait_for_timeout(1500)

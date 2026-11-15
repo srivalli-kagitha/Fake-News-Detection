@@ -49,16 +49,17 @@ with sync_playwright() as p:
     pg.screenshot(path=SS / "ss_text_report.png", full_page=True)
 
     def st03():
-        li = pg.locator("ol li").first; li.scroll_into_view_if_needed(); li.hover(); pg.wait_for_timeout(600)
+        li = pg.locator("ol.divide-y > li").nth(1); li.scroll_into_view_if_needed(); li.hover(); pg.wait_for_timeout(700)
         n = pg.locator(".claim-active").count()
-        return f"{n} words of the claim lit up in the article", n > 0
+        return f"hovering claim 2 lit up {n} words of that sentence in the article", n > 0
     rec("ST03", "Hovering a claim highlights it in the article", "Matching sentence lit up", st03)
     pg.locator("section[aria-label=Report]").screenshot(path=SS / "ss_text_claims_hover.png")
 
     def st04():
-        pg.goto(APP + "/image"); pg.wait_for_timeout(800); pg.goto(APP + "/text"); pg.wait_for_timeout(1000)
+        pg.locator("aside").get_by_role("link", name="Check an image").click(); pg.wait_for_url("**/image")
+        pg.locator("aside").get_by_role("link", name="Check news text").click(); pg.wait_for_url("**/text"); pg.wait_for_timeout(1000)
         ok = pg.locator(".verdict-strip").count() > 0 and pg.locator("textarea").input_value().startswith("The new 2000")
-        return f"report and input still present after leaving the page: {ok}", ok
+        return f"after moving to the image page and back with the rail, report and input still shown: {ok}", ok
     rec("ST04", "Results kept when moving between pages", "Report still shown on return", st04)
 
     def st05():
@@ -138,12 +139,31 @@ with sync_playwright() as p:
     rec("ST13", "Phone layout", "No horizontal scrolling at 375 px", st13)
 
     def st14():
-        pg.goto(APP + "/text"); pg.keyboard.press("Tab"); seen = set()
-        for _ in range(25):
-            pg.keyboard.press("Tab"); seen.add(pg.evaluate("document.activeElement.tagName + ':' + (document.activeElement.innerText||document.activeElement.getAttribute('aria-label')||'').slice(0,20)"))
-        ok = any("TEXTAREA" in s for s in seen) and any("Check this text" in s for s in seen)
+        pg.locator("aside").get_by_role("link", name="Check news text").click(); pg.wait_for_url("**/text"); pg.wait_for_timeout(800)
+        pg.get_by_role("button", name="Start a new check").first.click() if pg.get_by_role("button", name="Start a new check").count() else None
+        pg.fill("textarea", S["enFake"])  # the Check button is disabled (not focusable) while the box is empty
+        pg.evaluate("document.activeElement && document.activeElement.blur()"); seen = set()
+        for _ in range(40):
+            pg.keyboard.press("Tab"); seen.add(pg.evaluate("(e => e.tagName + ':' + (e.innerText || e.getAttribute('aria-label') || '').trim().slice(0, 24))(document.activeElement)"))
+        ok = any(s.startswith("TEXTAREA") for s in seen) and any("Check this text" in s for s in seen)
         return f"{len(seen)} controls reached with Tab, including the text box and Check button: {ok}", ok
     rec("ST14", "Keyboard-only use", "Text box and Check button reachable with Tab", st14)
+
+    def st15():
+        pg.goto(APP + "/history"); pg.wait_for_timeout(1500)
+        pg.get_by_role("group", name="Filter by type").get_by_role("button", name="Text").click(); pg.wait_for_timeout(800)
+        pg.get_by_role("button", name="Open", exact=True).first.click(); pg.wait_for_url("**/text"); pg.wait_for_timeout(2500)
+        ok = pg.get_by_role("button", name="Start a new check").count() > 0 and pg.locator("textarea").input_value() != ""
+        return f"Open on the newest History row went to {pg.url.split('5173')[-1]} and showed the saved report: {ok}", ok
+    rec("ST15", "History opens a full report", "The saved report shown again on its page", st15)
+
+    def st16():
+        pg.goto(APP + "/text"); pg.wait_for_timeout(500); pg.fill("textarea", S["enFake"])
+        pg.get_by_role("button", name="Check this text").click(); pg.wait_for_selector(".verdict-strip", timeout=LONG)
+        pg.reload(); pg.wait_for_timeout(1500)
+        ok = pg.get_by_role("button", name="Start a new check").count() == 0 and pg.locator("textarea").input_value() == ""
+        return f"after a browser refresh the report and the text box are empty: {ok}", ok
+    rec("ST16", "Refresh starts a clean page", "No report and no input after a refresh", st16)
 
     pg.goto("http://127.0.0.1:8000/docs"); pg.wait_for_timeout(3000); pg.screenshot(path=SS / "ss_api_docs.png")
     b.close()

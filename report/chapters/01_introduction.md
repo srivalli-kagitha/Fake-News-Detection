@@ -39,11 +39,12 @@ The objectives of the project are:
 
 1. To fine-tune DeBERTa-v3-large for English fake news classification and IndicBERT v2 for Telugu, and compare them with a BERT-base baseline and a TF-IDF model.
 2. To build a Telugu training set whose two classes cannot be separated by writing style alone.
-3. To detect AI-generated images with a linear classifier on CLIP ViT-L/14 features.
-4. To explain text verdicts with LIME and image verdicts with Grad-CAM.
+3. To detect AI-generated images with a linear classifier on CLIP ViT-L/14 features, combined with a detector trained on recent generators.
+4. To explain text verdicts with word highlights (occlusion, chosen after comparing it with LIME and gradient methods) and image verdicts with Grad-CAM.
 5. To design and evaluate a contradiction-aware, claim-level verification stage that labels each claim Support, Contradiction or Unknown and combines the labels into an overall credibility score.
-6. To support batch checking of CSV files and image folders, with downloadable results.
-7. To package the system so that it installs and starts on Windows, Linux or macOS with one command.
+6. To verify claims against live evidence from the web with an open-weight language model that cites the passages behind each verdict, and to fall back to the NLI method when no language model is available.
+7. To support batch checking of CSV files and image folders, with downloadable results.
+8. To package the system so that it installs and starts on Windows, Linux or macOS with one command.
 
 ## Scope of the Project
 

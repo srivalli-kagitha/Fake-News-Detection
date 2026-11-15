@@ -50,11 +50,11 @@ Gudlavalleru, India\\
 \maketitle
 
 \begin{abstract}
-Most fake news detectors return a single label for a whole article and say nothing about which statements are false or why. They also tend to support only English and only text. We present TruthLens AI, a system that checks English and Telugu news text and also flags images that are AI-generated. Text is classified with a fine-tuned DeBERTa-v3-large model for English and IndicBERT v2 for Telugu. Images are classified by a linear probe on CLIP ViT-L/14 features. LIME marks the words behind each text verdict, and Grad-CAM marks the image regions behind each image verdict. The main extension is claim-level verification: the system splits an article into check-worthy claims, retrieves evidence with BGE-M3 embeddings and a FAISS index, and labels each claim Support, Contradiction or Unknown with a natural language inference (NLI) model. The claim results are combined into a credibility score and then fused with the classifier output. On the cleaned WELFake test set, DeBERTa-v3-large reaches 99.7\% accuracy against 98.8\% for a BERT-base baseline. The Telugu model reaches 93.1\% and the image detector 93.7\%. With gold evidence, contradiction-aware verification reaches 84.6\% accuracy (macro-F1 0.847) on FEVER and 50.9\% (macro-F1 0.467) on the harder, real-world Climate-FEVER set, while a similarity-only baseline reaches 40.0\% and 34.0\% and cannot detect a single refuted claim. We also report a bias check showing that a TF-IDF model scores 96.2\% on WELFake, which limits what high accuracy on that dataset can prove.
+Most fake news detectors return a single label for a whole article and say nothing about which statements are false or why. They also tend to support only English and only text. We present TruthLens AI, a system that checks English and Telugu news text and also flags images that are AI-generated. A fine-tuned DeBERTa-v3-large (English) and IndicBERT v2 (Telugu) judge the writing style of an article. Images are scored by averaging a linear probe on CLIP ViT-L/14 features with a public Swin-V2 detector trained on recent generators. The main extension is claim-level verification against live evidence. For each check-worthy claim an open-weight language model (gpt-oss-120b) writes search queries, evidence is collected from Wikipedia, the web, Google News, published fact-checks and a local corpus, multilingual-E5 keeps the passages closest to the claim or its queries, and the model labels the claim Support, Contradiction or Unknown, citing the passages it relied on. A contradiction-aware natural language inference (NLI) rule runs when no language model is available. On 41 single-sentence claims (true and false, formal and informal, attributed, Telugu, and events from 2024 to 2026) the language-model verifier answers all 41 correctly, each with a cited source, where the NLI pipeline answers 35 and leaves 4 unverified. With gold evidence the NLI rule reaches 84.6\% accuracy on FEVER and 50.9\% on Climate-FEVER, against 40.0\% and 34.0\% for a similarity-only baseline. On held-out test sets DeBERTa-v3-large reaches 99.7\% (BERT-base 98.8\%), the Telugu model 93.1\% and the CLIP probe 93.7\%. Word highlights use occlusion, which in our measurement was about 10 times faster than LIME and as faithful to the classifier. A bias check showing that a TF-IDF model scores 96.2\% on WELFake limits what high accuracy on that dataset can prove.
 \end{abstract}
 
 \begin{IEEEkeywords}
-fake news detection, claim verification, natural language inference, explainable AI, Telugu, AI-generated image detection, DeBERTa, CLIP
+fake news detection, claim verification, retrieval-augmented fact-checking, large language models, natural language inference, explainable AI, Telugu, AI-generated image detection
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -63,13 +63,13 @@ False stories reach people faster and further than true ones. In a study of abou
 
 Automatic detectors exist, but three gaps make them hard to use for this audience. First, most are trained and tested on English only. Second, they treat text and images separately. Third, and most important for a reader who wants to decide whether to forward a message, they output one label for a whole article. A label of ``Fake, 91\%'' does not tell the reader that the article's date is right but its central number is invented.
 
-TruthLens AI is built around that third gap. Besides a whole-article classifier, it extracts individual claims, finds evidence for each, and uses an NLI model to decide whether the evidence supports or contradicts the claim. A claim that matches the evidence but is negated by it is reported as contradicted, not as ``related'', which is what a similarity search alone would report. Our contributions are:
+TruthLens AI is built around that third gap. Besides a whole-article classifier, it extracts individual claims, searches for evidence on each one, and decides whether the evidence supports or contradicts the claim. A claim that matches the evidence but is negated by it is reported as contradicted, not as ``related'', which is what a similarity search alone would report. Our first version did this with a fixed 40-passage corpus and an NLI model. Users then typed one-line claims about anything, and most came back Unknown because the corpus had nothing on them. The current version searches the web for every claim and lets an open-weight language model read the results, following recent fact-checking systems \cite{xie2025fire,putta2025claimcheck}. Our contributions are:
 
 \begin{itemize}
 \item A working system that checks English and Telugu text and images, runs on an ordinary laptop with one command, and processes single items or batches through a web interface.
-\item A contradiction-aware verification stage with an explicit decision rule (Section~\ref{sec:verify}), evaluated on FEVER, Climate-FEVER and a curated Indian-news claim set, and compared with a similarity-only baseline.
+\item Evidence-grounded claim verification with live search and an open-weight language model that cites its sources (Section~\ref{sec:llm}), with a contradiction-aware NLI rule as offline fallback (Section~\ref{sec:verify}). The two are compared on 41 single-sentence claims; the NLI rule is also evaluated on FEVER and Climate-FEVER against a similarity-only baseline.
 \item A Telugu training set built by translating both classes of WELFake with NLLB-200, after showing that an existing Telugu dataset can be separated by writing style alone.
-\item Explanations at the level a reader can act on: highlighted words (LIME), highlighted image regions (Grad-CAM), and per-claim evidence with its source.
+\item Explanations at the level a reader can act on: highlighted words (occlusion, chosen after measuring it against LIME and two gradient methods), highlighted image regions (Grad-CAM), and per-claim reasons with the cited evidence and its link.
 \end{itemize}
 
 \section{Related Work}
@@ -81,10 +81,10 @@ Early work used hand-built features such as word counts, punctuation and source 
 Indian languages have far fewer labelled fake news datasets. BanFakeNews provides about 50,000 Bangla articles \cite{hossain2020banfakenews}. For Telugu, a public dataset is available on Zenodo \cite{telugu2024zenodo}, which we examine in Section~\ref{sec:data}. Multilingual encoders trained on Indian text, such as IndicBERT \cite{kakwani2020indicnlp} and IndicBERT v2, which covers 23 Indian languages \cite{doddapaneni2023indicbertv2}, make Telugu classification practical. NLLB-200 translates between 200 languages, including English and Telugu \cite{nllb2022}.
 
 \subsection{AI-generated image detection}
-Wang et al. showed that a ResNet trained on one GAN's images generalises to other GANs \cite{wang2020cnndetect}, but such detectors transfer poorly to diffusion models \cite{corvi2023diffusion}. Ojha et al. found that a linear classifier on frozen CLIP \cite{radford2021clip} features generalises better across generators than a fully trained network \cite{ojha2023universal}. We follow that approach. CIFAKE pairs CIFAR-10 photographs with images made by Stable Diffusion v1.4 \cite{bird2024cifake,rombach2022ldm}.
+Wang et al. showed that a ResNet trained on one GAN's images generalises to other GANs \cite{wang2020cnndetect}, but such detectors transfer poorly to diffusion models \cite{corvi2023diffusion}. Ojha et al. found that a linear classifier on frozen CLIP \cite{radford2021clip} features generalises better across generators than a fully trained network \cite{ojha2023universal}. We follow that approach. CIFAKE pairs CIFAR-10 photographs with images made by Stable Diffusion v1.4 \cite{bird2024cifake,rombach2022ldm}. Because CIFAKE images are small and come from one generator, we add a public detector built on Swin Transformer V2 \cite{liu2022swinv2} that was trained on output from recent generators \cite{haywoodsloan2024detector}.
 
 \subsection{Explainability and fact verification}
-LIME explains a single prediction by perturbing the input and fitting a local linear model \cite{ribeiro2016lime}. Grad-CAM weights a layer's activations by their gradients to produce a heatmap \cite{selvaraju2017gradcam}. Automated fact-checking is usually split into claim detection, evidence retrieval and verdict prediction \cite{guo2022survey}. ClaimBuster scores sentences by how check-worthy they are \cite{hassan2017claimbuster}. FEVER frames verdict prediction as three-way classification of a claim against Wikipedia sentences \cite{thorne2018fever}, and Climate-FEVER applies the same labels to real claims collected from the web \cite{diggelmann2020climatefever}. NLI models trained on MNLI, ANLI and FEVER-NLI \cite{williams2018mnli,nie2020anli,laurer2024nli} can be applied to these tasks without task-specific training. Fake news classifiers and fact verification are usually studied apart. TruthLens runs both on the same article and combines them.
+LIME explains a single prediction by perturbing the input and fitting a local linear model \cite{ribeiro2016lime}. Occlusion removes one input unit at a time and records the change in the output \cite{zeiler2014visualizing,li2016erasure}; gradient methods such as Integrated Gradients read the same information from the model's gradients \cite{sundararajan2017ig}. Atanasova et al. compared these families on text classifiers and found large differences in how faithful they are to the model \cite{atanasova2020diagnostic}. Grad-CAM weights a layer's activations by their gradients to produce a heatmap \cite{selvaraju2017gradcam}. Automated fact-checking is usually split into claim detection, evidence retrieval and verdict prediction \cite{guo2022survey}. ClaimBuster scores sentences by how check-worthy they are \cite{hassan2017claimbuster}. FEVER frames verdict prediction as three-way classification of a claim against Wikipedia sentences \cite{thorne2018fever}, and Climate-FEVER applies the same labels to real claims collected from the web \cite{diggelmann2020climatefever}. NLI models trained on MNLI, ANLI and FEVER-NLI \cite{williams2018mnli,nie2020anli,laurer2024nli} can be applied to these tasks without task-specific training. MiniCheck trains a small model to decide whether a document supports a sentence \cite{tang2024minicheck}. Real-world claims need evidence from the open web, which AVeriTeC provides as a benchmark \cite{schlichtkrull2023averitec}. The best recent systems let a language model plan the searches and judge the evidence. FIRE lets the model answer from its own knowledge and search only when unsure, which cuts cost several times \cite{xie2025fire}. ClaimCheck reaches 76.4\% accuracy on AVeriTeC with the 4B-parameter Qwen3 model \cite{putta2025claimcheck}. The 2025 AVeriTeC shared task required open-weight models on a single GPU and under a minute per claim \cite{akhtar2025averitec}. We follow this design with the open-weight gpt-oss-120b model \cite{openai2025gptoss}. Fake news classifiers and fact verification are usually studied apart. TruthLens runs both on the same article and combines them.
 
 \section{Datasets}
 \label{sec:data}
@@ -107,6 +107,7 @@ FEVER dev \cite{thorne2018fever} & Claim verification & -- / 900 claims \\
 Climate-FEVER \cite{diggelmann2020climatefever} & Claim verification & -- / 450 claims \\
 IndicXNLI-te \cite{aggarwal2022indicxnli} & Telugu NLI & -- / 1,000 pairs \\
 Curated claims (ours) & End-to-end test & -- / 40 claims \\
+Sentence cases (ours) & Live verification & -- / 41 claims \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -139,14 +140,14 @@ Fig.~\ref{fig:arch} shows the three pipelines. A request carries either text or 
 \node[io] (text) {News text\\(EN / TE)};
 \node[box, below=of text] (lang) {Language\\detection};
 \node[box, below left=4mm and -6mm of lang] (cls) {DeBERTa-v3 /\\IndicBERT v2};
-\node[box, below=of cls] (lime) {LIME word\\weights};
-\node[box, below right=4mm and -6mm of lang] (ext) {Claim\\extraction};
-\node[box, below=of ext] (ret) {BGE-M3 +\\FAISS search};
-\node[box, below=of ret] (nli) {NLI: support /\\contradict};
+\node[box, below=of cls] (lime) {Occlusion\\word weights};
+\node[box, below right=4mm and -6mm of lang] (ext) {Claim extraction\\+ LLM queries};
+\node[box, below=of ext] (ret) {Web, Wikipedia,\\news, fact-checks};
+\node[box, below=of ret] (nli) {E5 selection +\\LLM verdict$^{*}$};
 \node[box, below=of nli] (agg) {Claim\\aggregation};
 \node[io] (fuse) at (lime |- agg) {Fused verdict\\+ explanation};
 \node[io, right=6mm of text, xshift=14mm] (img) {Image};
-\node[box, below=of img] (clip) {CLIP ViT-L/14\\+ linear head};
+\node[box, below=of img] (clip) {CLIP probe +\\Swin-V2 (avg.)};
 \node[box, below=of clip] (cam) {Grad-CAM\\heatmap};
 \node[io, below=of cam] (iout) {Real / AI-\\generated};
 \draw[arr] (text) -- (lang);
@@ -162,7 +163,7 @@ Fig.~\ref{fig:arch} shows the three pipelines. A request carries either text or 
 \draw[arr] (clip) -- (cam);
 \draw[arr] (cam) -- (iout);
 \end{tikzpicture}
-\caption{TruthLens AI architecture. The text classifier and claim verifier run on the same article and are fused; images go through a separate CLIP-based detector.}
+\caption{TruthLens AI architecture. The text classifier and claim verifier run on the same article and are fused; images go through two detectors whose scores are averaged. $^{*}$Without a language model the verdict comes from the NLI rule over corpus and live passages.}
 \label{fig:arch}
 \end{figure}
 
@@ -170,14 +171,35 @@ Fig.~\ref{fig:arch} shows the three pipelines. A request carries either text or 
 An input is treated as Telugu when more than 30\% of its letters fall in the Telugu Unicode block (U+0C00 to U+0C7F); otherwise it is English. The user can override this choice. English text goes to DeBERTa-v3-large (435M parameters) and Telugu text to IndicBERT v2 (MLM-only checkpoint). Both are fine-tuned as binary classifiers on title plus body, truncated to 256 tokens. The classifier returns $p_{\text{fake}}$, the softmax probability of the fake class.
 
 \subsection{Image detection}
-Following Ojha et al. \cite{ojha2023universal}, we freeze the CLIP ViT-L/14 image encoder \cite{radford2021clip,dosovitskiy2021vit}, take the projected 768-dimensional embedding of each image after resizing and centre-cropping to $224\times224$, and train a single linear layer on top. Only 1,538 weights are learned, so training takes minutes once features are cached.
+Following Ojha et al. \cite{ojha2023universal}, we freeze the CLIP ViT-L/14 image encoder \cite{radford2021clip,dosovitskiy2021vit}, take the projected 768-dimensional embedding of each image after resizing and centre-cropping to $224\times224$, and train a single linear layer on top. Only 1,538 weights are learned, so training takes minutes once features are cached. The probe has only seen $32\times32$ Stable Diffusion images, and in use it called a Midjourney portrait real. The application therefore averages its AI probability with that of a public Swin-V2 detector trained on recent generators \cite{haywoodsloan2024detector}, and shows both scores to the user. Grad-CAM is computed for the class the average chooses.
 
 \subsection{Explanations}
-For text, LIME \cite{ribeiro2016lime} removes random subsets of words, runs the classifier on 200 perturbed copies, and fits a weighted linear model. We split on whitespace rather than with an English tokenizer so that Telugu words are not broken into pieces. The 12 words with the largest weights are highlighted in the article, red when they push toward fake and green when they push toward real.
+For text we first used LIME \cite{ribeiro2016lime}, which runs the classifier on 200 perturbed copies of the article. On a CPU that took 18\,s for one sentence and minutes for an article. We now use occlusion: each distinct content word $w$ is removed once and its weight is
+\begin{equation}
+a_w = p_{\text{fake}}(x) - p_{\text{fake}}(x \setminus w),
+\end{equation}
+so positive weights push toward fake. Words are split on whitespace, so Telugu words stay whole. Function words such as ``the'' and ``in'' are skipped, and so are words after the 256-token limit, which the classifier never reads. The cost is one batched model run per remaining word. Section~\ref{sec:explres} compares the four methods we tried. The 12 words with the largest weights are highlighted, red toward fake and green toward real.
 
 For images, Grad-CAM \cite{selvaraju2017gradcam} is applied to the first layer normalisation of the last ViT block. The 256 patch tokens are reshaped to a $16\times16$ grid, weighted by the gradient of the predicted class, upsampled and overlaid on the image.
 
-\subsection{Contradiction-aware claim verification}
+\subsection{Evidence-grounded verification with a language model}
+\label{sec:llm}
+
+Claims are extracted as described in Section~\ref{sec:verify}. Each claim then goes through three steps, following FIRE and ClaimCheck \cite{xie2025fire,putta2025claimcheck}.
+
+\textit{Query planning.} The language model writes two or three short English search queries per claim, aimed at the fact that would settle it: the entity's official details, a date, a place or a number. Telugu claims get English queries too, which gives them access to the much larger English web.
+
+\textit{Evidence.} For every query the system searches English Wikipedia (lead sections), the web through a metasearch library (Yahoo first, DuckDuckGo and Mojeek only when Yahoo fails), and Google News headlines; the Google Fact Check API is searched with the claim itself. For Telugu claims, Telugu Wikipedia and the linked English page are added. All sources run in parallel under a 20\,s deadline, and a source that fails is skipped. The local corpus passages join the pool. Each passage $d$ is ranked by
+\begin{equation}
+\rho(d) = \max\big(\cos(d,c), \max_{q\in Q_c}\cos(d,q)\big),
+\end{equation}
+with multilingual-E5-small embeddings \cite{wang2024me5}, so a passage can be chosen because it answers one of the queries. This matters for false claims. The passage that refutes ``Rahul Gandhi became Prime Minister in 2024'' is about Narendra Modi, and it matches the query ``Prime Minister of India 2024'' much better than the claim. We keep up to two published fact-checks and fill the rest of the ten slots with the highest-ranked passages, at most two from any one page. Passages with $\rho<0.80$ are dropped; on E5 related passages scored 0.84 to 0.89 and unrelated ones 0.68 to 0.77 in our checks.
+
+\textit{Verdict.} The model receives the claim and the numbered passages and returns JSON with a verdict (SUPPORTED, REFUTED or NOT\_ENOUGH\_EVIDENCE), a confidence, the numbers of the passages it relied on, a flag for answers from general knowledge alone, and a one-sentence reason. The instructions say that a wrong key detail (person, place, date, number) makes a claim refuted, that evidence about a different thing with a similar name is to be ignored (the Taj Mahal Palace hotel is not the Taj Mahal), that later and encyclopedic sources outrank old news about plans, and that predictions and local rumours are Unknown. When nothing is cited the confidence is capped at 0.8 and the page says the answer comes from the model's knowledge. Cited passages are shown first with their links.
+
+We call gpt-oss-120b \cite{openai2025gptoss}, an open-weight model under the Apache-2.0 licence, through a free hosted API with temperature 0. A claim costs two calls and about 2,500 tokens, roughly 80 checks a day on one free key. The same code can call a local model through Ollama (Qwen3-4B), which needs no key or internet for the model but is slower on a CPU. If the language model cannot be reached, the system falls back to the NLI rule below.
+
+\subsection{Contradiction-aware NLI verification (fallback)}
 \label{sec:verify}
 
 \textit{Claim extraction.} English text is split into sentences with spaCy; Telugu text is split on sentence punctuation. Questions, sentences under five words (three for Telugu) or over 80 words, and sentences that start with opinion markers such as ``I think'' or ``share this'' are dropped. Each remaining sentence $s$ gets a check-worthiness score
@@ -189,7 +211,7 @@ w(s) = 1 &+ 0.8\,\min(e_s,3) + \mathbf{1}[\text{number}]\\
 \end{equation}
 where $e_s$ is the number of named entities and $c_s$ the number of capitalised words. The capitalisation and verb terms apply to English only. The eight highest-scoring sentences, in article order, are the claims.
 
-\textit{Evidence retrieval.} Evidence passages are stored as JSON lines and embedded with BGE-M3 \cite{chen2024bgem3}, which handles English and Telugu in one vector space. A FAISS inner-product index \cite{johnson2021faiss} over normalised vectors returns the top $k=3$ passages by cosine similarity, and passages below 0.45 are discarded. When an API key is set, results from the Google Fact Check Tools API are added.
+\textit{Evidence retrieval.} Evidence passages are stored as JSON lines and embedded with BGE-M3 \cite{chen2024bgem3}, which handles English and Telugu in one vector space. A FAISS inner-product index \cite{johnson2021faiss} over normalised vectors returns the top $k=3$ passages by cosine similarity, and passages below 0.45 are discarded. Wikipedia lead sentences, Google News headlines and Google Fact Check results for the claim's keywords are added and ranked the same way. Phrases such as ``ISRO said'' are stripped from the claim before NLI, because a premise rarely entails who said something.
 
 \textit{Verdict per claim.} For claim $c$ with evidence set $E_c$, an NLI model scores each pair (evidence as premise, claim as hypothesis). English uses DeBERTa-v3-large trained on MNLI, FEVER-NLI, ANLI, LingNLI and WANLI \cite{laurer2024nli}; Telugu uses multilingual mDeBERTa-v3-base. Let
 \begin{equation}
@@ -210,15 +232,15 @@ with confidence $s^{-}_c$, $s^{+}_c$, or $1-\max(s^{+}_c,s^{-}_c)$ respectively.
 S = \frac{1}{n}\sum_{c} \begin{cases} q_c & y_c=\text{Support}\\ -q_c & y_c=\text{Contradiction}\\ 0 & y_c=\text{Unknown}\end{cases},
 \qquad C = \frac{S+1}{2},
 \end{equation}
-so $C\in[0,1]$ is a credibility score. The article is ``Unverified'' if no claim is supported or contradicted, ``Likely Misleading'' if $S\le-0.2$, ``Likely Credible'' if $S\ge0.2$, and ``Mixed Evidence'' otherwise. When the article is not Unverified, the final fake risk averages the two sources,
+so $C\in[0,1]$ is a credibility score. The same aggregation is used for both verifiers. The article is ``Unverified'' if no claim is supported or contradicted, ``Likely Misleading'' if $S\le-0.2$, ``Likely Credible'' if $S\ge0.2$, and ``Mixed Evidence'' otherwise. When the article is not Unverified, the final fake risk weights the evidence above the writing style,
 \begin{equation}
-r = \tfrac{1}{2}\left(p_{\text{fake}} + (1-C)\right),
+r = (1-\lambda)\,p_{\text{fake}} + \lambda\,(1-C), \qquad \lambda = 0.7,
 \end{equation}
-and the article is labelled Fake when $r\ge0.5$. If only one source is available, $r$ is that source alone. A user therefore always sees which source decided the verdict.
+and the article is labelled Fake when $r\ge0.5$. An equal weighting let a confident style score overrule clear evidence: a correct sentence about a state election came out 99\% fake. When no claim has evidence, the overall verdict is ``Can't verify'' and the style score is shown only as a style signal, because the classifier judges how a text is written, not whether it is true. If claim checking is switched off, $r=p_{\text{fake}}$.
 
 \section{Implementation}
 
-The backend is a FastAPI service with endpoints for text, image, claim and batch checks; models load on first use and are cached, and every check is stored in SQLite for the history page. The frontend is a React and Vite single-page application. Batch mode accepts a CSV file with a text column or a ZIP of images and returns a downloadable CSV of results. A Python launcher creates the virtual environment, installs dependencies, starts both servers and opens the browser, so the system runs on Windows, Linux or macOS with one command.
+The backend is a FastAPI service with endpoints for text, image, claim and batch checks. Models load in a background thread when the service starts, and the page shows the progress, so the first check does not wait for them. Only the files a model needs are downloaded; fetching every file of a repository had doubled the first download. PyTorch is limited to one thread per physical core, because with 16 hyper-threads the models ran up to seven times slower. Every check is stored in SQLite with its full report, so the history page can reopen it. The frontend is a React and Vite single-page application. Batch mode accepts a CSV file with a text column or a ZIP of images and returns a downloadable CSV of results. A Python launcher creates the virtual environment, installs dependencies, starts both servers and opens the browser, so the system runs on Windows, Linux or macOS with one command.
 
 Training ran on a single NVIDIA T4 (16 GB) in a free cloud notebook. Table~\ref{tab:hyper} lists the settings. Text models use AdamW with 10\% linear warm-up, weight decay 0.01, mixed precision, and early stopping with patience 2 on validation F1.
 
@@ -333,19 +355,89 @@ mDeBERTa-v3-base (multilingual) & \textbf{0.742} & \textbf{0.745} \\
 
 Fig.~\ref{fig:sweep} shows how the threshold $\tau$ affects macro-F1. On FEVER the best value is 0.859 at $\tau=0.35$, slightly above the 0.847 at our default of 0.5, and the score falls to 0.787 at $\tau=0.9$ as more claims become Unknown. On Climate-FEVER the curve is flat, between 0.455 and 0.467, so the weak Support recall there comes from the NLI scores themselves rather than from the choice of threshold. We kept $\tau=0.5$ because it was fixed before the evaluation and a lower value would admit more weak support in the application.
 
+\subsection{Single-sentence claims with live evidence}
+\label{sec:liveres}
+FEVER and Climate-FEVER come with gold evidence. In the application the evidence has to be found first, and users mostly type one sentence. We wrote 41 such sentences in eight groups: true and false claims in formal and informal wording, claims with an attribution (``ISRO said''), true and false Telugu claims, and events from 2024 to 2026. Each sentence runs through the full application, and the expected overall verdict is Real or Fake. Table~\ref{tab:live} compares three versions on the same sentences.
+
+\begin{table}[t]
+\caption{Overall verdict on 41 single-sentence claims through the full application (live evidence)}
+\label{tab:live}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Verifier & Correct & Unverif. & Wrong & s/claim \\
+\midrule
+NLI rule & 35 & 4 & 2 & 19.1 \\
+NLI + web + MiniCheck & 36 & 0 & 5 & 27.1 \\
+LLM verifier & \textbf{41} & \textbf{0} & \textbf{0} & \textbf{13.8} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The NLI rule could not verify four sentences because no passage it found stated the fact (for example, that Abdul Kalam was the 11th President), and it got two wrong. One was a true claim about Neeraj Chopra's gold at the Tokyo Olympics: a passage saying the Games were held in 2021 contradicted ``Tokyo 2020''. The other was the false claim that Rahul Gandhi became Prime Minister in 2024, which it marked as supported. Adding web search and MiniCheck \cite{tang2024minicheck}, a small model trained to judge whether a document supports a sentence, found evidence for every sentence but made five errors. A 2022 headline about a launch ``set for August 2023'' outweighed reports of the July launch, a page about the Taj Mahal Palace hotel in Mumbai supported ``the Taj Mahal is in Mumbai'', and a snippet about a football match supported the Telugu claim that Virat Kohli is a footballer. These are errors of reading, not of retrieval, and the language-model verifier avoids all of them: it answered every sentence correctly, cited at least one passage each time, and never had to fall back on its own knowledge. Being faster is mostly a side effect of reading ten passages at once rather than running an NLI model on each.
+
+This set is small and we wrote it ourselves, and the language model may have seen many of these facts during training. The citation requirement is our check on that: every answer points to passages the reader can open. Claims about events after the model's training data depend entirely on what the search returns.
+
+\subsection{Image detection on recent generators}
+\label{sec:imgres}
+To see how the CIFAKE-trained probe handles current images, we collected 61 images: 24 Midjourney v6 images from two public datasets, 6 CIFAKE fakes and one AI portrait that a user reported, and 30 real photographs (8 Wikipedia lead photos, 16 Flickr30k test photos, 6 CIFAKE reals). Table~\ref{tab:imgens} shows the result. The probe alone gets 41 right and misses 10 of the 24 Midjourney images. The public detector is better on recent images but rejects all six CIFAKE fakes, which are smaller than anything it was trained on. Averaging the two gets 50 of 61 right and every real photograph right, so we use the average. Seven Midjourney images are still called real; the result is useful as a warning, not as proof.
+
+\begin{table}[t]
+\caption{Image detectors on 61 recent and CIFAKE images (correct / total)}
+\label{tab:imgens}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Detector & AI (31) & Real (30) & All (61) \\
+\midrule
+CLIP probe (ours) & 18 & 23 & 41 \\
+Swin-V2 detector \cite{haywoodsloan2024detector} & 17 & 30 & 47 \\
+Average (used) & \textbf{20} & \textbf{30} & \textbf{50} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Word explanations}
+\label{sec:explres}
+We compared four ways to find the words behind a text verdict on six English and Telugu texts. Faithfulness is measured with the deletion test of Atanasova et al. \cite{atanasova2020diagnostic}: remove the three words a method ranks as pushing hardest toward the predicted class and record how much that class's probability drops. A larger drop means the method found words the model actually relies on. Table~\ref{tab:expl} gives the result.
+
+\begin{table}[t]
+\caption{Word explanations: mean time per text on a CPU and faithfulness (mean drop in the predicted class's probability when the top 3 words are removed; higher is better)}
+\label{tab:expl}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Method & Time (s) & Drop \\
+\midrule
+LIME, 200 samples \cite{ribeiro2016lime} & 10.41 & 0.291 \\
+Gradient $\times$ Input & 0.26 & 0.101 \\
+Integrated Gradients, 16 steps \cite{sundararajan2017ig} & 2.03 & 0.192 \\
+Occlusion (used) & 1.06 & 0.287 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Occlusion is about as faithful as LIME (0.287 against 0.291) and about 10 times faster, because it needs one run per content word instead of 200. Both gradient methods are fast but less faithful on our models (0.101 and 0.192). On the short English claim about the Taj Mahal they rank ``government.'' first, and removing their top words makes the model more sure the text is fake, not less. Integrated Gradients needs a baseline input, and with a padding baseline the path from it to the text is not a meaningful one for this model. We therefore use occlusion. The times are for this machine with eight threads; an 80-word article takes about 10\,s.
+
 \section{Discussion and Limitations}
 
-The clearest limitation is the evidence corpus. The system can only contradict a claim if a passage about that claim is in the index, and the bundled corpus has 40 hand-checked passages on Indian current affairs, science and common health hoaxes. Claims outside it come back Unknown. The corpus is a folder of JSON-lines files and a helper script adds Wikipedia articles, but a deployed system would need a much larger and regularly updated index or the fact-check API.
+The language-model verifier removed the main limitation of the first version, a 40-passage corpus that left most claims Unknown, but it adds others. It depends on a hosted API and on search engines that can change or rate-limit without notice; the free tier allows about 80 claims a day per key, and when it is exhausted the system falls back to the weaker NLI rule. The model's own knowledge may decide a claim before the evidence does, which is why we require citations and flag answers without them. A local open model removes the API dependency at the cost of speed on a CPU. Our sentence set is small and was written by us, so a larger test on unseen claims, such as AVeriTeC \cite{schlichtkrull2023averitec}, is the next measurement to make.
 
 The Telugu classifier is trained on translated English news. Its articles are about United States politics, translated into Telugu, so it has not seen the topics, names and phrasing of local Telugu misinformation. A native Telugu dataset with labels that do not follow writing style would be the most useful next step.
 
-CIFAKE images are $32\times32$ CIFAR-style pictures from a single generator. A detector trained on them is not evidence of performance on full-resolution images from current generators, and we present the image result as a proof of concept.
+CIFAKE images are $32\times32$ CIFAR-style pictures from a single generator. Section~\ref{sec:imgres} shows what that costs on current images and how much a second detector recovers; seven of 24 Midjourney images still pass as real, so the image verdict is a warning rather than proof.
 
 Finally, the WELFake bias check shows that high accuracy on that dataset does not by itself demonstrate an understanding of truthfulness. This is one reason we added claim verification: its output can be checked against named sources, while a classifier's output can only be trusted or not.
 
 \section{Conclusion}
 
-TruthLens AI checks English and Telugu news and images in one interface, explains each verdict, and, for text, reports which individual claims are supported or contradicted by evidence. On benchmarks with gold evidence, the contradiction-aware rule separates refuted claims from supported ones, which a similarity-only method cannot do. Future work is a native Telugu dataset, a larger multilingual evidence index, and image training on high-resolution output from current diffusion models.
+TruthLens AI checks English and Telugu news and images in one interface, explains each verdict, and, for text, reports which individual claims are supported or contradicted by evidence found on the web, with a reason and the sources it relied on. An open-weight language model that plans the searches and reads the evidence answered all 41 of our single-sentence claims correctly, where an NLI pipeline over the same sources answered 35. On benchmarks with gold evidence, the contradiction-aware NLI rule that serves as fallback separates refuted claims from supported ones, which a similarity-only method cannot do. Future work is an evaluation on AVeriTeC, a native Telugu dataset, a local model fast enough for a laptop CPU, and image training on high-resolution output from current generators.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}

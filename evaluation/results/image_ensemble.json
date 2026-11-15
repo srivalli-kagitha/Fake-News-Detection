@@ -1,0 +1,66 @@
+{
+  "groups": {
+    "Midjourney v6 (AI)": {
+      "n": 24,
+      "ours": 14,
+      "modern": 16,
+      "average": 18
+    },
+    "CIFAKE (AI)": {
+      "n": 6,
+      "ours": 4,
+      "modern": 0,
+      "average": 1
+    },
+    "User portrait (AI)": {
+      "n": 1,
+      "ours": 0,
+      "modern": 1,
+      "average": 1
+    },
+    "Wikipedia photos (real)": {
+      "n": 8,
+      "ours": 4,
+      "modern": 8,
+      "average": 8
+    },
+    "Flickr30k photos (real)": {
+      "n": 16,
+      "ours": 14,
+      "modern": 16,
+      "average": 16
+    },
+    "CIFAKE (real)": {
+      "n": 6,
+      "ours": 5,
+      "modern": 6,
+      "average": 6
+    }
+  },
+  "totals": {
+    "ours": {
+      "ai_correct": 18,
+      "ai_n": 31,
+      "real_correct": 23,
+      "real_n": 30,
+      "correct": 41,
+      "n": 61
+    },
+    "modern": {
+      "ai_correct": 17,
+      "ai_n": 31,
+      "real_correct": 30,
+      "real_n": 30,
+      "correct": 47,
+      "n": 61
+    },
+    "average": {
+      "ai_correct": 20,
+      "ai_n": 31,
+      "real_correct": 30,
+      "real_n": 30,
+      "correct": 50,
+      "n": 61
+    }
+  }
+}

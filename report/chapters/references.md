@@ -48,3 +48,18 @@ P. Atanasova, J. G. Simonsen, C. Lioma, and I. Augenstein, "Generating fact chec
 FastAPI documentation, https://fastapi.tiangolo.com (accessed Nov. 2026).
 React documentation, https://react.dev (accessed Nov. 2026).
 Google Fact Check Tools API documentation, https://developers.google.com/fact-check/tools/api (accessed Nov. 2026).
+Z. Xie, R. Xing, Y. Wang, J. Geng, H. Iqbal, D. Sahnan, I. Gurevych, and P. Nakov, "FIRE: Fact-checking with iterative retrieval and verification," in *Findings of the Association for Computational Linguistics: NAACL 2025*, 2025.
+A. R. Putta, J. Devasier, and C. Li, "ClaimCheck: Real-time fact-checking with small language models," arXiv:2510.01226, 2025.
+M. Akhtar, M. Schlichtkrull, A. Vlachos, *et al.*, "The AVeriTeC 2025 shared task on real-world claim verification with evidence from the web," in *Proc. Eighth Fact Extraction and VERification Workshop (FEVER)*, 2025.
+M. Schlichtkrull, Z. Guo, and A. Vlachos, "AVeriTeC: A dataset for real-world claim verification with evidence from the web," in *Advances in Neural Information Processing Systems (Datasets and Benchmarks Track)*, 2023.
+OpenAI, "gpt-oss-120b and gpt-oss-20b model card," arXiv:2508.10925, 2025.
+L. Wang, N. Yang, X. Huang, L. Yang, R. Majumder, and F. Wei, "Multilingual E5 text embeddings: A technical report," arXiv:2402.05672, 2024.
+L. Tang, P. Laban, and G. Durrett, "MiniCheck: Efficient fact-checking of LLMs on grounding documents," in *Proc. EMNLP*, 2024.
+Z. Liu, H. Hu, Y. Lin, Z. Yao, Z. Xie, Y. Wei, J. Ning, Y. Cao, Z. Zhang, L. Dong, F. Wei, and B. Guo, "Swin Transformer V2: Scaling up capacity and resolution," in *Proc. IEEE/CVF CVPR*, 2022.
+haywoodsloan, "AI image detector (Swin Transformer V2)," Hugging Face model haywoodsloan/ai-image-detector-deploy, https://huggingface.co/haywoodsloan/ai-image-detector-deploy (accessed Nov. 2026).
+P. Atanasova, J. G. Simonsen, C. Lioma, and I. Augenstein, "A diagnostic study of explainability techniques for text classification," in *Proc. EMNLP*, 2020, pp. 3256–3274.
+M. D. Zeiler and R. Fergus, "Visualizing and understanding convolutional networks," in *Proc. ECCV*, 2014, pp. 818–833.
+J. Li, W. Monroe, and D. Jurafsky, "Understanding neural networks through representation erasure," arXiv:1612.08220, 2016.
+M. Sundararajan, A. Taly, and Q. Yan, "Axiomatic attribution for deep networks," in *Proc. 34th ICML*, 2017, pp. 3319–3328.
+GroqCloud documentation, https://console.groq.com/docs (accessed Nov. 2026).
+Ollama, https://ollama.com (accessed Nov. 2026).

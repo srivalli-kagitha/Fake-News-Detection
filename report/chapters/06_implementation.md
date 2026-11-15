@@ -9,11 +9,13 @@ TABLE: Technology stack
 | Web framework | FastAPI + Uvicorn | 0.11x | REST API, request validation, automatic API docs |
 | Deep learning | PyTorch | 2.x | Running and training models |
 | Model library | Hugging Face Transformers | 4.4x | Loading DeBERTa, IndicBERT, CLIP and NLI models |
-| Embeddings | Sentence-Transformers | 3.x | BGE-M3 evidence embeddings |
+| Language model | gpt-oss-120b via Groq API (or Ollama) | OpenAI-compatible | Search queries and claim verdicts |
+| Web search | ddgs | 9.x | Yahoo, DuckDuckGo and Mojeek results |
+| Embeddings | Sentence-Transformers | 3.x | multilingual-E5-small passage selection, BGE-M3 corpus embeddings |
 | Vector search | FAISS (CPU) | 1.x | Nearest-passage search |
-| Explanations | LIME, pytorch-grad-cam | 0.2, 1.5 | Word weights, heatmaps |
+| Explanations | occlusion (own code), LIME, pytorch-grad-cam | -, 0.2, 1.5 | Word weights, heatmaps |
 | NLP utilities | spaCy (en_core_web_sm) | 3.x | Sentence splitting, named entities |
-| Database | SQLite via SQLAlchemy | 2.x | Check history |
+| Database | SQLite via SQLAlchemy | 2.x | Check history with full reports |
 | Frontend | React, React Router | 18, 6 | Single-page application |
 | Build tool | Vite | 6 | Development server, /api proxy, production build |
 | Styling | Tailwind CSS | 4 | Design tokens, light and dark themes |
@@ -53,11 +55,11 @@ truthlens-ai/
 
 ### Configuration
 
-Every value that a student might want to change, such as model names, the evidence folder, the similarity threshold or the number of LIME samples, is a field of one `Settings` class. Pydantic reads it from `backend/.env`, so changing a model means editing one line of a text file. Model paths starting with `models/` are resolved inside the backend folder, and anything else is treated as a Hugging Face model name and downloaded on first use.
+Every value that a student might want to change, such as model names, the evidence folder, the similarity threshold, the language-model provider or the explanation method, is a field of one `Settings` class. Pydantic reads it from `backend/.env`, so changing a model means editing one line of a text file. Model paths starting with `models/` are resolved inside the backend folder, and anything else is treated as a Hugging Face model name and downloaded on first use.
 
 ### Lazy model loading
 
-Loading all the models at start-up would take minutes and about 10 GB of memory. Instead, each model is created the first time it is needed. The `Lazy` wrapper uses a lock with a second check inside it, so two requests arriving together still load the model only once:
+Each model is created the first time it is needed, either by the background warm-up described below or by the first request that uses it. The `Lazy` wrapper uses a lock with a second check inside it, so two requests arriving together still load the model only once:
 
 ```
 class Lazy(Generic[T]):
@@ -87,7 +89,7 @@ def detect_language(text: str) -> str:
 
 ### Claim decision and fusion
 
-The decision rule of Section 5.6 is a few lines of code. Keeping it this short makes it easy to explain in a viva and easy to test:
+The decision rule of Section 5.6, used by the NLI fallback, is a few lines of code. Keeping it this short makes it easy to explain in a viva and easy to test:
 
 ```
 def _decide(evidence):
@@ -102,19 +104,46 @@ def _decide(evidence):
     return "Unknown", 1.0 - max(best_support, best_contra)
 
 def combine(classification, verification):
-    parts, based_on = [], []
-    if classification:
-        parts.append(classification["fake_probability"])
-        based_on.append("classifier")
-    if verification and verification["summary"]["verdict"] != "Unverified":
-        parts.append(1.0 - verification["summary"]["credibility_score"])
-        based_on.append("claim_evidence")
-    if not parts:
+    has_evidence = bool(verification) and verification["summary"]["verdict"] != "Unverified"
+    if verification and not has_evidence:          # checked, but nothing found
+        return {"verdict": "Unverified", "fake_risk": None, "based_on": [],
+                "style_fake_probability": classification and classification["fake_probability"]}
+    if not classification and not has_evidence:
         return None
-    risk = sum(parts) / len(parts)
+    if not has_evidence:
+        risk, based_on = classification["fake_probability"], ["classifier"]
+    elif not classification:
+        risk, based_on = 1.0 - verification["summary"]["credibility_score"], ["claim_evidence"]
+    else:
+        w = get_settings().evidence_weight          # 0.7
+        risk = (1 - w) * classification["fake_probability"] \
+               + w * (1.0 - verification["summary"]["credibility_score"])
+        based_on = ["classifier", "claim_evidence"]
     return {"verdict": "Fake" if risk >= 0.5 else "Real",
             "fake_risk": round(risk, 4), "based_on": based_on}
 ```
+
+### Language-model verifier
+
+The verifier in `services/llm_verifier.py` talks to any OpenAI-compatible chat API, so Groq and a local Ollama server need the same code; `LLM_PROVIDER` picks one. Both prompts ask for JSON, and the temperature is 0 so that the same claim gets the same answer. Answers are cached by prompt, so checking the same claim twice in a session costs no API call. The searches for a claim run in a thread pool, and the pool is shut down without waiting when the 20-second limit passes, so one slow search engine cannot hold up the check:
+
+```
+pool = ThreadPoolExecutor(max_workers=8)
+futures = [pool.submit(fn, q) for q in queries for fn in sources]
+try:
+    for f in as_completed(futures, timeout=SEARCH_DEADLINE):
+        items += f.result() or []
+except TimeoutError:
+    logger.info("search deadline reached; using what came back")
+finally:
+    pool.shutdown(wait=False, cancel_futures=True)
+```
+
+`claim_verifier.verify_text` tries this verifier first. If it raises `LLMUnavailable` (no key, no network or the daily limit used up) the same claims go through the NLI pipeline, and the response records which method decided them.
+
+### Faster start-up
+
+The students' laptops took about ten minutes before the first check could run: the models were downloaded with every file in their Hugging Face repositories, loaded only when the first request arrived, and run with as many PyTorch threads as the processor reports. Three changes fixed this. `hf_path()` downloads only the files a model needs (its safetensors weights, configuration and tokenizer), which halves the download for repositories that also carry PyTorch, ONNX or TensorFlow copies. A background thread started with the backend loads the models one after another while the user is still reading the Start page; `/api/health` reports its progress and the interface shows "Getting the AI models ready: 2 of 4". And the number of PyTorch threads is capped at half the logical processors, at most eight: on the development laptop, 16 threads ran the classifier up to seven times slower than eight, because the extra threads competed for the same cores.
 
 ### Evidence index
 
@@ -162,14 +191,14 @@ React Router maps each tool to a path (`/`, `/text`, `/image`, `/claims`, `/batc
 
 ### Verdict first, explanation second
 
-LIME needs about 200 runs of the classifier, which on a laptop CPU takes much longer than the verdict itself. The text page therefore makes two requests. The first returns the verdict and the claim evidence and is shown at once; the second returns the word weights, and the highlights are drawn into the report already on screen:
+The word highlights need tens of runs of the classifier (about 200 with LIME), which takes longer than the verdict itself. The text page therefore makes two requests. The first returns the verdict and the claim evidence and is shown at once; the second returns the word weights, and the highlights are drawn into the report already on screen:
 
 ```
 // Step 1: verdict and claim evidence (fast)
 data = await analyzeText({ text: input, language, explain: false,
                           verify_claims: verify });
 setResult({ ...data, checkedText: input });
-// Step 2: LIME highlights, filled into the report when ready
+// Step 2: word highlights, filled into the report when ready
 if (explain && data.classification) {
   const explanation = await explainText({ text: input, language: data.language });
   setResult((r) => r && r.checkedText === input
@@ -181,7 +210,19 @@ The check `r.checkedText === input` stops a slow explanation from an earlier che
 
 ### Marked-up article
 
-The `MarkedText` component splits the article the same way the backend's LIME explainer does, on whitespace, so each word lines up with its weight. Each weighted word is drawn with a highlighter-style background whose strength is proportional to the absolute weight; the marks appear one after another when the report loads. Claims are found in the text by their character positions, and every word inside a claim gets an underline whose style shows the claim's status. Hovering a claim in the evidence list sets an "active" index that lights up the matching sentence.
+The `MarkedText` component splits the article the same way the backend's explainer does, on whitespace, so each word lines up with its weight. Each weighted word is drawn with a highlighter-style background whose strength is proportional to the absolute weight; the marks appear one after another when the report loads. Claims are found in the text by their character positions, and every word inside a claim gets an underline whose style shows the claim's status. Hovering a claim in the evidence list sets an "active" index that lights up the matching sentence.
+
+### Results kept between pages
+
+A check can take 10 to 20 seconds, and users moved to another page while it ran; on their return the page was empty and the check had to be repeated. Each page now keeps its input, its result and the state of a running check (including when it started) in a small store outside React (`lib/store.js`): a JavaScript `Map` with a list of listeners, read through a `useKept` hook. Because the store lives in the browser tab's memory, a running request finishes and fills in the result even while another page is open, and the result is there when the user comes back. A browser refresh clears the store, so a refreshed page always starts clean, as users expected.
+
+### Showing progress
+
+While a check runs, the page shows a "Working" panel with the real elapsed time and the steps of the check (reading the text, writing search queries, searching the web, choosing evidence, deciding), each ticked off as its usual time passes. If the models are still loading in the background, the panel says so and starts the steps only when they are ready, so the user knows why the first check takes longer.
+
+### History with full reports
+
+Each saved check now stores the whole response together with its input, as JSON in a `details_json` column; image checks also store a 480-pixel thumbnail. The list endpoint leaves these out to stay fast, and `GET /api/history/{id}` returns one record in full. Clicking a row on the History page puts the saved input and result into the store and opens the matching page, so the report appears exactly as it was, with the verdict, reasons, evidence links, highlights and heatmap. Highlights that arrive after the verdict are added to the saved record through the `record_id` of the explanation request.
 
 ### Theme and accessibility
 

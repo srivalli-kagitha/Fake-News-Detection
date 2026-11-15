@@ -2,7 +2,7 @@ This chapter explains how each part of TruthLens works: the data the models lear
 
 ## Overview
 
-The methodology has two halves. The trained half covers three classifiers (English text, Telugu text and images) that need labelled data and a GPU to train. The pre-trained half covers claim verification, which uses an embedding model and NLI models exactly as they were released, with no training in this project. The two halves meet in the fusion step, which combines a classifier's fake probability with the credibility of the article's claims.
+The methodology has two halves. The trained half covers three classifiers (English text, Telugu text and images) that need labelled data and a GPU to train. The pre-trained half covers claim verification, which uses a language model, an embedding model and NLI models exactly as they were released, with no training in this project. The two halves meet in the fusion step, which combines a classifier's fake probability with the credibility of the article's claims.
 
 ![Training pipeline run in the notebook](figures/training_pipeline.png){w=9.5}
 
@@ -106,9 +106,15 @@ EQ: p = softmax(W e + b),   W ∈ ℝ²ˣ⁷⁶⁸
 
 so only 1,538 numbers are learned. The embeddings of all 50,000 images are computed once and cached, and the head is then trained for 30 epochs with AdamW in a few minutes. Because CLIP's features were learned from 400 million image and caption pairs and were never tuned to one generator, the approach is less likely to rely on artefacts specific to the training generator than a fully trained network.
 
+CIFAKE contains only 32 by 32 images from one older generator, so the CLIP head misses many images from current generators such as Midjourney v6. The application therefore averages its AI probability with that of a public detector built on Swin Transformer V2 [58], trained on images from recent generators [59]:
+
+EQ: p_AI = ½ (p_CLIP + p_Swin)
+
+Neither detector was retrained for this. Section 8.3 shows that the average is better than either detector alone on a mixed test set.
+
 ## Claim Verification Algorithm
 
-Claim verification uses no trained component from this project. It is built from an embedding model, an index and two NLI models, joined by an explicit decision rule.
+Claim verification uses no trained component from this project. It has two forms. The main one, described in Section 5.7, lets a language model search the web and judge the evidence. The fallback, described in this section, is built from an embedding model, an index and two NLI models, joined by an explicit decision rule; it runs when no language model can be reached and is also the method evaluated on FEVER and Climate-FEVER in Chapter 8.
 
 ### Step 1: claim extraction
 
@@ -148,7 +154,7 @@ With n claims, labels yᵢ and confidences qᵢ, the article score is the averag
 
 EQ: S = (1/n) Σᵢ vᵢ,  where vᵢ = qᵢ for Support, −qᵢ for Contradiction, 0 for Unknown
 
-and the credibility score is C = (S + 1) / 2, between 0 and 1. The article is labelled Unverified when no claim is supported or contradicted, Likely Misleading when S ≤ −0.2, Likely Credible when S ≥ 0.2, and Mixed Evidence otherwise.
+and the credibility score is C = (S + 1) / 2, between 0 and 1. The article is labelled Unverified (shown as "Can't verify") when no claim is supported or contradicted, Likely Misleading when S ≤ −0.2, Likely Credible when S ≥ 0.2, and Mixed Evidence otherwise.
 
 ```
 Algorithm: VerifyArticle(text, language)
@@ -171,9 +177,63 @@ Algorithm: VerifyArticle(text, language)
   return results, credibility = (S + 1) / 2
 ```
 
+## Claim Verification with a Language Model
+
+A fixed corpus of 40 passages leaves most real claims without evidence, and an NLI model reads each passage on its own, so it is easily misled by a passage about a similar but different event. The main verifier therefore follows the plan-search-judge design of recent fact-checking systems [51, 52] with an open-weight language model, gpt-oss-120b [55], served by Groq's free API [64]. The same code works with a model running locally in Ollama [65].
+
+### Step 1: search queries
+
+The claim is sent to the language model with a short instruction to write up to three search queries: the claim itself in neutral words, the fact that would prove it false, and a query for a published fact-check. For "Rahul Gandhi became the Prime Minister of India in 2024" the queries include "Prime Minister of India 2024" and "Narendra Modi third term".
+
+### Step 2: live evidence
+
+All the queries are run at the same time against five sources, with a 20-second limit for the whole search:
+
+- Wikipedia in the claim's language: the article introductions of the best matching pages;
+- a web search through the ddgs library (Yahoo first, then DuckDuckGo and Mojeek if Yahoo fails), which returns titles and snippets;
+- Google News headlines with their publishers and dates;
+- the Google Fact Check Tools API, when a key is set, which returns published fact-checks with their ratings;
+- the local evidence corpus.
+
+### Step 3: passage selection
+
+Each source returns many passages, most of them unrelated. They are embedded with multilingual-E5-small [56], using the prefixes "query:" for the claim and queries and "passage:" for the evidence that the model was trained with. A passage's relevance is its highest cosine similarity to the claim or to any of the queries,
+
+EQ: rel(d) = max over q in {c} ∪ Q of sim(q, d)
+
+so a passage that answers the refuting query ("Narendra Modi third term") is kept even when it shares few words with the claim. Passages with rel(d) < 0.80 are dropped, at most two passages are taken from one page so that one Wikipedia article cannot fill the list, fact-checks are always kept, and the ten best passages are numbered and passed on.
+
+### Step 4: verdict
+
+The language model receives the claim, today's date and the numbered passages, and returns a JSON answer with the label (Supported, Refuted or Not enough evidence), a confidence, a one-sentence reason and the numbers of the passages it relied on. The instruction sets a few rules that came from testing: a claim with a wrong detail (a wrong year, place or number) is refuted; a passage about a different person or thing with a similar name (the Taj Mahal Palace hotel for the Taj Mahal) is ignored; when sources disagree, later and encyclopedic sources are preferred; a published fact-check rating counts as evidence; and a prediction about the future is "Not enough evidence". When no passage is relevant, the model may answer from its own knowledge for well-known facts, but the answer is marked as such and its confidence is capped at 0.8.
+
+The labels map to Support, Contradiction and Unknown, and the article score and credibility are computed exactly as in Step 5 of Section 5.6. Every claim result therefore carries the reason and its cited passages, which the interface shows to the reader.
+
+```
+Algorithm: LLMVerify(claim, language)
+  Q  <- LLM(plan prompt, claim)                     # up to 3 queries
+  P  <- parallel search of Wikipedia, web, News, FactCheck, corpus
+        for each q in {claim} ∪ Q, stop after 20 s
+  P  <- [d in P if max sim_E5(q, d) >= 0.80]       # q over claim and queries
+  P  <- top 10 by relevance, at most 2 per page, fact-checks kept
+  (label, conf, reason, cited) <- LLM(verdict prompt, claim, date, P)
+  if P is empty: conf <- min(conf, 0.8); mark knowledge_only
+  return label, conf, reason, [P[i] for i in cited]
+```
+
+The free Groq tier allows 1,000 requests a day and 8,000 tokens a minute; a claim uses two requests. When the limit is reached the backend waits for the time the API asks (up to 20 seconds) and tries again, and if the model still cannot be reached it switches to the NLI verifier of Section 5.6, so a check never fails because of the language model.
+
 ## Explainability Methods
 
-### LIME for text
+### Occlusion for text
+
+Occlusion [61, 62] measures how much each word matters by removing it. With f(x) the classifier's fake probability for the article x and x∖w the article with every occurrence of the word w removed, the weight of w is
+
+EQ: a(w) = f(x) − f(x∖w)
+
+A positive weight means the word pushed the verdict toward fake. Only content words are tested: common English stop words and words beyond the 256 tokens the classifier reads are skipped, because removing them cannot change the prediction. An article of 80 words therefore needs about 50 runs of the classifier, which are made in batches of 16. Section 8.5 compares occlusion with LIME and two gradient methods; it was as faithful as LIME and about ten times faster, so it is the default.
+
+### LIME for text (optional)
 
 LIME [21] explains one prediction f(x) by fitting a simple model g that behaves like f near x. It creates 200 copies of the article with random subsets of words removed, runs the classifier on each copy, and weights each copy by how similar it is to the original (the kernel π). It then solves
 
@@ -191,11 +251,11 @@ For CLIP the layer is the first layer normalisation of the last transformer bloc
 
 ## Fusion of Classifier and Evidence
 
-When both the classifier and the claim verification have a result, the final fake risk is their average:
+When both the classifier and the claim verification have a result, the final fake risk is a weighted average in which the evidence counts more:
 
-EQ: r = ½ (p_fake + (1 − C))
+EQ: r = (1 − λ) p_fake + λ (1 − C),   λ = 0.7
 
-The article is labelled Fake when r ≥ 0.5 and Real otherwise. If the claims are Unverified, the classifier alone decides, and if the classifier is not available the claims alone decide. The report always states which sources were used.
+The article is labelled Fake when r ≥ 0.5 and Real otherwise. An earlier version used λ = 0.5, and a confident classifier could then almost cancel a clear contradiction (Section 8.7). The classifier judges only how the text is written, so when claim checking ran but found no evidence for any claim the article is labelled "Can't verify" rather than given the classifier's label; the classifier's score is still shown as a writing-style signal. If claim checking is switched off the classifier alone decides, and if the classifier is not available the claims alone decide. The report always states which sources were used.
 
 ## Training Setup
 

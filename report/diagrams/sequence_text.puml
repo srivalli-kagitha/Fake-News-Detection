@@ -25,8 +25,8 @@ participant "React UI" as UI
 participant "FastAPI\n/text/analyze" as API
 participant "TextClassifier" as C
 participant "ClaimVerifier" as V
-participant "EvidenceRetriever" as R
-participant "NLIModel" as N
+participant "Live search" as R
+participant "LLM (Groq)" as N
 database SQLite as DB
 User -> UI : paste article, click Check
 UI -> API : POST {text, language, verify_claims}
@@ -35,17 +35,22 @@ API -> C : predict(text)
 C --> API : label, p_fake
 API -> V : verify_text(text, lang)
 V -> V : extract_claims()
-V -> R : search(claims, k=3)
-R --> V : passages + similarity
-V -> N : predict(evidence, claim)
-N --> V : entail / neutral / contradict
+V -> N : plan queries(claim)
+N --> V : up to 3 search queries
+V -> R : Wikipedia, web, News, fact-checks (20 s limit)
+R --> V : passages
+V -> V : E5 selection (top 10, sim >= 0.80)
+V -> N : verdict(claim, date, passages)
+N --> V : label, reason, cited passages
 V --> API : claims + summary
 API -> API : combine() -> fake risk
 API -> DB : save_check()
 API --> UI : verdict, claims, evidence
 UI --> User : report (verdict first)
+note right of UI : steps and elapsed time\nshown while waiting
 UI -> API : POST /text/explain
-API -> C : LIME, 200 perturbed copies
+API -> C : occlusion, one run per content word
 API --> UI : word weights
+API -> DB : add highlights to saved report
 UI --> User : highlighted article
 @enduml

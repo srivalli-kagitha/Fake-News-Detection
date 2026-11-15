@@ -1,0 +1,50 @@
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_en' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+/home/vinaygandra/newone/truthlens-ai/backend/.venv/lib/python3.11/site-packages/torch/jit/_script.py:1491: FutureWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+en LIME (200 samples)                 12.5s drop +0.251 [np.str_('located'), np.str_('Mahal'), np.str_('built')]
+en Gradient x Input                    0.4s drop -0.114 ['government.', 'located', 'Mahal']
+en Integrated Gradients (16 steps)     3.3s drop -0.353 ['government.', 'British', 'The']
+en Occlusion (app default)             1.1s drop +0.176 ['located', 'Taj', 'Mahal']
+en LIME (200 samples)                 16.8s drop +0.002 [np.str_('Share'), np.str_('deleted!'), np.str_('viral')]
+en Gradient x Input                    0.4s drop +0.013 ['Share', 'deleted!', 'confirm']
+en Integrated Gradients (16 steps)     3.3s drop -0.000 ['every', 'weeks,', 'deleted!']
+en Occlusion (app default)             1.8s drop +0.008 ['BREAKING:', 'deleted!', 'according']
+en LIME (200 samples)                 14.8s drop +0.000 [np.str_('Friday,'), np.str_('Mumbai.'), np.str_('said')]
+en Gradient x Input                    0.4s drop +0.000 ['Shaktikanta', 'Mumbai.', 'Friday,']
+en Integrated Gradients (16 steps)     2.6s drop +0.000 ['Das', 'Shaktikanta', 'unchanged']
+en Occlusion (app default)             1.7s drop +0.000 ['kept', 'Mumbai.', 'Bank']
+en LIME (200 samples)                 14.7s drop +0.001 [np.str_('said.'), np.str_('fourth'), np.str_('2023,')]
+en Gradient x Input                    0.4s drop +0.001 ['Chandrayaan-3', 'August', 'on']
+en Integrated Gradients (16 steps)     2.4s drop +0.001 ['Chandrayaan-3', '23', 'ISRO']
+en Occlusion (app default)             1.5s drop +0.041 ['said.', 'Chandrayaan-3', 'near']
+The tokenizer you are loading from '/home/vinaygandra/newone/truthlens-ai/backend/models/text_te' with an incorrect regex pattern: https://huggingface.co/mistralai/Mistral-Small-3.1-24B-Instruct-2503/discussions/84#69121093e8b480e709447d5e. This will lead to incorrect tokenization. You should set the `fix_mistral_regex=True` flag when loading this tokenizer to fix this issue.
+te LIME (200 samples)                  2.2s drop +0.589 [np.str_('అబద్ధం.'), np.str_('సందేశం'), np.str_('అని')]
+te Gradient x Input                    0.1s drop +0.599 ['టవర్ల', '5జీ', 'అబద్ధం.']
+te Integrated Gradients (16 steps)     0.4s drop +0.599 ['5జీ', 'టవర్ల', 'అబద్ధం.']
+te Occlusion (app default)             0.2s drop +0.593 ['అబద్ధం.', 'సందేశం', 'వాట్సాప్']
+te LIME (200 samples)                  1.4s drop +0.903 [np.str_('ఏర్పడింది,'), np.str_('రాజధాని.'), np.str_('రాష్ట్రం')]
+te Gradient x Input                    0.0s drop +0.106 ['రాష్ట్రం', '2', 'జూన్']
+te Integrated Gradients (16 steps)     0.2s drop +0.906 ['రాష్ట్రం', 'తెలంగాణ', 'ఏర్పడింది,']
+te Occlusion (app default)             0.1s drop +0.903 ['ఏర్పడింది,', 'రాజధాని.', 'రాష్ట్రం']
+{
+ "LIME (200 samples)": {
+  "total_seconds": 62.5,
+  "mean_seconds": 10.41,
+  "mean_drop": 0.291
+ },
+ "Gradient x Input": {
+  "total_seconds": 1.6,
+  "mean_seconds": 0.26,
+  "mean_drop": 0.1008
+ },
+ "Integrated Gradients (16 steps)": {
+  "total_seconds": 12.2,
+  "mean_seconds": 2.03,
+  "mean_drop": 0.1921
+ },
+ "Occlusion (app default)": {
+  "total_seconds": 6.4,
+  "mean_seconds": 1.06,
+  "mean_drop": 0.287
+ }
+}

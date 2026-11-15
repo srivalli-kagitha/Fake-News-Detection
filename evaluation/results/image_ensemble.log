@@ -1,0 +1,36 @@
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files: 100%|██████████| 8/8 [00:00<00:00, 1303.03it/s]
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files: 100%|██████████| 8/8 [00:00<00:00, 1967.42it/s]
+Fetching 7 files:   0%|          | 0/7 [00:00<?, ?it/s]Fetching 7 files: 100%|██████████| 7/7 [00:00<00:00, 2249.30it/s]
+Using a slow image processor as `use_fast` is unset and a slow processor was saved with this model. `use_fast=True` will be the default behavior in v4.52, even if the model was saved with a slow processor. This will result in minor differences in outputs. You'll still be able to use a slow processor with `use_fast=False`.
+Midjourney v6 (AI)         n=24  ours 14  modern 16  average 18
+CIFAKE (AI)                n= 6  ours 4  modern 0  average 1
+User portrait (AI)         n= 1  ours 0  modern 1  average 1
+Wikipedia photos (real)    n= 8  ours 4  modern 8  average 8
+Flickr30k photos (real)    n=16  ours 14  modern 16  average 16
+CIFAKE (real)              n= 6  ours 5  modern 6  average 6
+{
+ "ours": {
+  "ai_correct": 18,
+  "ai_n": 31,
+  "real_correct": 23,
+  "real_n": 30,
+  "correct": 41,
+  "n": 61
+ },
+ "modern": {
+  "ai_correct": 17,
+  "ai_n": 31,
+  "real_correct": 30,
+  "real_n": 30,
+  "correct": 47,
+  "n": 61
+ },
+ "average": {
+  "ai_correct": 20,
+  "ai_n": 31,
+  "real_correct": 30,
+  "real_n": 30,
+  "correct": 50,
+  "n": 61
+ }
+}

@@ -1,0 +1,316 @@
+{
+  "threads": 8,
+  "texts": 6,
+  "summary": {
+    "LIME (200 samples)": {
+      "total_seconds": 62.5,
+      "mean_seconds": 10.41,
+      "mean_drop": 0.291
+    },
+    "Gradient x Input": {
+      "total_seconds": 1.6,
+      "mean_seconds": 0.26,
+      "mean_drop": 0.1008
+    },
+    "Integrated Gradients (16 steps)": {
+      "total_seconds": 12.2,
+      "mean_seconds": 2.03,
+      "mean_drop": 0.1921
+    },
+    "Occlusion (app default)": {
+      "total_seconds": 6.4,
+      "mean_seconds": 1.06,
+      "mean_drop": 0.287
+    }
+  },
+  "rows": [
+    {
+      "language": "en",
+      "text": "The Taj Mahal is located in Mumbai and was built in 1990 by ",
+      "method": "LIME (200 samples)",
+      "seconds": 12.54,
+      "drop": 0.2507,
+      "top3": [
+        "located",
+        "Mahal",
+        "built"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Taj Mahal is located in Mumbai and was built in 1990 by ",
+      "method": "Gradient x Input",
+      "seconds": 0.35,
+      "drop": -0.1138,
+      "top3": [
+        "government.",
+        "located",
+        "Mahal"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Taj Mahal is located in Mumbai and was built in 1990 by ",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 3.25,
+      "drop": -0.3526,
+      "top3": [
+        "government.",
+        "British",
+        "The"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Taj Mahal is located in Mumbai and was built in 1990 by ",
+      "method": "Occlusion (app default)",
+      "seconds": 1.15,
+      "drop": 0.1763,
+      "top3": [
+        "located",
+        "Taj",
+        "Mahal"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "BREAKING: Scientists confirm that drinking hot water with le",
+      "method": "LIME (200 samples)",
+      "seconds": 16.81,
+      "drop": 0.0018,
+      "top3": [
+        "Share",
+        "deleted!",
+        "viral"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "BREAKING: Scientists confirm that drinking hot water with le",
+      "method": "Gradient x Input",
+      "seconds": 0.37,
+      "drop": 0.0125,
+      "top3": [
+        "Share",
+        "deleted!",
+        "confirm"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "BREAKING: Scientists confirm that drinking hot water with le",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 3.29,
+      "drop": -0.0003,
+      "top3": [
+        "every",
+        "weeks,",
+        "deleted!"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "BREAKING: Scientists confirm that drinking hot water with le",
+      "method": "Occlusion (app default)",
+      "seconds": 1.75,
+      "drop": 0.0083,
+      "top3": [
+        "BREAKING:",
+        "deleted!",
+        "according"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Reserve Bank of India kept the repo rate unchanged at 6.",
+      "method": "LIME (200 samples)",
+      "seconds": 14.84,
+      "drop": 0.0001,
+      "top3": [
+        "Friday,",
+        "Mumbai.",
+        "said"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Reserve Bank of India kept the repo rate unchanged at 6.",
+      "method": "Gradient x Input",
+      "seconds": 0.38,
+      "drop": 0.0001,
+      "top3": [
+        "Shaktikanta",
+        "Mumbai.",
+        "Friday,"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Reserve Bank of India kept the repo rate unchanged at 6.",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 2.62,
+      "drop": 0.0,
+      "top3": [
+        "Das",
+        "Shaktikanta",
+        "unchanged"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "The Reserve Bank of India kept the repo rate unchanged at 6.",
+      "method": "Occlusion (app default)",
+      "seconds": 1.69,
+      "drop": 0.0001,
+      "top3": [
+        "kept",
+        "Mumbai.",
+        "Bank"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 A",
+      "method": "LIME (200 samples)",
+      "seconds": 14.66,
+      "drop": 0.0014,
+      "top3": [
+        "said.",
+        "fourth",
+        "2023,"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 A",
+      "method": "Gradient x Input",
+      "seconds": 0.37,
+      "drop": 0.0011,
+      "top3": [
+        "Chandrayaan-3",
+        "August",
+        "on"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 A",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 2.43,
+      "drop": 0.0008,
+      "top3": [
+        "Chandrayaan-3",
+        "23",
+        "ISRO"
+      ]
+    },
+    {
+      "language": "en",
+      "text": "Chandrayaan-3 landed near the south pole of the Moon on 23 A",
+      "method": "Occlusion (app default)",
+      "seconds": 1.52,
+      "drop": 0.0408,
+      "top3": [
+        "said.",
+        "Chandrayaan-3",
+        "near"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది అని వాట్సాప్ లో వైర",
+      "method": "LIME (200 samples)",
+      "seconds": 2.23,
+      "drop": 0.5888,
+      "top3": [
+        "అబద్ధం.",
+        "సందేశం",
+        "అని"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది అని వాట్సాప్ లో వైర",
+      "method": "Gradient x Input",
+      "seconds": 0.06,
+      "drop": 0.599,
+      "top3": [
+        "టవర్ల",
+        "5జీ",
+        "అబద్ధం."
+      ]
+    },
+    {
+      "language": "te",
+      "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది అని వాట్సాప్ లో వైర",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 0.35,
+      "drop": 0.599,
+      "top3": [
+        "5జీ",
+        "టవర్ల",
+        "అబద్ధం."
+      ]
+    },
+    {
+      "language": "te",
+      "text": "5జీ టవర్ల వల్ల కరోనా వైరస్ వ్యాపిస్తుంది అని వాట్సాప్ లో వైర",
+      "method": "Occlusion (app default)",
+      "seconds": 0.16,
+      "drop": 0.593,
+      "top3": [
+        "అబద్ధం.",
+        "సందేశం",
+        "వాట్సాప్"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది, హైదరాబాద్ దాని రాజధ",
+      "method": "LIME (200 samples)",
+      "seconds": 1.39,
+      "drop": 0.9034,
+      "top3": [
+        "ఏర్పడింది,",
+        "రాజధాని.",
+        "రాష్ట్రం"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది, హైదరాబాద్ దాని రాజధ",
+      "method": "Gradient x Input",
+      "seconds": 0.05,
+      "drop": 0.1056,
+      "top3": [
+        "రాష్ట్రం",
+        "2",
+        "జూన్"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది, హైదరాబాద్ దాని రాజధ",
+      "method": "Integrated Gradients (16 steps)",
+      "seconds": 0.23,
+      "drop": 0.9056,
+      "top3": [
+        "రాష్ట్రం",
+        "తెలంగాణ",
+        "ఏర్పడింది,"
+      ]
+    },
+    {
+      "language": "te",
+      "text": "తెలంగాణ రాష్ట్రం 2 జూన్ 2014న ఏర్పడింది, హైదరాబాద్ దాని రాజధ",
+      "method": "Occlusion (app default)",
+      "seconds": 0.08,
+      "drop": 0.9034,
+      "top3": [
+        "ఏర్పడింది,",
+        "రాజధాని.",
+        "రాష్ట్రం"
+      ]
+    }
+  ]
+}

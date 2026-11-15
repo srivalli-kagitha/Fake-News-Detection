@@ -35,9 +35,9 @@
   "description": "English rumour is flagged fake",
   "input": "5G towers spread coronavirus (sample)",
   "expected": "language en; overall verdict Fake",
-  "actual": "language=en, classifier=Fake (100.0%), overall=Fake (risk 0.87)",
+  "actual": "language=en, classifier=Fake (100.0%), overall=Fake (risk 0.96)",
   "status": "Pass",
-  "seconds": 13.7
+  "seconds": 5.1
  },
  {
   "id": "TC05",
@@ -45,9 +45,9 @@
   "description": "English news report is judged real",
   "input": "Chandrayaan-3 landing report (sample)",
   "expected": "language en; overall verdict Real",
-  "actual": "language=en, classifier=Real (100.0%), overall=Real (risk 0.00)",
+  "actual": "language=en, classifier=Real (100.0%), overall=Real (risk 0.01)",
   "status": "Pass",
-  "seconds": 17.9
+  "seconds": 0.3
  },
  {
   "id": "TC06",
@@ -55,9 +55,9 @@
   "description": "Telugu text is detected and classified",
   "input": "Telugu sample (Telangana, 5G rumour)",
   "expected": "language te; Telugu model gives a verdict",
-  "actual": "language=te, classifier=Fake (95.0%), claims={'Support': 2, 'Contradiction': 1, 'Unknown': 0}",
+  "actual": "language=te, classifier=Fake (95.0%), claims={'Support': 3, 'Contradiction': 0, 'Unknown': 0}",
   "status": "Pass",
-  "seconds": 10.4
+  "seconds": 4.0
  },
  {
   "id": "TC07",
@@ -67,7 +67,7 @@
   "expected": "verdict only, no claim results",
   "actual": "language=en, verification=skipped",
   "status": "Pass",
-  "seconds": 4.7
+  "seconds": 0.3
  },
  {
   "id": "TC08",
@@ -75,9 +75,9 @@
   "description": "LIME returns word weights",
   "input": "5G rumour sample",
   "expected": "a weight for each word, top words listed",
-  "actual": "63 tokens weighted; top words: deleted!, Share, across, The, the",
+  "actual": "63 tokens weighted; top words: BREAKING:, Monday., India., 5G, secretly",
   "status": "Pass",
-  "seconds": 74.8
+  "seconds": 1.7
  },
  {
   "id": "TC09",
@@ -87,7 +87,7 @@
   "expected": "Support, Contradiction, Contradiction, Support",
   "actual": "labels=['Support', 'Contradiction', 'Contradiction', 'Support']; summary=Mixed Evidence",
   "status": "Pass",
-  "seconds": 22.5
+  "seconds": 9.5
  },
  {
   "id": "TC10",
@@ -97,7 +97,7 @@
   "expected": "Unknown; article Unverified",
   "actual": "labels=['Unknown']; summary=Unverified",
   "status": "Pass",
-  "seconds": 1.3
+  "seconds": 2.0
  },
  {
   "id": "TC11",
@@ -105,9 +105,9 @@
   "description": "Telugu claim matched with English evidence",
   "input": "హైదరాబాద్ తెలంగాణ రాష్ట్ర రాజధాని.",
   "expected": "Support, using the English Hyderabad passage",
-  "actual": "label=Support (98%); evidence: Hyderabad is the capital of the Indian state of Telangana.",
+  "actual": "label=Support (99%); evidence: Hyderabad is the capital of the Indian state of Telangana.",
   "status": "Pass",
-  "seconds": 3.6
+  "seconds": 0.0
  },
  {
   "id": "TC12",
@@ -115,9 +115,9 @@
   "description": "Real photograph is judged real",
   "input": "CIFAKE real image",
   "expected": "Real, with Grad-CAM heatmap",
-  "actual": "label=AI-Generated / Manipulated (97.7%); heatmap=yes",
-  "status": "Fail",
-  "seconds": 11.3
+  "actual": "label=Real (50.8%); heatmap=yes",
+  "status": "Pass",
+  "seconds": 2.1
  },
  {
   "id": "TC13",
@@ -125,9 +125,9 @@
   "description": "Generated image is judged AI-generated",
   "input": "CIFAKE generated image",
   "expected": "AI-Generated / Manipulated, with Grad-CAM heatmap",
-  "actual": "label=AI-Generated / Manipulated (94.5%); heatmap=yes",
-  "status": "Pass",
-  "seconds": 10.4
+  "actual": "label=Real (52.1%); heatmap=yes",
+  "status": "Fail",
+  "seconds": 2.1
  },
  {
   "id": "TC14",
@@ -147,7 +147,7 @@
   "expected": "HTTP 413 with a message",
   "actual": "HTTP 413: big.jpg is larger than 15 MB.",
   "status": "Pass",
-  "seconds": 0.9
+  "seconds": 0.1
  },
  {
   "id": "TC16",
@@ -157,7 +157,7 @@
   "expected": "3 results with labels and a job id",
   "actual": "3 rows; labels=['Fake', 'Real', 'Fake']; counts={'Fake': 2, 'Real': 1}",
   "status": "Pass",
-  "seconds": 6.4
+  "seconds": 0.4
  },
  {
   "id": "TC17",
@@ -175,9 +175,9 @@
   "description": "ZIP of four images is checked",
   "input": "ZIP: 2 real, 2 generated",
   "expected": "4 results with labels",
-  "actual": "4 images; labels=['Real', 'Real', 'AI-Generated / Manipulated', 'AI-Generated / Manipulated']",
+  "actual": "4 images; labels=['Real', 'Real', 'AI-Generated / Manipulated', 'Real']",
   "status": "Pass",
-  "seconds": 10.5
+  "seconds": 2.9
  },
  {
   "id": "TC19",
@@ -205,7 +205,7 @@
   "description": "Checks are saved in history",
   "input": "GET /api/history",
   "expected": "records of the checks above",
-  "actual": "40 records; kinds=['batch_image', 'batch_text', 'claims', 'image', 'text']",
+  "actual": "50 records; kinds=['batch_image', 'batch_text', 'claims', 'image', 'text']",
   "status": "Pass",
   "seconds": 0.0
  },
@@ -215,7 +215,7 @@
   "description": "History filter by type",
   "input": "kind=image",
   "expected": "only image checks returned",
-  "actual": "16 records, all kind=image: True",
+  "actual": "42 records, all kind=image: True",
   "status": "Pass",
   "seconds": 0.0
  },

@@ -1,0 +1,17 @@
+UT01 PASS en
+UT02 PASS te
+UT03 PASS te
+UT04 PASS False
+UT05 PASS False
+UT06 PASS 3
+UT07 PASS 1
+UT08 PASS ('Support', 0.9)
+UT09 PASS ('Contradiction', 0.7)
+UT10 PASS ('Unknown', 0.7)
+UT11 PASS ('Unknown', 0.0)
+UT12 PASS ('Mixed Evidence', 0.525)
+UT13 PASS ('Likely Misleading', 0.2625)
+UT14 PASS Unverified
+UT15 PASS ('Fake', 0.66)
+UT16 PASS ('Unverified', None, 0.3)
+16 / 16

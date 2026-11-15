@@ -33,15 +33,15 @@ This module loads the fine-tuned English or Telugu model, tokenises the text to 
 
 ### Explanation module
 
-The text explainer runs LIME with 200 perturbed copies of the article and returns a weight for every word. The image explainer runs Grad-CAM on the last transformer block of CLIP and returns the heatmap blended with the original image as a PNG.
+The text explainer removes each content word of the article once (occlusion) and returns how much the fake probability changes, as the weight of that word. LIME with 200 perturbed copies is still available as a setting. The image explainer runs Grad-CAM on the last transformer block of CLIP and returns the heatmap blended with the original image as a PNG.
 
 ### Claim verification module
 
-This module has four parts: the claim extractor, the evidence retriever, the NLI verifier and the aggregator. They are described as an algorithm in Section 5.6 and shown as an activity diagram in Figure 4.6.
+This module has five parts: the claim extractor, the live evidence search (Wikipedia, web, Google News, fact-checks), the language-model verifier, the NLI verifier used as fallback, and the aggregator. They are described in Sections 5.6 and 5.7 and the NLI path is shown as an activity diagram in Figure 4.6.
 
 ### Image detection module
 
-The image detector resizes and centre-crops the image to 224 by 224 pixels, passes it through the frozen CLIP ViT-L/14 encoder, and applies the trained linear head to the 768-dimensional embedding.
+The image detector resizes and centre-crops the image to 224 by 224 pixels, passes it through the frozen CLIP ViT-L/14 encoder, and applies the trained linear head to the 768-dimensional embedding. A second, public detector built on Swin Transformer V2 scores the same image, and the two AI probabilities are averaged.
 
 ### Batch module
 
@@ -49,7 +49,7 @@ The batch module reads a CSV file with a `text` column (and an optional `languag
 
 ### History module
 
-Every check is saved in the `checks` table with its type, a preview of the input, the verdict and the confidence. The history page lists, filters and deletes these records.
+Every check is saved in the `checks` table with its type, a preview of the input, the verdict, the confidence and the full report as JSON (for images, a small thumbnail as well). The history page lists, filters and deletes these records, and opens any of them again on its own page.
 
 ## UML Diagrams
 
@@ -67,7 +67,7 @@ The class diagram shows the main backend classes. `Settings` holds every configu
 
 ### Sequence diagram: checking news text
 
-The sequence diagram for a text check shows the two-step response. The first request returns the verdict and the claim evidence. A second request computes the LIME explanation and the highlights are added to the report already on screen, so the user is not kept waiting for the slowest step.
+The sequence diagram for a text check shows the two-step response. The first request returns the verdict and the claim evidence. A second request computes the word highlights and the highlights are added to the report already on screen, so the user is not kept waiting for the slowest step.
 
 ![Sequence diagram for checking news text](figures/sequence_text.png){w=15.5}
 
@@ -136,14 +136,15 @@ TABLE: Backend API endpoints
 | Method | Endpoint | Input | Output |
 |---|---|---|---|
 | POST | /api/text/analyze | text, language, explain, verify_claims | classification, verification, overall verdict |
-| POST | /api/text/explain | text, language | LIME tokens and top words |
+| POST | /api/text/explain | text, language, record_id | word weights and top words (added to the saved report) |
 | POST | /api/claims/verify | text, language | claims with labels and evidence, summary |
 | POST | /api/image/analyze | image file, explain | label, confidence, Grad-CAM overlay |
 | POST | /api/batch/text | CSV file, language, verify_claims | job id, counts, results |
 | POST | /api/batch/images | image files or ZIP | job id, counts, results |
 | GET | /api/batch/{job_id}/download | job id | result CSV file |
 | GET | /api/health | none | model status and metrics |
-| GET | /api/history | limit, kind | list of past checks |
+| GET | /api/history | limit, kind | list of past checks (summary only) |
+| GET | /api/history/{id} | record id | one check with its full report |
 | DELETE | /api/history/{id} | record id | confirmation |
 | DELETE | /api/history | none | confirmation |
 
@@ -173,7 +174,7 @@ Every text check returns the same JSON structure, which the frontend uses to dra
 }
 ```
 
-The classifier and the evidence disagree completely here, and Section 8.6 discusses what this example shows.
+The classifier and the evidence disagree completely here, and Section 8.7 discusses what this example shows.
 
 ### User interface design
 
