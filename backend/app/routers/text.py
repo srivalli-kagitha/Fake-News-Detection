@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from ..config import get_settings
-from ..database import save_check
+from ..database import add_to_report, save_check
 from ..schemas import ClaimsRequest, ExplainRequest, TextRequest
 from ..services.claim_verifier import verify_text
 from ..services.common import ModelNotReadyError
@@ -57,6 +57,13 @@ def analyze_text(req: TextRequest):
     overall = combine(classification, verification)
 
     verdict = (overall or {}).get("verdict") or (verification or {}).get("summary", {}).get("verdict", "Unknown")
+    response = {
+        "language": language,
+        "classification": classification,
+        "classifier_error": classifier_error,
+        "verification": verification,
+        "overall": overall,
+    }
     record_id = save_check(
         kind="text",
         input_preview=req.text,
@@ -67,23 +74,21 @@ def analyze_text(req: TextRequest):
         details={
             "classification": {k: v for k, v in (classification or {}).items() if k != "explanation"},
             "claims_summary": verification["summary"] if verification else None,
+            "input": req.text,
+            "result": response,  # the whole report, so History can open it again
         },
     )
-    return {
-        "id": record_id,
-        "language": language,
-        "classification": classification,
-        "classifier_error": classifier_error,
-        "verification": verification,
-        "overall": overall,
-    }
+    return {"id": record_id, **response}
 
 
 @router.post("/text/explain")
 def explain(req: ExplainRequest):
     """LIME word weights on their own, so the UI can show the verdict first and the highlights after."""
     language = resolve_language(req.text, req.language)
-    return explain_text(get_text_classifier(language), req.text)
+    explanation = explain_text(get_text_classifier(language), req.text)
+    if req.record_id:  # the highlights arrive after the report was saved: add them to it
+        add_to_report(req.record_id, ["result", "classification", "explanation"], explanation)
+    return explanation
 
 
 @router.post("/claims/verify")
@@ -96,6 +101,6 @@ def verify_claims(req: ClaimsRequest):
         language=language,
         verdict=result["summary"]["verdict"],
         confidence=result["summary"]["credibility_score"],
-        details={"summary": result["summary"]},
+        details={"summary": result["summary"], "input": req.text, "result": dict(result)},
     )
     return result

@@ -42,5 +42,6 @@ export function batchImages(files) {
 export const downloadUrl = (jobId) => `/api/batch/${jobId}/download`;
 
 export const getHistory = (limit = 100) => api.get("/history", { params: { limit } }).then((r) => r.data);
+export const getHistoryItem = (id) => api.get(`/history/${id}`).then((r) => r.data);
 export const deleteHistory = (id) => api.delete(`/history/${id}`).then((r) => r.data);
 export const clearHistory = () => api.delete("/history").then((r) => r.data);

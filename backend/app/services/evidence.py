@@ -16,7 +16,7 @@ import numpy as np
 import requests
 
 from ..config import get_settings
-from .common import Lazy, get_device, logger
+from .common import Lazy, get_device, logger, hf_path
 
 INDEX_DIRNAME = "index"
 
@@ -62,7 +62,7 @@ class EvidenceRetriever:
         from sentence_transformers import SentenceTransformer
 
         self.settings = get_settings()
-        self.encoder = SentenceTransformer(self.settings.embed_model, device=str(get_device()))
+        self.encoder = SentenceTransformer(hf_path(self.settings.embed_model), device=str(get_device()))
         self.dir = self.settings.evidence_path
         self.index, self.docs = self._load_or_build()
 

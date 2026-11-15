@@ -12,6 +12,7 @@ from ..services.evidence import evidence_status
 from ..services.llm_verifier import llm_name
 from ..services.image_detector import image_model_status
 from ..services.text_classifier import text_model_status
+from ..services.warmup import state as warmup_state
 
 router = APIRouter(tags=["system"])
 
@@ -35,6 +36,7 @@ def health():
         "app": settings.app_name,
         "device": str(get_device()),
         "cuda_available": torch.cuda.is_available(),
+        "warmup": warmup_state,
         "models": {
             "text_en": text_model_status("en"),
             "text_te": text_model_status("te"),
@@ -64,6 +66,15 @@ def list_history(limit: int = 50, kind: str | None = None):
         if kind:
             query = query.where(CheckRecord.kind == kind)
         return [r.to_dict() for r in db.scalars(query)]
+
+
+@router.get("/history/{record_id}")
+def get_history_item(record_id: int):
+    with SessionLocal() as db:
+        record = db.get(CheckRecord, record_id)
+        if record is None:
+            raise HTTPException(404, "Record not found.")
+        return record.to_dict(full=True)
 
 
 @router.delete("/history/{record_id}")

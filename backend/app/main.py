@@ -14,6 +14,7 @@ from .config import get_settings
 from .database import init_db
 from .routers import batch, image, system, text
 from .services.common import ModelNotReadyError
+from .services.warmup import start_warmup
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 logger = logging.getLogger("truthlens")
@@ -23,7 +24,8 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
-    logger.info("TruthLens AI backend started. Models load on first use.")
+    start_warmup()
+    logger.info("TruthLens AI backend started. Models are loading in the background.")
     yield
 
 

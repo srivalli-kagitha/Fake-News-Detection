@@ -15,6 +15,7 @@ class TextRequest(BaseModel):
 class ExplainRequest(BaseModel):
     text: str = Field(..., min_length=10, max_length=20000)
     language: Language = "auto"
+    record_id: int | None = None  # history entry to add the highlights to
 
 
 class ClaimsRequest(BaseModel):

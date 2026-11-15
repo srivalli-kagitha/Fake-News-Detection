@@ -66,8 +66,14 @@ That one command:
 
 Press **Ctrl+C** to stop both. Later runs skip anything already installed and start in a few seconds.
 
-> **First run:** installing packages takes 5–15 minutes. The first claim verification also downloads
-> about 4 GB of pre-trained models from HuggingFace, which takes a few minutes. Both happen only once.
+> **First run:** installing packages takes 5–15 minutes. When the backend starts, it downloads the
+> pre-trained models it needs (about 2 GB with the LLM fact checker on) and loads them in the
+> background; the app shows "Getting the AI models ready: 2 of 4" until they are ready. The download
+> happens only once. Later starts load the models in under a minute, before you click anything.
+>
+> **Results are kept:** a check keeps running if you open another page, and the result is there when
+> you come back, also after a browser refresh. Every check is saved in **History**; click one to open
+> its full report again (verdict, reasons, evidence with links, highlights, heatmap).
 
 Other options:
 
@@ -192,7 +198,9 @@ Any `*.jsonl` file in `backend/data/evidence/` is indexed automatically, one
 | `Port 8000/5173 is already in use` | Close the other TruthLens window, or restart the computer |
 | Package installation fails | Use Python 3.12 (not 3.13+), check your internet connection, run `start.bat` again |
 | "model not trained yet" | Train the model (section 3) and copy it to `backend/models/` |
-| First claim check is very slow | It is downloading models (one time only). On a CPU each claim then takes about 10-15 s |
+| First start is very slow | It is downloading the models (one time only, about 2 GB). Wait until the "Getting the AI models ready" note disappears. On a CPU each claim then takes about 15-25 s |
+| Laptop with 8 GB RAM is slow or freezes | Close other programs. To skip loading at start, set `PRELOAD_MODELS=false` in `backend/.env` (models then load on first use) |
+| Old checks in History have no "Open" | They were saved before full reports were kept. New checks can all be opened |
 | `'CLIPConfig' object has no attribute 'hidden_size'` | Fixed in the latest code: run `git pull`, then restart |
 | Need a clean reinstall | Delete `backend/.venv` and `frontend/node_modules`, then run `start.bat` again |
 | Have an NVIDIA GPU and want to use it | After setup: `backend\.venv\Scripts\pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124 --force-reinstall` |

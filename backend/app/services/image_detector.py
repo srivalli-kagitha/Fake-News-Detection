@@ -17,7 +17,7 @@ from torch import nn
 from transformers import AutoConfig, CLIPImageProcessor, CLIPVisionModelWithProjection
 
 from ..config import get_settings, resolve_local
-from .common import Lazy, ModelNotReadyError, get_device
+from .common import Lazy, ModelNotReadyError, get_device, hf_path
 
 FAKE_NAMES = {"fake", "ai", "ai-generated", "ai_generated", "synthetic", "manipulated", "generated"}
 
@@ -29,6 +29,7 @@ class ClipDetector(nn.Module):
         super().__init__()
         # Build the vision config ourselves: some transformers installs pass the full CLIPConfig
         # to the vision model, which then fails with "'CLIPConfig' object has no attribute 'hidden_size'".
+        clip_name = hf_path(clip_name)
         full = AutoConfig.from_pretrained(clip_name)
         vision = getattr(full, "vision_config", full)
         if hasattr(full, "projection_dim"):
@@ -50,6 +51,7 @@ class ModernDetector:
         from transformers import AutoImageProcessor, AutoModelForImageClassification
 
         self.device = get_device()
+        name = hf_path(name)
         self.processor = AutoImageProcessor.from_pretrained(name)
         self.model = AutoModelForImageClassification.from_pretrained(name).to(self.device).eval()
         names = {i: str(n).lower() for i, n in self.model.config.id2label.items()}
@@ -80,7 +82,7 @@ class ImageDetector:
         self.model.head.load_state_dict(torch.load(head_file, map_location="cpu"))
         self.model.to(self.device).eval()
 
-        processor = CLIPImageProcessor.from_pretrained(self.clip_name)
+        processor = CLIPImageProcessor.from_pretrained(hf_path(self.clip_name))
         self.size = int(processor.crop_size["height"])
         self.mean = np.array(processor.image_mean, dtype=np.float32)
         self.std = np.array(processor.image_std, dtype=np.float32)

@@ -10,8 +10,8 @@ export default function ClaimCheck() {
   const [text, setText] = useKept("claims.input", "");
   const [language, setLanguage] = useKept("claims.language", "auto");
   const [result, setResult] = useKept("claims.result", null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useKept("claims.loading", false, false);
+  const [error, setError] = useKept("claims.error", "", false);
   const [activeClaim, setActiveClaim] = useState(null);
   const report = useRef(null);
 

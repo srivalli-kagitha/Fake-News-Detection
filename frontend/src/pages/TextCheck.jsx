@@ -34,11 +34,11 @@ export default function TextCheck() {
   const [explain, setExplain] = useKept("text.explain", true);
   const [verify, setVerify] = useKept("text.verify", true);
   const [result, setResult] = useKept("text.result", null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useKept("text.loading", false, false);
+  const [error, setError] = useKept("text.error", "", false);
   const [activeClaim, setActiveClaim] = useState(null);
-  const [explaining, setExplaining] = useState(false);
-  const [explainError, setExplainError] = useState("");
+  const [explaining, setExplaining] = useKept("text.explaining", false, false);
+  const [explainError, setExplainError] = useKept("text.explainError", "", false);
   const report = useRef(null);
 
   async function run(input = text) {
@@ -62,7 +62,7 @@ export default function TextCheck() {
     if (explain && data.classification) {
       setExplaining(true);
       try {
-        const explanation = await explainText({ text: input, language: data.language });
+        const explanation = await explainText({ text: input, language: data.language, record_id: data.id });
         setResult((r) =>
           r && r.checkedText === input ? { ...r, classification: { ...r.classification, explanation } } : r
         );

@@ -26,7 +26,9 @@ class Settings(BaseSettings):
 
     nli_en_model: str = "MoritzLaurer/DeBERTa-v3-large-mnli-fever-anli-ling-wanli"
     nli_multi_model: str = "MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7"
-    embed_model: str = "BAAI/bge-m3"
+    embed_model: str = "BAAI/bge-m3"  # NLI pipeline (fallback)
+    llm_embed_model: str = "intfloat/multilingual-e5-small"  # LLM checker: picks evidence, 470 MB
+    preload_models: bool = True  # load the models in the background as soon as the backend starts
 
     evidence_dir: str = "data/evidence"
     google_factcheck_api_key: str = ""

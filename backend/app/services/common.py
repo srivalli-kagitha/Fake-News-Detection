@@ -1,6 +1,7 @@
 """Shared helpers: device selection, errors and lazy model loading."""
 import logging
 import threading
+from pathlib import Path
 from typing import Callable, Generic, TypeVar
 
 import torch
@@ -22,6 +23,28 @@ def get_device() -> torch.device:
     if choice == "cuda" or (choice == "auto" and torch.cuda.is_available()):
         return torch.device("cuda")
     return torch.device("cpu")
+
+
+# Only the files a model needs. Many Hugging Face repos hold the same weights twice (model.safetensors
+# AND pytorch_model.bin, sometimes ONNX too); downloading everything doubled the first-run download.
+MODEL_FILES = ["*.json", "*.safetensors", "*.model", "*.txt", "tokenizer*", "sentencepiece*", "spm*",
+               "1_Pooling/*"]
+
+
+def hf_path(repo: str) -> str:
+    """Local folder of a Hugging Face model, downloading only the needed files the first time.
+    Works offline once the files are on disk."""
+    if Path(repo).exists():
+        return repo
+    from huggingface_hub import snapshot_download
+
+    try:
+        path = snapshot_download(repo, allow_patterns=MODEL_FILES)
+    except Exception:  # no internet: use what is already downloaded
+        path = snapshot_download(repo, allow_patterns=MODEL_FILES, local_files_only=True)
+    if not any(Path(path).glob("*.safetensors")):  # older repos only ship pytorch_model.bin
+        path = snapshot_download(repo, allow_patterns=MODEL_FILES + ["pytorch_model.bin"])
+    return path
 
 
 class Lazy(Generic[T]):

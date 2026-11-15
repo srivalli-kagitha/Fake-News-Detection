@@ -30,7 +30,12 @@ class CheckRecord(Base):
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )
 
-    def to_dict(self) -> dict:
+    def to_dict(self, full: bool = False) -> dict:
+        details = json.loads(self.details_json or "{}")
+        if not full:  # the history list only needs the summary; the full report is fetched on click
+            has_report = "result" in details
+            details = {k: v for k, v in details.items() if k not in ("result", "input")}
+            details["has_report"] = has_report
         return {
             "id": self.id,
             "kind": self.kind,
@@ -38,9 +43,26 @@ class CheckRecord(Base):
             "language": self.language,
             "verdict": self.verdict,
             "confidence": self.confidence,
-            "details": json.loads(self.details_json or "{}"),
+            "details": details,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
+
+
+def add_to_report(record_id: int, path: list[str], value) -> None:
+    """Put a late part of a report (e.g. the word highlights) into a saved check."""
+    with SessionLocal() as db:
+        record = db.get(CheckRecord, record_id)
+        if record is None:
+            return
+        details = json.loads(record.details_json or "{}")
+        node = details
+        for key in path[:-1]:
+            node = node.get(key)
+            if not isinstance(node, dict):  # e.g. an old check saved without its report
+                return
+        node[path[-1]] = value
+        record.details_json = json.dumps(details, ensure_ascii=False)
+        db.commit()
 
 
 def init_db() -> None:

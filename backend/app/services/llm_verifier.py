@@ -2,8 +2,9 @@
 
 Follows recent open fact-checking systems (ClaimCheck 2025, FIRE 2024, AVeriTeC 2025 entries):
   1. Query planning - the LLM writes search queries for each claim (English too for Telugu claims).
-  2. Evidence      - local corpus, Wikipedia, DuckDuckGo web, Google News and fact-checks are searched
-                     with those queries; the passages closest to the claim (BGE-M3) are kept.
+  2. Evidence      - local corpus, Wikipedia, web search, Google News and fact-checks are searched
+                     with those queries; the passages closest to the claim or a query are kept
+                     (multilingual-E5-small, 470 MB; the big BGE-M3 model is only needed by the NLI fallback).
   3. Verdict       - the LLM reads the numbered evidence and answers SUPPORTED / REFUTED /
                      NOT_ENOUGH_EVIDENCE, with a confidence, the evidence numbers it relied on and a
                      one-sentence reason. If it decided from general knowledge alone, it says so.
@@ -25,14 +26,52 @@ from functools import lru_cache
 import requests
 
 from ..config import get_settings
-from .common import logger
-from .evidence import get_retriever, search_fact_checks
+from .common import Lazy, get_device, hf_path, logger
+from .evidence import _corpus_files, _read_corpus, search_fact_checks
 from .live_sources import SearchFailed, _news, _web, _wikipedia, _wikipedia_titles, keywords
 
 LABELS = {"SUPPORTED": "Support", "REFUTED": "Contradiction", "NOT_ENOUGH_EVIDENCE": "Unknown"}
 EVIDENCE_PER_CLAIM = 10
 MAX_PER_PAGE = 2
 SEARCH_DEADLINE = 20  # seconds for all searches of one claim
+MIN_RELEVANCE = 0.80  # E5 cosine similarity; E5 scores sit between about 0.7 (unrelated) and 0.95
+
+
+class Embedder:
+    """multilingual-e5-small: small enough for any laptop, covers English and Telugu."""
+
+    def __init__(self):
+        from sentence_transformers import SentenceTransformer
+
+        self.model = SentenceTransformer(hf_path(get_settings().llm_embed_model), device=str(get_device()))
+        self.cache: dict[str, object] = {}  # passage embeddings (the corpus is encoded only once)
+
+    def queries(self, texts: list[str]):
+        return self.model.encode([f"query: {t}" for t in texts], normalize_embeddings=True, show_progress_bar=False)
+
+    def passages(self, texts: list[str]):
+        import numpy as np
+
+        new = [t for t in dict.fromkeys(texts) if t not in self.cache]
+        if new:
+            emb = self.model.encode([f"passage: {t}" for t in new], batch_size=32, normalize_embeddings=True,
+                                    show_progress_bar=False)
+            if len(self.cache) > 5000:
+                self.cache.clear()
+            self.cache.update(zip(new, emb))
+        return np.stack([self.cache[t] for t in texts])
+
+
+_embedder = Lazy("evidence search model (multilingual-E5-small)", Embedder)
+
+
+def get_embedder() -> Embedder:
+    return _embedder.get()
+
+
+@lru_cache(maxsize=1)
+def corpus_docs() -> tuple:
+    return tuple({**d, "type": "corpus"} for d in _read_corpus(_corpus_files(get_settings().evidence_path)))
 
 
 class LLMUnavailable(Exception):
@@ -147,14 +186,14 @@ def _search_all(claim: str, queries: list[str], language: str) -> list[dict]:
     return items
 
 
-def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict], queries: list[str]) -> list[dict]:
+def _select(embedder: Embedder, claim: str, items: list[dict], queries: list[str]) -> list[dict]:
     """The most relevant passages, without duplicates; published fact-checks always kept.
 
     Relevance is the best match with the claim OR one of the LLM's search queries: the passage that
     refutes "Rahul Gandhi became PM" is about Narendra Modi, so it matches the query
     "Prime Minister of India 2024" far better than the claim itself."""
     seen, pool = set(), []
-    for d in corpus_hits + items:
+    for d in [dict(c) for c in corpus_docs()] + items:
         key = d["text"][:200]
         if key not in seen and len(d["text"]) >= 20:
             seen.add(key)
@@ -162,11 +201,9 @@ def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict], q
     if not pool:
         return []
     keys = [d.get("claim_reviewed") or d["text"] for d in pool]
-    targets = retriever.encode([claim] + queries)
-    sims = retriever.encode(keys) @ targets.T  # passages x (claim + queries)
+    sims = embedder.passages(keys) @ embedder.queries([claim] + queries).T  # passages x (claim + queries)
     for d, row in zip(pool, sims):
-        d["similarity"] = float(row[0])          # shown to the user: closeness to the claim
-        d["_rank"] = float(row.max())            # used for choosing the passages
+        d["_rank"] = float(row.max())
     checks = sorted([d for d in pool if d.get("type") == "fact_check"], key=lambda d: -d["_rank"])[:2]
     rest, per_page = [], {}
     for d in sorted([d for d in pool if d.get("type") != "fact_check"], key=lambda d: -d["_rank"]):
@@ -174,10 +211,7 @@ def _select(retriever, claim: str, corpus_hits: list[dict], items: list[dict], q
         if per_page.get(page, 0) < MAX_PER_PAGE:  # at most 2 passages from one page: varied sources
             per_page[page] = per_page.get(page, 0) + 1
             rest.append(d)
-    chosen = [d for d in checks + rest[: EVIDENCE_PER_CLAIM - len(checks)] if d["_rank"] >= 0.3]
-    for d in chosen:
-        d.pop("_rank", None)
-    return chosen
+    return [d for d in checks + rest[: EVIDENCE_PER_CLAIM - len(checks)] if d["_rank"] >= MIN_RELEVANCE]
 
 
 VERDICT_SYSTEM = """You are a careful fact-checker. Decide whether the CLAIM is SUPPORTED, REFUTED or
@@ -226,20 +260,19 @@ def decide(claim: str, evidence: list[dict]) -> dict:
 
 def llm_verify(claims: list[str], facts: list[str], language: str) -> list[dict]:
     """Returns one result per claim in the same shape as the NLI pipeline, plus reason/cited fields."""
-    settings = get_settings()
-    retriever = get_retriever()
+    embedder = get_embedder()
     plans = plan_queries(facts)
-    corpus = retriever.search(facts, settings.evidence_top_k)
     with ThreadPoolExecutor(max_workers=4) as pool:
         found = list(pool.map(lambda a: _search_all(*a), [(f, q, language) for f, q in zip(facts, plans)]))
     results = []
-    for claim, fact, queries, hits, items in zip(claims, facts, plans, corpus, found):
-        evidence = _select(retriever, fact, [dict(h) for h in hits if h["similarity"] >= 0.3], items, queries)
+    for claim, fact, queries, items in zip(claims, facts, plans, found):
+        evidence = _select(embedder, fact, items, queries)
         d = decide(fact, evidence)
         for i, e in enumerate(evidence, 1):
             e["cited"] = i in d["cited"]
             e.pop("nli", None)
-        evidence.sort(key=lambda e: (not e["cited"], -e["similarity"]))
+            e["similarity"] = None  # the LLM's citations show what matters; E5 scores are not percentages
+        evidence.sort(key=lambda e: (not e["cited"], -e.pop("_rank")))
         results.append({"claim": claim, "checked_as": fact, "label": d["label"], "confidence": d["confidence"],
                         "reason": d["reason"], "knowledge_only": d["knowledge_only"], "queries": queries,
                         "decided_by": "llm", "evidence": evidence})

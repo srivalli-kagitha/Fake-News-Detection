@@ -81,8 +81,8 @@ export default function BatchCheck() {
   const [language, setLanguage] = useState("auto");
   const [verify, setVerify] = useState(false);
   const [images, setImages] = useState([]);
-  const [loading, setLoading] = useState("");
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useKept("batch.loading", "", false);
+  const [error, setError] = useKept("batch.error", "", false);
   const [result, setResult] = useKept("batch.result", null);
 
   async function run(kind) {

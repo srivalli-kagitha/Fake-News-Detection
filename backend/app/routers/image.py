@@ -1,3 +1,4 @@
+import base64
 import io
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -22,6 +23,15 @@ def read_image(data: bytes, name: str = "image") -> Image.Image:
         raise HTTPException(400, f"{name} is not a valid image file.")
 
 
+def thumbnail(image: Image.Image, size: int = 480) -> str:
+    """A small JPEG of the checked image, so the report can show it again from History."""
+    small = image.convert("RGB")
+    small.thumbnail((size, size))
+    buf = io.BytesIO()
+    small.save(buf, format="JPEG", quality=80)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
 @router.post("/image/analyze")
 def analyze_image(file: UploadFile = File(...), explain: bool = Form(True)):
     # Plain `def` so FastAPI runs the heavy model work in a worker thread.
@@ -29,11 +39,12 @@ def analyze_image(file: UploadFile = File(...), explain: bool = Form(True)):
     detector = get_image_detector()
     result = detector.predict_with_gradcam(image) if explain else detector.predict(image)
     result["filename"] = file.filename
+    result["thumbnail"] = thumbnail(image)
     result["id"] = save_check(
         kind="image",
         input_preview=file.filename or "image",
         verdict=result["label"],
         confidence=result["confidence"],
-        details={"probabilities": result["probabilities"]},
+        details={"probabilities": result["probabilities"], "result": dict(result)},
     )
     return result

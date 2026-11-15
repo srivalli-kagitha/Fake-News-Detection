@@ -87,7 +87,8 @@ def batch_text(file: UploadFile = File(...), language: str = Form("auto"), verif
         kind="batch_text",
         input_preview=f"{file.filename} ({len(rows)} rows)",
         verdict=", ".join(f"{k}: {v}" for k, v in counts.items()),
-        details={"job_id": job_id, "counts": counts},
+        details={"job_id": job_id, "counts": counts,
+                 "result": {"job_id": job_id, "total": len(rows), "counts": counts, "results": rows[:2000]}},
     )
     return {"job_id": job_id, "total": len(rows), "counts": counts, "results": rows}
 
@@ -145,7 +146,8 @@ def batch_images(files: list[UploadFile] = File(...)):
         kind="batch_image",
         input_preview=f"{len(rows)} images",
         verdict=", ".join(f"{k}: {v}" for k, v in counts.items()),
-        details={"job_id": job_id, "counts": counts},
+        details={"job_id": job_id, "counts": counts,
+                 "result": {"job_id": job_id, "total": len(rows), "counts": counts, "results": rows[:2000]}},
     )
     return {"job_id": job_id, "total": len(rows), "counts": counts, "results": rows}
 

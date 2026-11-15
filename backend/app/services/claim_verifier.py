@@ -12,7 +12,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from ..config import get_settings
 from .claim_extractor import extract_claims
-from .common import Lazy, get_device, logger
+from .common import Lazy, get_device, hf_path, logger
 from .evidence import get_retriever, rating_polarity, search_fact_checks
 from .llm_verifier import LLMUnavailable, llm_available, llm_name, llm_verify
 from .live_sources import DEBUNK_HEADLINE, search_news, search_web, search_wikipedia
@@ -59,6 +59,7 @@ OTHER_THING = re.compile(
 class NLIModel:
     def __init__(self, model_name: str):
         self.device = get_device()
+        model_name = hf_path(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name).to(self.device).eval()
         names = {i: str(n).lower() for i, n in self.model.config.id2label.items()}
@@ -94,6 +95,7 @@ class MiniCheckModel:
 
     def __init__(self, model_name: str):
         self.device = get_device()
+        model_name = hf_path(model_name)
         self.tokenizer = AutoTokenizer.from_pretrained(model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name).to(self.device).eval()
 

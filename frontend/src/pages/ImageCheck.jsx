@@ -10,20 +10,20 @@ import { imageVerdict } from "../lib/verdicts.js";
 
 export default function ImageCheck() {
   const location = useLocation();
-  const [file, setFile] = useKept("image.file", null);
+  const [file, setFile] = useKept("image.file", null, false);
   const [preview, setPreview] = useState("");
   const [explain, setExplain] = useKept("image.explain", true);
   const [result, setResult] = useKept("image.result", null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useKept("image.loading", false, false);
+  const [error, setError] = useKept("image.error", "", false);
   const report = useRef(null);
 
   useEffect(() => {
-    if (!file) return setPreview("");
+    if (!file) return setPreview(result?.thumbnail || ""); // reopened from History or after a refresh
     const url = URL.createObjectURL(file);
     setPreview(url);
     return () => URL.revokeObjectURL(url);
-  }, [file]);
+  }, [file, result?.thumbnail]);
 
   async function run(input = file) {
     setLoading(true);
@@ -77,7 +77,9 @@ export default function ImageCheck() {
             {preview ? (
               <div className="p-3">
                 <img src={preview} alt="Selected image" className="mx-auto max-h-80 rounded-lg object-contain" />
-                <p className="t-small mt-3 truncate text-center text-graphite">{file?.name}. Click or drop to replace.</p>
+                <p className="t-small mt-3 truncate text-center text-graphite">
+                  {file?.name || result?.filename}. Click or drop to {file ? "replace" : "check another image"}.
+                </p>
               </div>
             ) : (
               <div className="px-6 py-14 text-center">

@@ -9,6 +9,7 @@ const listeners = new Set();
 async function refresh() {
   try {
     cache = { ok: true, data: await getHealth() };
+    if (cache.data?.warmup?.running) setTimeout(refresh, 2000); // models loading: follow it closely
   } catch {
     cache = { ok: false, data: null };
   }
