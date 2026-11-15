@@ -10,12 +10,12 @@ import { imageVerdict } from "../lib/verdicts.js";
 
 export default function ImageCheck() {
   const location = useLocation();
-  const [file, setFile] = useKept("image.file", null, false);
+  const [file, setFile] = useKept("image.file", null);
   const [preview, setPreview] = useState("");
   const [explain, setExplain] = useKept("image.explain", true);
   const [result, setResult] = useKept("image.result", null);
-  const [loading, setLoading] = useKept("image.loading", false, false);
-  const [error, setError] = useKept("image.error", "", false);
+  const [loading, setLoading] = useKept("image.loading", false);
+  const [error, setError] = useKept("image.error", "");
   const report = useRef(null);
 
   useEffect(() => {

@@ -41,7 +41,7 @@ const OPEN = {
     return "/claims";
   },
   image: (rec, r) => {
-    setKept("image.file", null, false);
+    setKept("image.file", null);
     setKept("image.result", { ...r, id: rec.id });
     return "/image";
   },

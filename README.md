@@ -71,8 +71,8 @@ Press **Ctrl+C** to stop both. Later runs skip anything already installed and st
 > background; the app shows "Getting the AI models ready: 2 of 4" until they are ready. The download
 > happens only once. Later starts load the models in under a minute, before you click anything.
 >
-> **Results are kept:** a check keeps running if you open another page, and the result is there when
-> you come back, also after a browser refresh. Every check is saved in **History**; click one to open
+> **Results are kept while you move around:** a check keeps running if you open another page, and the
+> result is there when you come back. A browser refresh starts a clean page. Every check is saved in **History**; click one to open
 > its full report again (verdict, reasons, evidence with links, highlights, heatmap).
 
 Other options:

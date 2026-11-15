@@ -42,11 +42,11 @@ export default function TextCheck() {
   const [explain, setExplain] = useKept("text.explain", true);
   const [verify, setVerify] = useKept("text.verify", true);
   const [result, setResult] = useKept("text.result", null);
-  const [loading, setLoading] = useKept("text.loading", false, false);
-  const [error, setError] = useKept("text.error", "", false);
+  const [loading, setLoading] = useKept("text.loading", false);
+  const [error, setError] = useKept("text.error", "");
   const [activeClaim, setActiveClaim] = useState(null);
-  const [explaining, setExplaining] = useKept("text.explaining", false, false);
-  const [explainError, setExplainError] = useKept("text.explainError", "", false);
+  const [explaining, setExplaining] = useKept("text.explaining", false);
+  const [explainError, setExplainError] = useKept("text.explainError", "");
   const report = useRef(null);
 
   async function run(input = text) {
