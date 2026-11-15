@@ -9,7 +9,7 @@ import { SAMPLES } from "../lib/samples.js";
 import { useKept } from "../lib/store.js";
 import { pct, summaryVerdict, textVerdict } from "../lib/verdicts.js";
 
-// Inline note while LIME runs; the rest of the report is already readable.
+// Inline note while the word highlights are computed; the rest of the report is already readable.
 function ExplainProgress() {
   const [seconds, setSeconds] = useState(0);
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function TextCheck() {
     } finally {
       setLoading(false);
     }
-    // Step 2: LIME highlights, filled into the report when ready.
+    // Step 2: word highlights, filled into the report when ready.
     if (explain && data.classification) {
       setExplaining(true);
       try {
@@ -228,7 +228,9 @@ export default function TextCheck() {
                   <h2 className="t-h2">{c?.explanation || explaining ? "Why the model decided this" : "The article"}</h2>
                   <p className="t-small mt-1 mb-5 max-w-[62ch] text-graphite">
                     {c?.explanation || explaining
-                      ? "Explained with LIME, which hides random groups of words and measures how the verdict changes."
+                      ? c?.explanation?.method === "LIME"
+                        ? "Explained with LIME, which hides random groups of words and measures how the verdict changes."
+                        : "Each word was removed once to see how much the verdict changes (occlusion): stronger colour, bigger change."
                       : "Claims found in the text are underlined by what the evidence says."}
                     {v?.claims.length > 0 && " Hover a claim below to find it here."}
                   </p>

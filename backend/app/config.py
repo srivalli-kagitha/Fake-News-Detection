@@ -46,6 +46,7 @@ class Settings(BaseSettings):
     minicheck_model: str = "lytang/MiniCheck-DeBERTa-v3-Large"
 
     max_text_length: int = 256
+    explain_method: str = "occlusion"  # occlusion (one run per word, default) | lime (200 runs)
     lime_num_samples: int = 200
     max_claims: int = 8
     evidence_top_k: int = 3
